@@ -246,6 +246,7 @@
             e.preventDefault();
             const searchInput = document.querySelector('#searchInput');
             const searchValue = searchInput.value.trim();
+            urlParams.set('page', 1);
             if(searchValue){
                 urlParams.set('searchId', searchValue);
                 window.location.href = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`;
