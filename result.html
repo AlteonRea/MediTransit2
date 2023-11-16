@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV File Reader</title>
+    <link rel="stylesheet" href="styles/resultPage.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Result</h1>
+        <div id="output"></div>
+        <div class="find">
+            <form action="" id="search">
+                <input type="text" name="" id="searchInput" placeholder="id_driver">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+            <button id="left" onclick = "handleGoLeft()"><</button>
+            <button id="right" onclick = "handleGoRight()">></button>
+        </div>
+        <div id="routes"></div>
+        <div id="map"></div>
+    </div>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJqtI-6EiQBZbO1psVwzrUzjRTfvE4BrA&callback" async defer></script>
+
+    <!-- Add this div tag where you want the map to be displayed -->
+    <div id="map" style="height: 400px;"></div>
+    
+    <script>
+        // Get the uploaded file name from the URL query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const uploadedFileName = urlParams.get('file');
+        const searchId = urlParams.get('searchId');
+        let page = urlParams.get('page') || 1;
+        const pageSize = 5;
+        let lines;
+        let maxPage;
+        const apiKey = 'AIzaSyDJqtI-6EiQBZbO1psVwzrUzjRTfvE4BrA';
+        const routes = document.getElementById('routes');
+        
+        function getAddressFromCoordinates(apiKey, lat, lng) {
+            const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
+        
+            return fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'OK' && data.results.length > 0) {
+                        return data.results[0].formatted_address;
+                    } else {
+                        return 'Address not found';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    return 'Error occurred during geocoding';
+                });
+        }
+
+        if (uploadedFileName) {
+            // Construct the CSV file path based on the uploaded file name
+            const csvFilePath = `uploads/${uploadedFileName}`;
+    
+            // Read the CSV file
+            fetch(csvFilePath)
+                .then(response => response.text())
+                .then(content => {
+                    lines = content.split('\n').filter(line => {
+                        const rowData = line.split(',');
+                        return !searchId || rowData[0] === searchId;
+                    });
+            
+                    
+                    maxPage = lines.length/pageSize;
+                    //console.log(maxPage);
+                    
+    
+                    // Process the CSV data and create an HTML table
+                    const outputDiv = document.getElementById('output');
+                    outputDiv.innerHTML = '<h2>CSV Content:</h2>';
+    
+                    // Create a table element
+                    const table = document.createElement('table');
+                    table.border = '1';
+    
+                    // Create the header row with only relevant columns
+                    const headerRow = table.insertRow(0);
+                    const headers = ['id_driver', 'origin address', 'destination address'];
+                    headers.forEach(headerText => {
+                        const th = document.createElement('th');
+                        th.textContent = headerText;
+                        headerRow.appendChild(th);
+                    });
+
+                    const startIndex = (page-1) * pageSize;
+                    const endIndex = startIndex + pageSize;
+    
+                    // Create the data rows
+                    for (let i = startIndex; i < Math.min(endIndex, lines.length); i++) {
+                        const rowData = lines[i].split(',');
+                        
+    
+                        // Check if rowData is not empty
+                        if (rowData.length >= headers.length) {
+                            if(!searchId || (searchId && rowData[0] === searchId)){
+                                const row = table.insertRow();
+                                
+                                row.insertCell().innerHTML = rowData[0];
+
+                                getAddressFromCoordinates(apiKey, rowData[1], rowData[2])
+                                .then(address => {
+                                    row.insertCell().innerHTML = address;
+                                });
+
+                                getAddressFromCoordinates(apiKey, rowData[rowData.length-2], rowData[rowData.length-1])
+                                .then(address => {
+                                    row.insertCell().innerHTML = address;
+                                });
+        
+                                // Add click event listener to each row
+                                row.addEventListener('click', function() {
+                                    // Handle the click event
+                                    handleRowClick(rowData);
+                                });
+                            }
+                           
+                        }
+                    }
+    
+                    // Append the table to the outputDiv
+                    outputDiv.appendChild(table);
+                })
+                .catch(error => console.error('Error reading CSV file:', error));
+        } else {
+            console.error('No file name provided.');
+        }
+    
+        // Function to handle row click
+        function handleRowClick(rowData) {
+            // Extract driver_id and coordinates
+            const driverId = rowData[0];
+            const coordinates = rowData.slice(1);
+    
+            // For simplicity, output the data to the document
+            console.log(driverId);
+            
+    
+            // Convert coordinates to LatLng objects for Google Maps
+            const latLngArray = coordinates.map((value) => parseFloat(value));
+
+            console.log(latLngArray);
+            
+            
+            routes.innerHTML = '';
+            for(let i = 0; i < latLngArray.length; i+=2){
+                const lat = latLngArray[i];
+                const lng = latLngArray[i+1];
+                getAddressFromCoordinates(apiKey, lat, lng)
+                .then(address => {
+                    
+                    //console.log(typeof address);
+                    routes.innerHTML += address + `<br>`;
+                    //console.log(address);
+                });
+            }
+            // Initialize Google Maps
+            const map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: latLngArray[0], lng: latLngArray[1] }, // Set the center to the first point
+                zoom: 10, // Set an initial zoom level
+            });
+    
+            // Create an array of waypoints
+            const waypoints = [];
+            for (let i = 0; i < latLngArray.length; i += 2) {
+                waypoints.push({
+                    location: new google.maps.LatLng(latLngArray[i], latLngArray[i + 1])
+                });
+            }
+            //console.log(waypoints); 
+    
+            // Create a DirectionsService and DirectionsRenderer
+            const directionsService = new google.maps.DirectionsService();
+            const directionsRenderer = new google.maps.DirectionsRenderer({
+                map: map,
+            });   
+            // Create a request object with the waypoints
+            const request = {
+                origin: waypoints[0].location,
+                destination: waypoints[waypoints.length - 1].location,
+                waypoints: waypoints.slice(1, -1),
+                optimizeWaypoints: true,
+                travelMode: google.maps.TravelMode.DRIVING,
+            };
+    
+            // Use the DirectionsService to get the route
+            directionsService.route(request, function (result, status) {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    // Set the DirectionsRenderer map and directions
+                    directionsRenderer.setMap(map);
+                    directionsRenderer.setDirections(result);
+                } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
+                    const polyline = new google.maps.Polyline({
+                        path: waypoints.map(waypoint => waypoint.location),
+                        geodesic: true,
+                        strokeColor: '#FF0000',
+                        strokeOpacity: 1.0,
+                        strokeWeight: 2
+                    });
+                    polyline.setMap(map);
+
+                    const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                    let labelIndex = 0;
+                    waypoints.forEach(waypoint => {
+                        new google.maps.Marker({
+                            position: waypoint.location,
+                            map: map,
+                            title: 'Waypoint Marker',
+                            label: labels[labelIndex++ % labels.length]
+                        });
+                    });
+                } else {
+                    console.error('Directions request failed. Status: ' + status);
+                }
+            });
+        }
+
+
+        function handleGoLeft(){
+            if(page > 1){
+                page--;
+                urlParams.set('page', page);
+                window.location.href = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`;
+            }
+        }
+
+        function handleGoRight(){
+            if(page < maxPage){
+                page++;
+                urlParams.set('page', page);
+                window.location.href = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`;
+            } 
+        }
+
+        const searchForm = document.getElementById('search');
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const searchInput = document.querySelector('#searchInput');
+            const searchValue = searchInput.value.trim();
+            if(searchValue){
+                urlParams.set('searchId', searchValue);
+                window.location.href = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`;
+            }else {
+                urlParams.delete('searchId');
+                window.location.href = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`;
+            }
+        })
+    </script>
+    
+
+</body>
+</html>
