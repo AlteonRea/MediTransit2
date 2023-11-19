@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSV File Reader</title>
+    <title>Algo Result</title>
     <link rel="stylesheet" href="styles/resultPage.css">
+    <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -18,186 +19,284 @@
             <button id="left" onclick = "handleGoLeft()"><</button>
             <button id="right" onclick = "handleGoRight()">></button>
         </div>
-        <div id="routes"></div>
+        <div id="routes" class="inactive">No Defined Routes</div>
+        <div id="order-id-container" class="inactive">No Defined Order ID</div>
+    </div>
+    <div class="map-container">
         <div id="map"></div>
     </div>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJqtI-6EiQBZbO1psVwzrUzjRTfvE4BrA&callback" async defer></script>
 
-    <!-- Add this div tag where you want the map to be displayed -->
-    <div id="map" style="height: 400px;"></div>
-    
+    <!--Google Maps API, call initMap function on load-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJqtI-6EiQBZbO1psVwzrUzjRTfvE4BrA&callback=initMap" async defer></script>
+
     <script>
-        // Get the uploaded file name from the URL query parameters
+
         const urlParams = new URLSearchParams(window.location.search);
         const uploadedFileName = urlParams.get('file');
+        console.log(uploadedFileName);
         const searchId = urlParams.get('searchId');
         let page = urlParams.get('page') || 1;
-        const pageSize = 5;
         let lines;
         let maxPage;
         const apiKey = 'AIzaSyDJqtI-6EiQBZbO1psVwzrUzjRTfvE4BrA';
-        const routes = document.getElementById('routes');
+        const routesElem = document.getElementById('routes');
         
-        function getAddressFromCoordinates(apiKey, lat, lng) {
-            const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
-        
-            return fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'OK' && data.results.length > 0) {
-                        return data.results[0].formatted_address;
-                    } else {
-                        return 'Address not found';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    return 'Error occurred during geocoding';
-                });
+        // Initialize google maps, the center is Jakarta
+        function initMap(){
+            const initMap = new google.maps.Map(document.getElementById('map'),{
+                center: {lat: -6.1944 , lng: 106.8229},
+                zoom: 10
+            });
         }
 
         if (uploadedFileName) {
-            // Construct the CSV file path based on the uploaded file name
-            const csvFilePath = `uploads/${uploadedFileName}`;
+            let csvFilePath = `uploads/${uploadedFileName}`;
+            console.log(csvFilePath);
     
-            // Read the CSV file
+            // Read CSV file
             fetch(csvFilePath)
-                .then(response => response.text())
-                .then(content => {
-                    lines = content.split('\n').filter(line => {
-                        const rowData = line.split(',');
-                        return !searchId || rowData[0] === searchId;
-                    });
-            
-                    
-                    maxPage = lines.length/pageSize;
-                    //console.log(maxPage);
-                    
-    
-                    // Process the CSV data and create an HTML table
-                    const outputDiv = document.getElementById('output');
-                    outputDiv.innerHTML = '<h2>CSV Content:</h2>';
-    
-                    // Create a table element
-                    const table = document.createElement('table');
-                    table.border = '1';
-    
-                    // Create the header row with only relevant columns
-                    const headerRow = table.insertRow(0);
-                    const headers = ['id_driver', 'origin address', 'destination address'];
-                    headers.forEach(headerText => {
-                        const th = document.createElement('th');
-                        th.textContent = headerText;
-                        headerRow.appendChild(th);
-                    });
-
-                    const startIndex = (page-1) * pageSize;
-                    const endIndex = startIndex + pageSize;
-    
-                    // Create the data rows
-                    for (let i = startIndex; i < Math.min(endIndex, lines.length); i++) {
-                        const rowData = lines[i].split(',');
-                        
-    
-                        // Check if rowData is not empty
-                        if (rowData.length >= headers.length) {
-                            if(!searchId || (searchId && rowData[0] === searchId)){
-                                const row = table.insertRow();
-                                
-                                row.insertCell().innerHTML = rowData[0];
-
-                                getAddressFromCoordinates(apiKey, rowData[1], rowData[2])
-                                .then(address => {
-                                    row.insertCell().innerHTML = address;
-                                });
-
-                                getAddressFromCoordinates(apiKey, rowData[rowData.length-2], rowData[rowData.length-1])
-                                .then(address => {
-                                    row.insertCell().innerHTML = address;
-                                });
+            .then(response => response.text())
+            .then(content => {
+                lines = content.split('\n').filter(line => {
+                    const rowData = line.split(',');
+                    return !searchId || rowData[0] === searchId;
+                });
         
-                                // Add click event listener to each row
-                                row.addEventListener('click', function() {
-                                    // Handle the click event
-                                    handleRowClick(rowData);
+                
+                maxPage = lines.length/5;
+                //console.log(maxPage);
+                
+                const outputDiv = document.getElementById('output');
+               
+                const table = document.createElement('table');
+
+                const headerRow = table.insertRow(0);
+                const headers = ['ID Driver', 'Vendor', 'Jenis Kendaraan', 'Kode Cabang', 'Packing Kendaraan', 'Packing Kardus', 'Rute'];
+                headers.forEach(headerText => {
+                    const th = document.createElement('th');
+                    th.textContent = headerText;
+                    headerRow.appendChild(th);
+                });
+
+                const startIndex = (page-1) * 5;
+                const endIndex = startIndex + 5;
+
+
+                for (let i = startIndex; i < Math.min(endIndex, lines.length); i++) {
+
+                    const rowData = lines[i].split(',');
+
+                    // Check if rowData have enough data
+                    if (rowData.length >= headers.length) {
+                        if(!searchId || (searchId && rowData[0] === searchId)){
+                            const row = table.insertRow();
+
+                            for(var j = 0; j < 7; j++){
+                                const cell = row.insertCell();
+                                cell.innerHTML = j < 4 ? rowData[j] : 'Click Me';
+                                if(j===6) cell.addEventListener('click', () => {
+                                    handleRoute(rowData);
+                                    routesElem.classList.remove('inactive');
                                 });
+                                else if(j===4) cell.addEventListener('click', () => {
+                                    handleVehiclePacking(rowData);
+                                });
+                                else if(j===5) cell.addEventListener('click', () => {
+                                    handleCardBoxPacking(rowData);
+                                })
                             }
-                           
                         }
                     }
-    
-                    // Append the table to the outputDiv
-                    outputDiv.appendChild(table);
-                })
-                .catch(error => console.error('Error reading CSV file:', error));
+                }
+
+                outputDiv.appendChild(table);
+            })
+            .catch(error => console.error('Error reading CSV file:', error));
         } else {
             console.error('No file name provided.');
         }
-    
-        // Function to handle row click
-        function handleRowClick(rowData) {
-            // Extract driver_id and coordinates
-            const driverId = rowData[0];
-            const coordinates = rowData.slice(1);
-    
-            // For simplicity, output the data to the document
-            console.log(driverId);
-            
-    
-            // Convert coordinates to LatLng objects for Google Maps
-            const latLngArray = coordinates.map((value) => parseFloat(value));
 
-            console.log(latLngArray);
+        function handleCardBoxPacking(rowData){
+            const idDriver = rowData[0];
+            //const folderName = uploadedFileName.replace('_result.csv', '');
+            const folderName = 'PackingResults';
+            window.location.href = `CardboxPacking.html?folder=${folderName}&idDriver=${idDriver}`;
+        }
+
+        function handleVehiclePacking(rowData){
+            const idDriver = rowData[0];
+            //const folderName = uploadedFileName.replace('_result.csv', '');
+            const folderName = 'PackingResults';
+            window.location.href = `VehiclePacking.html?folder=${folderName}&idDriver=${idDriver}`;
+        }
+    
+        function handleRoute(rowData) {
+            const coordinates = rowData.slice(4);
             
+            // console.log(driverId);
+
+            const latLon = coordinates.map((value) => parseFloat(value));
+
+            console.log(latLon);
             
-            routes.innerHTML = '';
-            for(let i = 0; i < latLngArray.length; i+=2){
-                const lat = latLngArray[i];
-                const lng = latLngArray[i+1];
-                getAddressFromCoordinates(apiKey, lat, lng)
-                .then(address => {
+            routesElem.innerHTML = '';
+            let addressIndex = 1;
+
+            const orderIdContainerElement = document.getElementById('order-id-container');
+            
+            // Get address of coordinates asynchronously and use await to make address in correct order
+
+            function handleAddressContainerClick(orderId){
+                const orderIdFilePath = `uploads/PackingResults/Order${orderId}.txt`;
+                console.log(orderIdFilePath);
+                
+                fetch(orderIdFilePath)
+                .then(response => {
+                    if(!response.ok){
+                        throw new Error('Error fetch orderId txt file');
+                    }
+                    orderIdContainerElement.classList.remove('inactive');
+                    return response.text();
+                })
+                .then(fileContent => {
+                    console.log(fileContent);
+                    fileContent = fileContent.replace(/\t/g, '&emsp;&emsp;');
+
+                    fileContent = fileContent.replace(/\n/g, '<br>');
+
+                    orderIdContainerElement.innerHTML = fileContent;
+                })
+                .catch(error =>{
+                    if(orderId === -1){
+                        orderIdContainerElement.innerHTML = `Gudang`;
+                    }else{
+                        orderIdContainerElement.innerHTML = `Order${orderId}.txt not found`;
+                    }
                     
-                    //console.log(typeof address);
-                    routes.innerHTML += address + `<br>`;
-                    //console.log(address);
+                    console.error(error);
+                })
+            }
+
+            function geocodeAddress(lat, lng) {
+                return new Promise((resolve, reject) => {
+                    const latLng = new google.maps.LatLng(lat, lng);
+                    const geocoder = new google.maps.Geocoder();
+
+                    geocoder.geocode({ 'location': latLng }, (results, status) => {
+                        if (status === google.maps.GeocoderStatus.OK) {
+                            if (results[0]) {
+                                resolve(results[0].formatted_address);
+                            } else {
+                                reject('No result found');
+                            }
+                        } else {
+                            reject('Geocoding failed due to: ' + status);
+                        }
+                    });
                 });
             }
-            // Initialize Google Maps
+
+            async function processLatLon(latLon) {
+                for (let i = 0; i < latLon.length; i += 3) {
+                    const lat = latLon[i];
+                    const lng = latLon[i + 1];
+                    const orderId = latLon[i + 2];
+
+                    const addressContainer = document.createElement('div');
+                    addressContainer.classList.add('address-container');
+
+                    addressContainer.addEventListener('click', function () {
+                        console.log('order id:' + orderId);
+                        
+                        handleAddressContainerClick(orderId);
+                    });
+
+                    const indexElement = document.createElement('div');
+                    if(i === 0 || i === latLon.length-3) indexElement.innerText = `Pos: Gudang`;
+                    else {
+                        indexElement.innerText = `Pos: ${addressIndex}`;
+                        addressIndex++;
+                    }
+                    addressContainer.appendChild(indexElement);
+
+                    try {
+                        const formattedAddress = await geocodeAddress(lat, lng);
+
+                        const addressElement = document.createElement('div');
+                        addressElement.innerText = formattedAddress;
+                        addressContainer.appendChild(addressElement);
+
+                        routesElem.appendChild(addressContainer);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
+            }
+            processLatLon(latLon);
+
+
             const map = new google.maps.Map(document.getElementById('map'), {
-                center: { lat: latLngArray[0], lng: latLngArray[1] }, // Set the center to the first point
-                zoom: 10, // Set an initial zoom level
+                center: { lat: latLon[0], lng: latLon[1] },
+                zoom: 10,
             });
     
-            // Create an array of waypoints
             const waypoints = [];
-            for (let i = 0; i < latLngArray.length; i += 2) {
+            for (let i = 0; i < latLon.length; i += 3) {
                 waypoints.push({
-                    location: new google.maps.LatLng(latLngArray[i], latLngArray[i + 1])
+                    location: new google.maps.LatLng(latLon[i], latLon[i + 1])
                 });
             }
             //console.log(waypoints); 
-    
-            // Create a DirectionsService and DirectionsRenderer
+
             const directionsService = new google.maps.DirectionsService();
             const directionsRenderer = new google.maps.DirectionsRenderer({
                 map: map,
-            });   
-            // Create a request object with the waypoints
+                suppressMarkers: true
+            }); 
+            console.log(waypoints);
+
             const request = {
                 origin: waypoints[0].location,
                 destination: waypoints[waypoints.length - 1].location,
                 waypoints: waypoints.slice(1, -1),
-                optimizeWaypoints: true,
                 travelMode: google.maps.TravelMode.DRIVING,
             };
-    
-            // Use the DirectionsService to get the route
+
             directionsService.route(request, function (result, status) {
                 if (status === google.maps.DirectionsStatus.OK) {
-                    // Set the DirectionsRenderer map and directions
-                    directionsRenderer.setMap(map);
+                    //directionsRenderer.setMap(map);
                     directionsRenderer.setDirections(result);
+                    
+                    console.log(waypoints);
+                    console.log(waypoints.length);
+
+                    console.log(latLon);
+    
+                    
+                    for(var i = 0; i < latLon.length; i+=3){
+                        let label;
+                        if(i === 0 || i === latLon.length - 3){
+                            label = 'X';
+                            new google.maps.Marker({
+                                position: {lat: latLon[i], lng: latLon[i+1]},
+                                map: map,
+                                title: 'Waypoint Marker',
+                                label: {text: ' ', color: 'white'},
+                                icon:'assets/gmaps_marker.png'
+                            });
+                        }else{
+                            label = i/3;
+                            label = label.toString();
+                            new google.maps.Marker({
+                                position: {lat: latLon[i], lng: latLon[i+1]},
+                                map: map,
+                                title: 'Waypoint Marker',
+                                label: {text: label, color: 'white'}
+                            });
+                        }
+                        
+                    }
                 } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
                     const polyline = new google.maps.Polyline({
                         path: waypoints.map(waypoint => waypoint.location),
@@ -208,15 +307,15 @@
                     });
                     polyline.setMap(map);
 
-                    const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                    let labelIndex = 0;
+                    labels = 1;
                     waypoints.forEach(waypoint => {
                         new google.maps.Marker({
                             position: waypoint.location,
                             map: map,
                             title: 'Waypoint Marker',
-                            label: labels[labelIndex++ % labels.length]
+                            label: {text: labels.toString(), color: 'white'}
                         });
+                        labels++;
                     });
                 } else {
                     console.error('Directions request failed. Status: ' + status);
@@ -256,7 +355,5 @@
             }
         })
     </script>
-    
-
 </body>
 </html>

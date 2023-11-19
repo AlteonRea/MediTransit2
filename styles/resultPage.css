@@ -1,18 +1,23 @@
 body {
     display: flex;
-    align-items: center;
     justify-content: center;
     margin: 0;
-    background-color: #f0f0f0;
+    background-color: #f0f7fc !important; 
+    overflow: hidden;
 }
 
 .container {
     text-align: center;
-    width: 700px;
-    background-color: #ffffff;
+    width: 800px !important;
+    background-color: #ffffff  !important; 
     padding: 20px;
+    margin: 0 !important;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #333333; 
 }
 
 table {
@@ -23,7 +28,7 @@ table {
 }
 
 table, th, td {
-    border: 1px solid #dddddd;
+    border: 1px solid #cccccc; 
 }
 
 th, td {
@@ -31,13 +36,24 @@ th, td {
     text-align: left;
 }
 
-th {
-    background-color: gray;
-    color: white;
+td:nth-child(1), th:nth-child(1) {
+    width: 70px;
+    text-align: center;
 }
-tr:not-first-child {
+
+td:not(:nth-child(1)) {
+    width: 200px;
+}
+
+th {
+    background-color: #3498db;
+    color: #ffffff;
+}
+
+tr:not(:first-child) {
     cursor: pointer;
 }
+
 tr:nth-child(even) {
     background-color: #f2f2f2;
 }
@@ -46,8 +62,22 @@ tr:nth-child(odd) {
     background-color: #ffffff;
 }
 
+td:hover {
+    background-color: #007bff;
+    color: #ffffff; 
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.map-container {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
 #map {
-    height: 400px;
+    height: 80vh;
+    width: 500px;
+    margin-left: 20px;
     margin-top: 20px;
     border: 1px solid #dddddd;
     border-radius: 10px;
@@ -57,12 +87,12 @@ tr:nth-child(odd) {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 20px; /* Adjust margin as needed */
+    margin-top: 20px;
 }
 
 #search {
     display: flex;
-    margin-right: 10px; /* Adjust margin as needed */
+    margin-right: 10px;
 }
 
 input[type="text"] {
@@ -78,7 +108,7 @@ button {
     cursor: pointer;
     border: 1px solid #007bff;
     border-radius: 4px;
-    margin-left: -1px; /* Fixes button alignment */
+    margin-left: -1px;
 }
 
 button:hover {
@@ -93,7 +123,7 @@ button:hover {
     cursor: pointer;
     border: 1px solid #28a745;
     border-radius: 4px;
-    margin-left: 10px; /* Adjust margin as needed */
+    margin-left: 10px;
 }
 
 #left:hover, #right:hover {
@@ -101,8 +131,45 @@ button:hover {
     border-color: #218838;
 }
 
-#routes{
-    margin-top: 50px;
+#routes,
+#order-id-container {
+    margin-top: 10px;
     width: 100%;
     text-align: left;
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: scroll;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    box-sizing: border-box;
+}
+
+#routes {
+    height: 300px;
+}
+
+#order-id-container {
+    padding: 20px;
+    height: 200px;
+    margin-left: 20px;
+    margin-right: 20px;
+    font-weight: 550;
+}
+
+#routes.inactive,
+#order-id-container.inactive {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: grey;
+    font-size: 24px;
+}
+
+.address-container {
+    border: 1px solid #ddd;
+    padding: 8px;
+    margin: 8px;
+    width: calc(50% - 16px);
+    box-sizing: border-box;
+    font-weight: 550;
 }

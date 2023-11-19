@@ -8,6 +8,10 @@ body{
     font-size: 32px;
     font-weight: bold;
 }
+.teamName img{
+    width: 10%;
+    height: 10%;
+}
 .container{
     margin-top: 80px;
     color: white;

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/VehiclePacking.css">
+</head>
+<body id="main">
+    
+    <div id="container"></div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const folderName = urlParams.get('folder');
+        const idDriver = urlParams.get('idDriver');
+        const folderPath = `uploads/${folderName}/${idDriver}`;
+        let filesList;
+        console.log(folderPath);
+
+        fetch(`/getFileList?idDriver=${idDriver}`,{
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({folderPath}),
+        })
+        .then(response => response.json())
+        .then(fileList=>{
+            const fileListDiv = document.getElementById('fileList');
+            //fileListDiv.innerHTML = fileList.files;
+            filesList = fileList.files;
+            console.log(filesList);
+            const mainContainer = document.getElementById('container');
+
+            let counter = 1;
+            for(var i = 0; i < filesList.length; i+=2){
+
+                const xDiv = document.createElement('div');
+                xDiv.classList.add('x');
+
+                const contentDiv = document.createElement('div');
+                contentDiv.classList.add('content');
+                fetch(`${folderPath}/${filesList[i+1]}`)
+                .then(response => {
+                    if(!response.ok){
+                        throw new Error('Error fetching file');
+                    }
+                    return response.text();
+                })
+                .then(fileContent => {
+                    fileContent = fileContent.replace(/\t/g, '&emsp;');
+                    fileContent = fileContent.replace(/\n/g, '<br>');
+                    contentDiv.innerHTML = fileContent;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+                
+                const iframeContainer = document.createElement('div');
+                iframeContainer.classList.add('container');
+
+                const iframe = document.createElement('iframe');
+                iframe.classList.add('app-frame');
+                iframe.src = `${folderPath}/${filesList[i]}`;
+                iframeContainer.appendChild(iframe);
+                xDiv.appendChild(contentDiv);
+                xDiv.appendChild(iframeContainer);
+                mainContainer.appendChild(xDiv);
+
+            }
+        })
+        .catch(error => console.error(error));
+        
+    </script>
+</body>
+</html>

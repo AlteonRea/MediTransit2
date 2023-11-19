@@ -1,0 +1,5 @@
+kategori_pengiriman,suhu_simpan,min_suhu_kirim_celcius,max_suhu_kirim_celcius
+03,kamar,15,30
+02-A,sejuk,15,25
+01,dingin,2,8
+02-B,sejuk,8,15

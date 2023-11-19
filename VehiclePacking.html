@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/VehiclePacking.css">
+</head>
+<body class="main">
+    <div class="x">
+        <div id="content"></div>
+        <div class="container">
+            <iframe id = "app-frame" src=""></iframe>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const folderName = urlParams.get('folder');
+        const idDriver = urlParams.get('idDriver');
+        const txtFilePath = `uploads/${folderName}/${idDriver}.txt`;
+        const htmlFilePath = `uploads/${folderName}/${idDriver}.html`;
+        const contentElement = document.getElementById('content');
+        const iframeElement = document.getElementById('app-frame');
+        iframeElement.src = htmlFilePath;
+    
+        fetch(txtFilePath)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error fetching file');
+                }
+                return response.text();
+            })
+            .then(fileContent => {
+                fileContent = fileContent.replace(/\t/g, '&emsp;');
+                fileContent = fileContent.replace(/\n/g, '<br>');
+                contentElement.innerHTML = fileContent;
+            })
+            .catch(error => {
+                contentElement.innerHTML = error;
+                console.error(error);
+            });
+    </script>
+    
+</body>
+</html>
