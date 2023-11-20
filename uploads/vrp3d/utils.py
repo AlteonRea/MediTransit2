@@ -10,7 +10,7 @@ from packing.packing import pack_items_to_boxes
 from vehicle.vehicle import Vehicle
 
 @nb.njit(float64(float64[:,:],int32[:]), cache=True)
-def compute_tour_length(distance_matrix:np.ndarray, tour:List[int]):
+def compute_tour_length(distance_matrix:np.ndarray, tour:np.ndarray):
     tour_length = 0
     for i in range(1,len(tour)):
         node_idx = tour[i] + 1
@@ -20,10 +20,18 @@ def compute_tour_length(distance_matrix:np.ndarray, tour:List[int]):
     tour_length += distance_matrix[0, tour[0] + 1] + distance_matrix[tour[-1] + 1,0]
     return tour_length
 
-# @nb.njit(float32[:](float32[:,:],int32[:,:]), cache=True)
+# @nb.njit(float64[:](float64[:,:],int32[:,:]), cache=True)
 def compute_tour_list_length(distance_matrix:np.ndarray, tour_list:List[List[int]])->List[float]:
     tour_list_length = [compute_tour_length(distance_matrix, np.asanyarray(tour_list[i], dtype=int)) if tour_list[i] else 0. for i in range(len(tour_list))]
     return tour_list_length
+
+def compute_arrival_time_list(tour, distance_matrix, velocity):
+    tour_distance_list = [distance_matrix[tour[i]+1,tour[i-1]+1] for i in range(1,len(tour))]
+    tour_distance_list = [distance_matrix[0,tour[0]+1]] + tour_distance_list + [distance_matrix[tour[-1]+1,0]]
+    arrival_time_list = [tour_distance_list[i]/velocity for i in range(len(tour_distance_list))]
+    for i in range(1,len(arrival_time_list)):
+        arrival_time_list[i] += arrival_time_list[i-1]
+    return arrival_time_list
 
 # check if a tour is feasible
 # if the items can be packed inside the vehicle

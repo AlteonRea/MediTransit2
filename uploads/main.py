@@ -4,6 +4,7 @@ from item.box import Box
 from data.problem_generator import ProblemGenerator
 from vns.saving import saving
 from vns.repack import repack
+from vns.route_dp import improve_tours_by_dp
 from vrp3d.vrp3d import VRP3D
 
 from data.parse_output import parse_output, parse_input
@@ -11,19 +12,30 @@ from data.parse_output import parse_output, parse_input
 
 def run():
     ProblemGenerator.initialize()
+    
     depot_coords = []
     orders = []
     vehicle_lists = []
     kode_cabangs = []
-    for i in range(3):
+    '''
+    for i in range(1):
         kode_cabang, depot_coord1 = ProblemGenerator.get_random_depot()
-        order_list1 = ProblemGenerator.generate_random_orders(20, 3, 10, kode_cabang)
+        order_list1 = ProblemGenerator.generate_random_orders(50, 3, 10, kode_cabang)
         vehicle_list1 = ProblemGenerator.generate_random_vehicles(10)
         depot_coords.append(depot_coord1)
         orders.append(order_list1)
         vehicle_lists.append(vehicle_list1)
         kode_cabangs.append(kode_cabang)
+    '''
+    
+    depot_coords, orders, kode_cabangs = parse_input()
 
+    vehicle_lists = []
+    for i in range(len(depot_coords)):
+        vehicle_list1 = ProblemGenerator.generate_random_vehicles(10)
+        vehicle_lists.append(vehicle_list1)
+
+    
 
     #depot_coords, orders = parse_input()
 
@@ -52,8 +64,10 @@ def run():
                         
         solution = saving(problem)
         problem.reset(solution)
-
-
+        
+        solution = improve_tours_by_dp(solution, problem)
+        problem.reset(solution)
+        
         problems.append(problem)
         solutions.append(solution)
 

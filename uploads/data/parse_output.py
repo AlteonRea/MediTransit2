@@ -120,16 +120,21 @@ def parse_input(input_file_name="Dummy"):
         orders_per_cabang[item[1][3]].append(Order(item[0], item[1][4], medscopy, item[1][2]))
 
     cabang_coordinates = {}
+    cabang_codes = {}
     for key in orders_per_cabang.keys():
         cabang_coordinates[key] = MasterCabang.get_depot_coordinate(key)
+        cabang_codes[key] = MasterCabang.get_depot_code(key)
+
 
     cabang_coordinates_ret = []
     orders_ret = []
+    cabang_codes_ret = []
     for key in orders_per_cabang.keys():
         orders_ret.append(orders_per_cabang[key])
         cabang_coordinates_ret.append(cabang_coordinates[key])
+        cabang_codes_ret.append(cabang_codes[key])
 
-    return cabang_coordinates_ret, orders_ret
+    return cabang_coordinates_ret, orders_ret, cabang_codes_ret
 
 
 

@@ -37,7 +37,7 @@ def repack(solution:Solution, problem: VRP3D)->Solution:
         item_list = []
         for j in range(len(orders_to_repack)):
             for k in range(orders_to_repack[j].num_item_packed):
-                orders_to_repack[j].packed_item_list[k].packing_order=j
+                orders_to_repack[j].packed_item_list[k].packing_order=-j
                 item_list += [orders_to_repack[j].packed_item_list[k]]
         is_packing_feasible, position_dict, insertion_order_dict, rotate_count_dict = add_items_to_box(problem.vehicle_list[i].box, item_list)
         if is_packing_feasible:

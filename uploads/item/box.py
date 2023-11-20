@@ -1,5 +1,6 @@
 from copy import copy
-from typing import List, Tuple, Optional, Union
+import pathlib
+from typing import List, Optional
 from uuid import uuid1
 
 import matplotlib.animation as animation
@@ -210,6 +211,8 @@ class Box(Item):
         plt.show() 
     
     def generate_packing_animation(self, filename=None, chdir_in="", chdir_out=""):
+        if not self.packed_items:
+            return
         fig = plt.figure()
         axmax = max(float(self.alternative_sizes[0][0]), float(self.alternative_sizes[0][1]), float(self.alternative_sizes[0][2]))
         axGlob = fig.add_subplot(projection='3d')
