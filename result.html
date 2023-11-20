@@ -290,16 +290,17 @@
                 });
                 directionsService.route(request1, function(twoWheelerResponse, status) {
                     if (status === 'OK') {
-                        const detailedPolylines = twoWheelerResponse.routes[0].legs.reduce((allPolylines, leg) => {
+                        const detailPolyLines = twoWheelerResponse.routes[0].legs.reduce((allPolylines, leg) => {
                             const stepPolylines = leg.steps.map(step => step.polyline.points);
                             return allPolylines.concat(stepPolylines);
                         }, []);
                         
-                        const detailedLatLngs = detailedPolylines.reduce((allLatLngs, polyline) => {
+                        const detailLatLon = detailPolyLines.reduce((allLatLngs, polyline) => {
                             return allLatLngs.concat(google.maps.geometry.encoding.decodePath(polyline));
                         }, []);
+                        
                         const twoWheelerPolyline = new google.maps.Polyline({
-                            path: detailedLatLngs,
+                            path: detailLatLon,
                             strokeColor: '#4285F4',
                             strokeOpacity: 0.7,
                             strokeWeight: 5,
