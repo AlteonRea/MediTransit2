@@ -104,7 +104,8 @@ def parse_input(input_file_name="Dummy"):
                 r = MasterRelasi.get_relasi(cells[1])
                 # list medicine, list quantity, koordinat relasi, id cabang, costumer id
                 orders[cells[0]] = [[], [], (r["Latitude"], r["Longitude"]), cells[4], cells[1]]
-            orders[cells[0]][0].append(ProblemGenerator.generate_medicine(cells[2], cells[0], cells[1], 0))
+            tempmed = ProblemGenerator.generate_medicine(cells[2], cells[0], cells[1], 0)
+            orders[cells[0]][0].append(copy.deepcopy(tempmed))
             orders[cells[0]][1].append(cells[3])
     
     orders_per_cabang = {}
@@ -115,8 +116,8 @@ def parse_input(input_file_name="Dummy"):
         medscopy = []
         for med in range(len(item[1][0])):
             for i in range(int(item[1][1][med])):
-                medscopy.append(copy.deepcopy(item[1][0][med]))
-        
+                medcopy = copy.deepcopy(item[1][0][med])
+                medscopy.append(medcopy)
         orders_per_cabang[item[1][3]].append(Order(item[0], item[1][4], medscopy, item[1][2]))
 
     cabang_coordinates = {}
@@ -126,6 +127,7 @@ def parse_input(input_file_name="Dummy"):
         cabang_codes[key] = MasterCabang.get_depot_code(key)
 
 
+    
     cabang_coordinates_ret = []
     orders_ret = []
     cabang_codes_ret = []
@@ -135,6 +137,7 @@ def parse_input(input_file_name="Dummy"):
         cabang_codes_ret.append(cabang_codes[key])
 
     return cabang_coordinates_ret, orders_ret, cabang_codes_ret
+    #return cabang_coordinates.values(), orders_per_cabang.values(), cabang_codes.values()
 
 
 
