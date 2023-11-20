@@ -72,7 +72,7 @@
                 const table = document.createElement('table');
 
                 const headerRow = table.insertRow(0);
-                const headers = ['ID Driver', 'Vendor', 'Jenis Kendaraan', 'Kode Cabang', 'Packing Kendaraan', 'Packing Kardus', 'Rute'];
+                const headers = ['ID Driver', 'Jenis Kendaraan', 'Vendor', 'Kode Cabang', 'Packing Kendaraan', 'Packing Kardus', 'Rute'];
                 headers.forEach(headerText => {
                     const th = document.createElement('th');
                     th.textContent = headerText;
@@ -250,77 +250,140 @@
             //console.log(waypoints); 
 
             const directionsService = new google.maps.DirectionsService();
-            const directionsRenderer = new google.maps.DirectionsRenderer({
+            const directionsRenderer1 = new google.maps.DirectionsRenderer({
                 map: map,
                 suppressMarkers: true
             }); 
-            console.log(waypoints);
 
-            const request = {
+            const directionsRenderer2 = new google.maps.DirectionsRenderer({
+                map: map,
+                suppressMarkers: true,
+                polylineOptions: {
+                    strokeColor: 'red',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 6
+                },
+            }); 
+            //console.log(waypoints);
+
+            const request1 = {
                 origin: waypoints[0].location,
-                destination: waypoints[waypoints.length - 1].location,
-                waypoints: waypoints.slice(1, -1),
-                travelMode: google.maps.TravelMode.DRIVING,
+                destination: waypoints[waypoints.length - 2].location,
+                waypoints: waypoints.slice(1, -2),
+                travelMode: google.maps.TravelMode.DRIVING
             };
 
-            directionsService.route(request, function (result, status) {
-                if (status === google.maps.DirectionsStatus.OK) {
-                    //directionsRenderer.setMap(map);
-                    directionsRenderer.setDirections(result);
-                    
-                    console.log(waypoints);
-                    console.log(waypoints.length);
-
-                    console.log(latLon);
-    
-                    
-                    for(var i = 0; i < latLon.length; i+=3){
-                        let label;
-                        if(i === 0 || i === latLon.length - 3){
-                            label = 'X';
-                            new google.maps.Marker({
-                                position: {lat: latLon[i], lng: latLon[i+1]},
-                                map: map,
-                                title: 'Waypoint Marker',
-                                label: {text: ' ', color: 'white'},
-                                icon:'assets/gmaps_marker.png'
-                            });
-                        }else{
-                            label = i/3;
-                            label = label.toString();
-                            new google.maps.Marker({
-                                position: {lat: latLon[i], lng: latLon[i+1]},
-                                map: map,
-                                title: 'Waypoint Marker',
-                                label: {text: label, color: 'white'}
-                            });
-                        }
-                        
-                    }
-                } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
-                    const polyline = new google.maps.Polyline({
-                        path: waypoints.map(waypoint => waypoint.location),
-                        geodesic: true,
-                        strokeColor: '#FF0000',
-                        strokeOpacity: 1.0,
-                        strokeWeight: 2
-                    });
-                    polyline.setMap(map);
-
-                    labels = 1;
-                    waypoints.forEach(waypoint => {
-                        new google.maps.Marker({
-                            position: waypoint.location,
-                            map: map,
-                            title: 'Waypoint Marker',
-                            label: {text: labels.toString(), color: 'white'}
+            const request2 = {
+                origin: waypoints[waypoints.length - 1].location,
+                destination: waypoints[waypoints.length - 2].location,
+                travelMode: google.maps.TravelMode.DRIVING
+            }
+            
+            if(rowData[1] === 'Motor'){
+                request1.travelMode = google.maps.TravelMode.TWO_WHEELER;
+                request2.travelMode = google.maps.TravelMode.TWO_WHEELER;
+                directionsRenderer1.setOptions({
+                    suppressPolylines: true,
+                });
+                directionsRenderer2.setOptions({
+                    suppressPolylines: true,
+                });
+                directionsService.route(request1, function(twoWheelerResponse, status) {
+                    if (status === 'OK') {
+                        const twoWheelerPolyline = new google.maps.Polyline({
+                            path: twoWheelerResponse.routes[0].overview_path,
+                            strokeColor: '#4285F4',
+                            strokeOpacity: 0.7,
+                            strokeWeight: 5,
+                            map: map
                         });
-                        labels++;
+                    }
+                });
+    
+                
+                directionsService.route(request2, function(twoWheelerResponse, status) {
+                    if (status === 'OK') {
+                        const twoWheelerPolyline = new google.maps.Polyline({
+                            path: twoWheelerResponse.routes[0].overview_path,
+                            strokeColor: 'red',
+                            strokeOpacity: 0.7,
+                            strokeWeight: 5,
+                            map: map
+                        });
+                    }
+                });
+
+            }
+            
+            for(var i = 0; i < latLon.length; i+=3){
+                let label;
+                if(i === 0 || i === latLon.length - 3){
+                    label = 'X';
+                    new google.maps.Marker({
+                        position: {lat: latLon[i], lng: latLon[i+1]},
+                        map: map,
+                        title: 'Waypoint Marker',
+                        label: {text: ' ', color: 'white'},
+                        icon:'assets/gmaps_marker.png'
                     });
-                } else {
-                    console.error('Directions request failed. Status: ' + status);
+                }else{
+                    label = i/3;
+                    label = label.toString();
+                    new google.maps.Marker({
+                        position: {lat: latLon[i], lng: latLon[i+1]},
+                        map: map,
+                        title: 'Waypoint Marker',
+                        label: {text: label, color: 'white'}
+                    });
                 }
-            });
+            }
+
+            const promise1 = new Promise((resolve, reject) => {
+                
+                directionsService.route(request1, function (result, status) {
+                    if (status === google.maps.DirectionsStatus.OK) {
+                        directionsRenderer1.setMap(map);
+                        directionsRenderer1.setDirections(result);
+                        console.log(result);
+                        console.log(waypoints);
+                        console.log(waypoints.length);
+    
+                        console.log(latLon);
+        
+                    } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
+                        const polyline = new google.maps.Polyline({
+                            path: waypoints.map(waypoint => waypoint.location),
+                            geodesic: true,
+                            strokeColor: '#FF0000',
+                            strokeOpacity: 1.0,
+                            strokeWeight: 2
+                        });
+                        polyline.setMap(map);
+                    } else {
+                        console.error('Directions request failed. Status: ' + status);
+                    }
+                });
+
+            })
+            const promise2 = new Promise((resolve, reject) => {
+                directionsService.route(request2, (result, status)=>{
+                    if(status === google.maps.DirectionsStatus.OK){
+                        directionsRenderer2.setMap(map);
+                        directionsRenderer2.setDirections(result);  
+                    }
+                })
+            })
+
+            Promise.all([promise1, promise2])
+            .then(results => {
+                const result1 = results[1];
+                const result2 = results[2];
+            })
+            .catch(errors => {
+                console.error('Directions request failed. Status:', errors);
+            }); 
+            
+            
         }
 
 

@@ -68,19 +68,7 @@
                     const encodedFileName = encodeURIComponent(uploadedFileName.replace('.csv', '_result.csv'));
                     //console.log(encodedFileName); 
                     
-                    fetch(`/checkFileStatus?fileName=${encodedFileName}`)
-                        .then(response => response.json())
-                        .then(statusData => {
-                            if (statusData.fileExists) {
-                               // console.log('File exists');
-                                window.location.href = '/result.html?file=' + encodedFileName;
-                            } else {
-                               // console.log('File does not exist yet');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error checking file status : ' + error);
-                        });
+                    window.location.href = '/result.html?file=' + encodedFileName;
                 })
                 .catch(error => {
                     console.error('Error uploading file:', error);

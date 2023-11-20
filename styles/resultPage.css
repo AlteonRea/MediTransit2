@@ -44,14 +44,21 @@ td:nth-child(1), th:nth-child(1) {
 td:not(:nth-child(1)) {
     width: 200px;
 }
-
+td:nth-child(n):nth-child(-n+4):hover {
+    background-color: gray;
+    color: #ffffff; 
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+td:nth-child(n+5):nth-child(-n+7):hover,
+.address-container:hover {
+    background-color: #007bff;
+    cursor: pointer;
+    color: #ffffff; 
+    transition: background-color 0.3s ease, color 0.3s ease;
+}   
 th {
     background-color: #3498db;
     color: #ffffff;
-}
-
-tr:not(:first-child) {
-    cursor: pointer;
 }
 
 tr:nth-child(even) {
@@ -60,12 +67,6 @@ tr:nth-child(even) {
 
 tr:nth-child(odd) {
     background-color: #ffffff;
-}
-
-td:hover {
-    background-color: #007bff;
-    color: #ffffff; 
-    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .map-container {

@@ -7,7 +7,6 @@ body {
     justify-content: center;
     align-items: center;
     background-color: #d4e6f1;
-    color: #ffffff ;
 }
 .x{
     margin-top: 50px;
@@ -20,7 +19,7 @@ body {
     height: 600px;
     width: 900px;
     overflow-y: scroll;
-    background-color: #007bb5;
+    background-color: #fff;
     padding: 20px;
     box-sizing: border-box;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
