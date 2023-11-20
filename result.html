@@ -34,7 +34,7 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const uploadedFileName = urlParams.get('file');
-        console.log(uploadedFileName);
+        //console.log(uploadedFileName);
         const searchId = urlParams.get('searchId');
         let page = urlParams.get('page') || 1;
         let lines;
@@ -52,17 +52,17 @@
 
         if (uploadedFileName) {
             let csvFilePath = `uploads/${uploadedFileName}`;
-            console.log(csvFilePath);
+            //console.log(csvFilePath);
     
             // Read CSV file
             fetch(csvFilePath)
             .then(response => response.text())
             .then(content => {
+                //console.log(content);
                 lines = content.split('\n').filter(line => {
                     const rowData = line.split(',');
                     return !searchId || rowData[0] === searchId;
                 });
-        
                 
                 maxPage = lines.length/5;
                 //console.log(maxPage);
@@ -78,7 +78,7 @@
                     th.textContent = headerText;
                     headerRow.appendChild(th);
                 });
-
+                //console.log(lines);
                 const startIndex = (page-1) * 5;
                 const endIndex = startIndex + 5;
 
@@ -138,7 +138,7 @@
 
             const latLon = coordinates.map((value) => parseFloat(value));
 
-            console.log(latLon);
+            //console.log(latLon);
             
             routesElem.innerHTML = '';
             let addressIndex = 1;
@@ -149,7 +149,7 @@
 
             function handleAddressContainerClick(orderId){
                 const orderIdFilePath = `uploads/PackingResults/Order${orderId}.txt`;
-                console.log(orderIdFilePath);
+                //console.log(orderIdFilePath);
                 
                 fetch(orderIdFilePath)
                 .then(response => {
@@ -160,7 +160,7 @@
                     return response.text();
                 })
                 .then(fileContent => {
-                    console.log(fileContent);
+                    //console.log(fileContent);
                     fileContent = fileContent.replace(/\t/g, '&emsp;&emsp;');
 
                     fileContent = fileContent.replace(/\n/g, '<br>');
@@ -207,7 +207,7 @@
                     addressContainer.classList.add('address-container');
 
                     addressContainer.addEventListener('click', function () {
-                        console.log('order id:' + orderId);
+                        //console.log('order id:' + orderId);
                         
                         handleAddressContainerClick(orderId);
                     });
@@ -235,11 +235,11 @@
             }
             processLatLon(latLon);
 
-
             const map = new google.maps.Map(document.getElementById('map'), {
                 center: { lat: latLon[0], lng: latLon[1] },
                 zoom: 10,
             });
+            
     
             const waypoints = [];
             for (let i = 0; i < latLon.length; i += 3) {
@@ -250,6 +250,7 @@
             //console.log(waypoints); 
 
             const directionsService = new google.maps.DirectionsService();
+
             const directionsRenderer1 = new google.maps.DirectionsRenderer({
                 map: map,
                 suppressMarkers: true
@@ -264,7 +265,6 @@
                     strokeWeight: 6
                 },
             }); 
-            //console.log(waypoints);
 
             const request1 = {
                 origin: waypoints[0].location,
@@ -288,6 +288,7 @@
                 directionsRenderer2.setOptions({
                     suppressPolylines: true,
                 });
+
                 directionsService.route(request1, function(twoWheelerResponse, status) {
                     if (status === 'OK') {
                         const detailPolyLines = twoWheelerResponse.routes[0].legs.reduce((allPolylines, leg) => {
@@ -298,7 +299,6 @@
                         const detailLatLon = detailPolyLines.reduce((allLatLngs, polyline) => {
                             return allLatLngs.concat(google.maps.geometry.encoding.decodePath(polyline));
                         }, []);
-                        
                         const twoWheelerPolyline = new google.maps.Polyline({
                             path: detailLatLon,
                             strokeColor: '#4285F4',
@@ -347,50 +347,31 @@
                 }
             }
 
-            const promise1 = new Promise((resolve, reject) => {
-                
-                directionsService.route(request1, function (result, status) {
-                    if (status === google.maps.DirectionsStatus.OK) {
-                        directionsRenderer1.setMap(map);
-                        directionsRenderer1.setDirections(result);
-                        console.log(result);
-                        console.log(waypoints);
-                        console.log(waypoints.length);
+            directionsService.route(request1, function (result, status) {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    directionsRenderer1.setMap(map);
+                    directionsRenderer1.setDirections(result);
     
-                        console.log(latLon);
-        
-                    } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
-                        const polyline = new google.maps.Polyline({
-                            path: waypoints.map(waypoint => waypoint.location),
-                            geodesic: true,
-                            strokeColor: '#FF0000',
-                            strokeOpacity: 1.0,
-                            strokeWeight: 2
-                        });
-                        polyline.setMap(map);
-                    } else {
-                        console.error('Directions request failed. Status: ' + status);
-                    }
-                });
+                } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
+                    const polyline = new google.maps.Polyline({
+                        path: waypoints.map(waypoint => waypoint.location),
+                        geodesic: true,
+                        strokeColor: '#FF0000',
+                        strokeOpacity: 1.0,
+                        strokeWeight: 2
+                    });
+                    polyline.setMap(map);
+                } else {
+                    console.error('Directions request failed. Status: ' + status);
+                }
+            });
 
+            directionsService.route(request2, (result, status)=>{
+                if(status === google.maps.DirectionsStatus.OK){
+                    directionsRenderer2.setMap(map);
+                    directionsRenderer2.setDirections(result);  
+                }
             })
-            const promise2 = new Promise((resolve, reject) => {
-                directionsService.route(request2, (result, status)=>{
-                    if(status === google.maps.DirectionsStatus.OK){
-                        directionsRenderer2.setMap(map);
-                        directionsRenderer2.setDirections(result);  
-                    }
-                })
-            })
-
-            Promise.all([promise1, promise2])
-            .then(results => {
-                const result1 = results[1];
-                const result2 = results[2];
-            })
-            .catch(errors => {
-                console.error('Directions request failed. Status:', errors);
-            }); 
             
             
         }

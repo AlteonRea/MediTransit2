@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
 app.get('../assets/panduan.pdf', (req, res) => {
     res.download(__dirname + '../assets/panduan.pdf');
 });
-
+/*
 app.get('/checkFileStatus', (req, res) => {
     const encodedFileName = req.query.fileName;
     const filePath = path.join(__dirname, '../uploads', encodedFileName);
@@ -49,7 +49,7 @@ app.get('/checkFileStatus', (req, res) => {
         res.json({ fileExists: false});
     }
 });
-
+*/
 app.post('/getFileList', (req, res) => {
     const idDriver = req.query.idDriver;
     const folderPath = path.join(__dirname, '../uploads/PackingResults/', idDriver);
