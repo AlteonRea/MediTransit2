@@ -1,0 +1,3 @@
+Siapkan Kardus (2) 50PBCB01 untuk Order 3
+	(1). Rotasi Obat RICO001 dari Order 3 menjadi (2, 6, 8), dan letakkan pada posisi : (0, 0, 0)
+	(2). Rotasi Obat RICO001 dari Order 3 menjadi (2, 6, 8), dan letakkan pada posisi : (2, 0, 0)

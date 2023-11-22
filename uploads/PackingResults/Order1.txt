@@ -1,0 +1,12 @@
+(1). Kardus 10UKSW005 :
+	(1). Obat TUBE104
+	(2). Obat TERM001
+	(3). Obat ACRY014
+(2). Kardus 10UKSW156 :
+	(1). Obat SENT002
+	(2). Obat SENT002
+(3). Obat MATR077
+(4). Obat MATR077
+(5). Obat SENT002
+(6). Obat QUID007
+(7). Obat QUID007

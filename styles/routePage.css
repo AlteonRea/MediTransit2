@@ -2,16 +2,16 @@ body {
     display: flex;
     justify-content: center;
     margin: 0;
-    background-color: #f0f7fc !important; 
-    /*overflow: hidden;*/
+    background-color: #f0f7fc !important;
+    height: 100vh;
 }
 
 .container {
     text-align: center;
     width: 800px !important;
-    background-color: #ffffff  !important; 
+    background-color: #ffffff !important; 
     padding: 20px;
-    margin: 0 !important;
+    margin: 20px 0 !important;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: flex;
@@ -21,54 +21,6 @@ body {
     flex-grow: 1;
 }
 
-table {
-    width: 700px;
-    border-collapse: collapse;
-    max-height: 400px;
-    margin-top: 20px;
-}
-
-table, th, td {
-    border: 1px solid #cccccc; 
-}
-
-th, td {
-    padding: 10px;
-    text-align: left;
-}
-
-td:nth-child(1), th:nth-child(1) {
-    width: 70px;
-    text-align: center;
-}
-
-td:not(:nth-child(1)) {
-    width: 200px;
-}
-td:nth-child(n):nth-child(-n+4):hover {
-    background-color: gray;
-    color: #ffffff; 
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-td:nth-child(n+5):nth-child(-n+7):hover,
-.address-container:hover {
-    background-color: #007bff;
-    cursor: pointer;
-    color: #ffffff; 
-    transition: background-color 0.3s ease, color 0.3s ease;
-}   
-th {
-    background-color: #3498db;
-    color: #ffffff;
-}
-
-tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-tr:nth-child(odd) {
-    background-color: #ffffff;
-}
 
 .map-container {
     align-items: center;
@@ -77,10 +29,9 @@ tr:nth-child(odd) {
 }
 
 #map {
-    height: 1000px;
+    height: 800px;
     width: 600px;
-    margin-left: 20px;
-    margin-top: 20px;
+    margin: 40px;   
     border: 1px solid #dddddd;
     border-radius: 10px;
 }
@@ -144,6 +95,9 @@ button:hover {
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     box-sizing: border-box;
 }
+#routes{
+    justify-content: center;
+}
 
 #routes {
     height: 400px;
@@ -168,10 +122,42 @@ button:hover {
 }
 
 .address-container {
+    font-weight: 550;
+    cursor: pointer;
     border: 1px solid #ddd;
     padding: 8px;
     margin: 8px;
     width: calc(50% - 16px);
     box-sizing: border-box;
-    font-weight: 550;
+    transition: background-color 0.3s ease;
+}
+
+.address-container:hover {
+    background-color: #f5f5f5;
+}
+
+#sidebar{
+    margin-right: 50px;
+}
+
+table {
+    width: 90% !important;
+    border-collapse: collapse;
+    margin-top: 20px;
+    table-layout: fixed;
+    height: 0px !important;
+}
+tr.address-row{
+    max-height: 30px !important;
+}
+th, td {
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+td:nth-child(1), th:nth-child(1) {
+    width: 150px;
+    text-align: center;
 }

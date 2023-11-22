@@ -5,9 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Algo Result</title>
     <link rel="stylesheet" href="styles/resultPage.css">
+    <link rel="stylesheet" href="styles/sidebar.css">
     <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+          <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+          <span class="fs-4">Sidebar</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item">
+            <a href="#" class="nav-link active" aria-current="page">
+              <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
+              Home
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link text-white">
+              <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link text-white">
+              <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+              Orders
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link text-white">
+              <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
+              Products
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link text-white">
+              <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
+              Customers
+            </a>
+          </li>
+        </ul>
+        <hr>
+        <div class="dropdown">
+          <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+            <strong>mdo</strong>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+            <li><a class="dropdown-item" href="#">New project...</a></li>
+            <li><a class="dropdown-item" href="#">Settings</a></li>
+            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Sign out</a></li>
+          </ul>
+        </div>
+      </div>
     <div class="container">
         <h1>Result</h1>
         <div id="output"></div>
@@ -19,8 +73,8 @@
             <button id="left" onclick = "handleGoLeft()"><</button>
             <button id="right" onclick = "handleGoRight()">></button>
         </div>
-        <div id="routes" class="inactive">No Defined Routes</div>
-        <div id="order-id-container" class="inactive">No Defined Order ID</div>
+        <!-- <div id="routes" class="inactive">No Defined Routes</div>
+        <div id="order-id-container" class="inactive">No Defined Order ID</div> -->
     </div>
     <div class="map-container">
         <div id="map"></div>
@@ -133,7 +187,12 @@
     
         function handleRoute(rowData) {
             const coordinates = rowData.slice(4);
+
+            localStorage.setItem('coordinates', JSON.stringify(coordinates));
+            localStorage.setItem('transportType', JSON.stringify(rowData[1]));
+            window.location.href = `Route.html?file=${uploadedFileName}`;
             
+
             // console.log(driverId);
 
             const latLon = coordinates.map((value) => parseFloat(value));
@@ -266,6 +325,8 @@
                 },
             }); 
 
+            console.log(waypoints);
+            
             const request1 = {
                 origin: waypoints[0].location,
                 destination: waypoints[waypoints.length - 2].location,
@@ -282,6 +343,7 @@
             if(rowData[1] === 'Motor'){
                 request1.travelMode = google.maps.TravelMode.TWO_WHEELER;
                 request2.travelMode = google.maps.TravelMode.TWO_WHEELER;
+                
                 directionsRenderer1.setOptions({
                     suppressPolylines: true,
                 });
@@ -351,6 +413,15 @@
                 if (status === google.maps.DirectionsStatus.OK) {
                     directionsRenderer1.setMap(map);
                     directionsRenderer1.setDirections(result);
+                    let totalTravelTime1 = 0;
+
+                    for (let i = 0; i < result.routes[0].legs.length; i++) {
+                        totalTravelTime1 += result.routes[0].legs[i].duration.value;
+                    }
+
+                    totalTravelTime1 = (totalTravelTime1 / 60).toFixed(3);
+
+                    console.log(totalTravelTime1 + 'mins');
     
                 } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
                     const polyline = new google.maps.Polyline({
@@ -369,7 +440,16 @@
             directionsService.route(request2, (result, status)=>{
                 if(status === google.maps.DirectionsStatus.OK){
                     directionsRenderer2.setMap(map);
-                    directionsRenderer2.setDirections(result);  
+                    directionsRenderer2.setDirections(result);
+                    let totalTravelTime2 = 0;
+
+                    for (let i = 0; i < result.routes[0].legs.length; i++) {
+                        totalTravelTime2 += result.routes[0].legs[i].duration.value;
+                    }
+
+                    totalTravelTime2 = (totalTravelTime2 / 60).toFixed(3);
+
+                    console.log(totalTravelTime2 + 'mins');
                 }
             })
             
