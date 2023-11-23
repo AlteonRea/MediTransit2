@@ -5,50 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Algo Result</title>
     <link rel="stylesheet" href="styles/resultPage.css">
-    <link rel="stylesheet" href="styles/sidebar.css">
+    
     <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
           <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-          <span class="fs-4">Sidebar</span>
+          <span class="fs-4">MediTransit</span>
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
-          <li class="nav-item">
-            <a href="#" class="nav-link active" aria-current="page">
-              <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
-              Home
-            </a>
-          </li>
           <li>
-            <a href="#" class="nav-link text-white">
+            <a href="#" class="nav-link active text-white">
               <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
               Dashboard
             </a>
           </li>
           <li>
-            <a href="#" class="nav-link text-white">
-              <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
-              Orders
+            <a href="" id = "route-link" class="nav-link text-white">
+              <svg class="bi me-2"  width="16" height="16"><use xlink:href="#table"/></svg>
+              Routes
             </a>
           </li>
           <li>
-            <a href="#" class="nav-link text-white">
+            <a href="#" class="nav-link text-white" onclick = "">
               <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-              Products
+              Vehicle Packing
             </a>
           </li>
           <li>
-            <a href="#" class="nav-link text-white">
+            <a href="#" class="nav-link text-white" onclick = "">
               <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
-              Customers
+              Cardbox Packing
             </a>
           </li>
         </ul>
-        <hr>
-        <div class="dropdown">
+        <!-- <hr> -->
+        <!-- <div class="dropdown">
           <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
             <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
             <strong>mdo</strong>
@@ -60,11 +54,11 @@
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="#">Sign out</a></li>
           </ul>
-        </div>
+        </div> -->
       </div>
     <div class="container">
-        <h1>Result</h1>
-        <div id="output"></div>
+        
+        <div id="output"><h1>Result</h1></div>
         <div class="find">
             <form action="" id="search">
                 <input type="text" name="" id="searchInput" placeholder="id_driver">
@@ -76,13 +70,13 @@
         <!-- <div id="routes" class="inactive">No Defined Routes</div>
         <div id="order-id-container" class="inactive">No Defined Order ID</div> -->
     </div>
-    <div class="map-container">
+    <!-- <div class="map-container">
         <div id="map"></div>
-    </div>
+    </div> -->
 
 
     <!--Google Maps API, call initMap function on load-->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJqtI-6EiQBZbO1psVwzrUzjRTfvE4BrA&callback=initMap" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJqtI-6EiQBZbO1psVwzrUzjRTfvE4BrA" async defer></script>
 
     <script>
 
@@ -95,6 +89,9 @@
         let maxPage;
         const apiKey = 'AIzaSyDJqtI-6EiQBZbO1psVwzrUzjRTfvE4BrA';
         const routesElem = document.getElementById('routes');
+
+        const routeLink = `route.html?file=${uploadedFileName}`;
+        document.getElementById('route-link').href = routeLink;
         
         // Initialize google maps, the center is Jakarta
         function initMap(){
@@ -122,8 +119,16 @@
                 //console.log(maxPage);
                 
                 const outputDiv = document.getElementById('output');
-               
+                if(lines.length === 0){
+                    const notFoundMessage = document.createElement('h1');
+                    notFoundMessage.classList.add('text-muted');
+                    const containerDiv = document.querySelector('.container');
+                    notFoundMessage.textContent = 'Driver ID not found';
+                    containerDiv.insertBefore(notFoundMessage, document.querySelector('.find'));
+                    return;
+                }
                 const table = document.createElement('table');
+                table.classList.add('table', 'table-striped', 'table-bordered');
 
                 const headerRow = table.insertRow(0);
                 const headers = ['ID Driver', 'Jenis Kendaraan', 'Vendor', 'Kode Cabang', 'Packing Kendaraan', 'Packing Kardus', 'Rute'];
@@ -170,7 +175,7 @@
         } else {
             console.error('No file name provided.');
         }
-
+        
         function handleCardBoxPacking(rowData){
             const idDriver = rowData[0];
             //const folderName = uploadedFileName.replace('_result.csv', '');
@@ -184,17 +189,16 @@
             const folderName = 'PackingResults';
             window.location.href = `VehiclePacking.html?folder=${folderName}&idDriver=${idDriver}`;
         }
+
     
         function handleRoute(rowData) {
             const coordinates = rowData.slice(4);
-
-            localStorage.setItem('coordinates', JSON.stringify(coordinates));
-            localStorage.setItem('transportType', JSON.stringify(rowData[1]));
+            localStorage.setItem('rowData', JSON.stringify(rowData));
             window.location.href = `Route.html?file=${uploadedFileName}`;
             
 
             // console.log(driverId);
-
+            /*
             const latLon = coordinates.map((value) => parseFloat(value));
 
             //console.log(latLon);
@@ -452,7 +456,7 @@
                     console.log(totalTravelTime2 + 'mins');
                 }
             })
-            
+            */
             
         }
 

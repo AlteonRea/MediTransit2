@@ -31,6 +31,11 @@
 
     <script>
         
+        if (localStorage.getItem('rowData')) {
+            localStorage.removeItem('rowData');
+        } 
+
+          
         function uploadFile() {
             var fileInput = document.getElementById('fileInput');
             var file = fileInput.files[0];
@@ -73,7 +78,6 @@
             } else {
                 console.error('Please select a file to upload.');
             }
-            
         }
     </script>
 </body>
