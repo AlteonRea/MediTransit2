@@ -15,13 +15,7 @@
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
-            <a href="#" id = "dashboard-link" class="nav-link text-white">
-              <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
-              Dashboard
-            </a>
-          </li>
-          <li>
-            <a href="#" class="nav-link text-white">
+            <a href="routemysql.html" class="nav-link text-white">
               <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
               Routes
             </a>
@@ -32,37 +26,16 @@
               Report
             </a>
           </li>
-          <li>
-            <a href="#" id = 'vehicle-packing-link'class="nav-link text-white">
-              <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-              Vehicle Packing
-            </a>
-          </li>
-          <li>
-            <a href="#" id = 'cardbox-packing-link' class="nav-link text-white">
-              <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
-              Cardbox Packing
-            </a>
-          </li>
         </ul>
     </div>
 
     <div class="container">
         <h2>Laporan Kejadian Kecelakaan</h2>
         <form action="#" method="post" id="incidentForm">
-          <label for="driverName">Nama Pengemudi:</label>
-          <input type="text" id="driverName" name="driverName" required>
     
-          <label for="vehicleNumber">Nomor Kendaraan:</label>
-          <input type="text" id="vehicleNumber" name="vehicleNumber" required>
-    
-          <label for="incidentDate">Tanggal Kejadian:</label>
-          <input type="date" id="incidentDate" name="incidentDate" required>
-    
-          <label for="incidentDescription">Deskripsi Kejadian:</label>
-          <textarea id="incidentDescription" name="incidentDescription" rows="4" required></textarea>
-    
-          <button type="submit">Kirim Laporan</button>
+          <button type="submit">Kecelakaan</button>
+          <button type="submit">Kemacatan</button>
+          <button type="submit">Others</button>
         </form>
 
     </div>

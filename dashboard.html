@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/dashboard.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="d-flex main-container">
+        <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
+            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+              <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+              <span class="fs-4">MediTransit</span>
+            </a>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+              <li>
+                <a href="#" class="nav-link active text-white">
+                  <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+                  Dashboard
+                </a>
+              </li>
+              <li>
+                <a href="result.html" class="nav-link text-white">
+                  <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+                  Result
+                </a>
+              </li>
+              <li>
+                <a href="#" class="nav-link text-white">
+                  <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+                  Daftar Pengiriman 
+                </a>
+              </li>
+              <li>
+                <a href="#" class="nav-link text-white">
+                  <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+                  Alert
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="content">
+            <div class="cito-header">
+                <h2>CITO ALERT!!!</h2>
+            </div>
+    
+            <div class="cito-card">
+                <h3>CITO Details</h3>
+                <p>Bambang perlu jantung di rumah sakit uhuk uhuk</p>
+                <button class="btn btn-danger" onclick="showPopup()">Take Action</button>
+
+            </div>
+
+            <div class="popup-container" id="popupContainer">
+                <div class="popup">
+                    <span class="close" onclick="closePopup()">&times;</span>
+                    <h2>EMERGENCY</h2>
+                    <p>WEEE WOOOO WEEEEEE WOOOOOOOO</p>
+                    <button class="btn btn-success" onclick="resolveIssue()">Resolve</button>
+                </div>
+            </div>
+
+            <div class="cito-header">
+              <h2>ACCIDENT ALERT!!!</h2>
+            </div>
+  
+            <div class="cito-card">
+                <h3>CITO Details</h3>
+                <p>Bambang kecelakaan di jalan xxxx</p>
+                <button class="btn btn-danger" onclick="showPopup()">Take Action</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function showPopup() {
+            document.getElementById('popupContainer').style.display = 'flex';
+        }
+        
+        function closePopup() {
+            document.getElementById('popupContainer').style.display = 'none';
+        }
+        
+    </script>
+</body>
+</html>

@@ -4,6 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require("fs");
 const execSync = require('child_process').execSync;
+const mysql = require('mysql');
 
 const app = express();
 const port = 3000;
@@ -16,6 +17,22 @@ const storage = multer.diskStorage({
     destination: 'uploads/',
     filename: (req, file, cb) => {
         cb(null, file.originalname);
+    }
+});
+
+
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'first_test',
+});
+
+db.connect(err => {
+    if (err) {
+        console.error('Database connection failed:', err);
+    } else {
+        console.log('Connected to the database');
     }
 });
 
@@ -75,6 +92,32 @@ app.post('/runcmd', (req, res) => {
         console.log(`stdout: ${stdout}`);
         res.status(200).send(`stdout: ${stdout}\nstderr: ${stderr}`);
     });
+});
+
+app.get('/routes', async (req, res) => {
+    try {
+        let idDriver = req.query.idDriver;
+        console.log('Received idDriver:', idDriver);
+
+        idDriver = parseInt(idDriver);
+        console.log('Parsed idDriver:', idDriver);
+
+        const query = `SELECT * FROM routes WHERE driver_id = ${idDriver}`;
+        console.log('Query:', query);
+
+        db.query(query, (err, result) => {
+            if (err) {
+                console.error('Database query error:', err);
+                res.status(500).json({ error: 'Internal Server Error' });
+            } else {
+                console.log('Query result:', result);
+                res.json(result);
+            }
+        });
+    } catch (error) {
+        console.error('Error in /routes:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
 

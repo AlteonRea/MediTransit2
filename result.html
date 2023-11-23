@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Algo Result</title>
+    <title>Admin Page</title>
     <link rel="stylesheet" href="styles/resultPage.css">
     
     <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -17,50 +17,30 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
           <li>
-            <a href="#" class="nav-link active text-white">
+            <a href="dashboard.html" class="nav-link text-white">
               <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
               Dashboard
             </a>
           </li>
           <li>
-            <a href="" id = "route-link" class="nav-link text-white">
-              <svg class="bi me-2"  width="16" height="16"><use xlink:href="#table"/></svg>
-              Routes
+            <a href="cito.html" class="nav-link active text-white">
+              <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+              Result
             </a>
           </li>
           <li>
-            <a href="laporanDriver.html" id = "route-link" class="nav-link text-white">
-              <svg class="bi me-2"  width="16" height="16"><use xlink:href="#table"/></svg>
-              Reports
+            <a href="#" class="nav-link text-white">
+              <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+              Pengiriman
             </a>
           </li>
           <li>
-            <a href="#" class="nav-link text-white" onclick = "">
-              <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-              Vehicle Packing
-            </a>
-          </li>
-          <li>
-            <a href="#" class="nav-link text-white" onclick = "">
-              <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
-              Cardbox Packing
+            <a href="#" class="nav-link text-white">
+              <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+              Alert
             </a>
           </li>
         </ul>
-        <!-- <hr> -->
-        <!-- <div class="dropdown">
-          <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-            <strong>mdo</strong>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-            <li><a class="dropdown-item" href="#">New project...</a></li>
-            <li><a class="dropdown-item" href="#">Settings</a></li>
-            <li><a class="dropdown-item" href="#">Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Sign out</a></li>
-          </ul>
-        </div> -->
       </div>
     <div class="container">
         
@@ -201,268 +181,6 @@
             const coordinates = rowData.slice(4);
             localStorage.setItem('rowData', JSON.stringify(rowData));
             window.location.href = `Route.html?file=${uploadedFileName}`;
-            
-
-            // console.log(driverId);
-            /*
-            const latLon = coordinates.map((value) => parseFloat(value));
-
-            //console.log(latLon);
-            
-            routesElem.innerHTML = '';
-            let addressIndex = 1;
-
-            const orderIdContainerElement = document.getElementById('order-id-container');
-            
-            // Get address of coordinates asynchronously and use await to make address in correct order
-
-            function handleAddressContainerClick(orderId){
-                const orderIdFilePath = `uploads/PackingResults/Order${orderId}.txt`;
-                //console.log(orderIdFilePath);
-                
-                fetch(orderIdFilePath)
-                .then(response => {
-                    if(!response.ok){
-                        throw new Error('Error fetch orderId txt file');
-                    }
-                    orderIdContainerElement.classList.remove('inactive');
-                    return response.text();
-                })
-                .then(fileContent => {
-                    //console.log(fileContent);
-                    fileContent = fileContent.replace(/\t/g, '&emsp;&emsp;');
-
-                    fileContent = fileContent.replace(/\n/g, '<br>');
-
-                    orderIdContainerElement.innerHTML = fileContent;
-                })
-                .catch(error =>{
-                    if(orderId === -1){
-                        orderIdContainerElement.innerHTML = `Gudang`;
-                    }else{
-                        orderIdContainerElement.innerHTML = `Order${orderId}.txt not found`;
-                    }
-                    
-                    console.error(error);
-                })
-            }
-
-            function geocodeAddress(lat, lng) {
-                return new Promise((resolve, reject) => {
-                    const latLng = new google.maps.LatLng(lat, lng);
-                    const geocoder = new google.maps.Geocoder();
-
-                    geocoder.geocode({ 'location': latLng }, (results, status) => {
-                        if (status === google.maps.GeocoderStatus.OK) {
-                            if (results[0]) {
-                                resolve(results[0].formatted_address);
-                            } else {
-                                reject('No result found');
-                            }
-                        } else {
-                            reject('Geocoding failed due to: ' + status);
-                        }
-                    });
-                });
-            }
-
-            async function processLatLon(latLon) {
-                for (let i = 0; i < latLon.length; i += 3) {
-                    const lat = latLon[i];
-                    const lng = latLon[i + 1];
-                    const orderId = latLon[i + 2];
-
-                    const addressContainer = document.createElement('div');
-                    addressContainer.classList.add('address-container');
-
-                    addressContainer.addEventListener('click', function () {
-                        //console.log('order id:' + orderId);
-                        
-                        handleAddressContainerClick(orderId);
-                    });
-
-                    const indexElement = document.createElement('div');
-                    if(i === 0 || i === latLon.length-3) indexElement.innerText = `Pos: Gudang`;
-                    else {
-                        indexElement.innerText = `Pos: ${addressIndex}`;
-                        addressIndex++;
-                    }
-                    addressContainer.appendChild(indexElement);
-
-                    try {
-                        const formattedAddress = await geocodeAddress(lat, lng);
-
-                        const addressElement = document.createElement('div');
-                        addressElement.innerText = formattedAddress;
-                        addressContainer.appendChild(addressElement);
-
-                        routesElem.appendChild(addressContainer);
-                    } catch (error) {
-                        console.error(error);
-                    }
-                }
-            }
-            processLatLon(latLon);
-
-            const map = new google.maps.Map(document.getElementById('map'), {
-                center: { lat: latLon[0], lng: latLon[1] },
-                zoom: 10,
-            });
-            
-    
-            const waypoints = [];
-            for (let i = 0; i < latLon.length; i += 3) {
-                waypoints.push({
-                    location: new google.maps.LatLng(latLon[i], latLon[i + 1])
-                });
-            }
-            //console.log(waypoints); 
-
-            const directionsService = new google.maps.DirectionsService();
-
-            const directionsRenderer1 = new google.maps.DirectionsRenderer({
-                map: map,
-                suppressMarkers: true
-            }); 
-
-            const directionsRenderer2 = new google.maps.DirectionsRenderer({
-                map: map,
-                suppressMarkers: true,
-                polylineOptions: {
-                    strokeColor: 'red',
-                    strokeOpacity: 0.8,
-                    strokeWeight: 6
-                },
-            }); 
-
-            console.log(waypoints);
-            
-            const request1 = {
-                origin: waypoints[0].location,
-                destination: waypoints[waypoints.length - 2].location,
-                waypoints: waypoints.slice(1, -2),
-                travelMode: google.maps.TravelMode.DRIVING
-            };
-
-            const request2 = {
-                origin: waypoints[waypoints.length - 1].location,
-                destination: waypoints[waypoints.length - 2].location,
-                travelMode: google.maps.TravelMode.DRIVING
-            }
-            
-            if(rowData[1] === 'Motor'){
-                request1.travelMode = google.maps.TravelMode.TWO_WHEELER;
-                request2.travelMode = google.maps.TravelMode.TWO_WHEELER;
-                
-                directionsRenderer1.setOptions({
-                    suppressPolylines: true,
-                });
-                directionsRenderer2.setOptions({
-                    suppressPolylines: true,
-                });
-
-                directionsService.route(request1, function(twoWheelerResponse, status) {
-                    if (status === 'OK') {
-                        const detailPolyLines = twoWheelerResponse.routes[0].legs.reduce((allPolylines, leg) => {
-                            const stepPolylines = leg.steps.map(step => step.polyline.points);
-                            return allPolylines.concat(stepPolylines);
-                        }, []);
-                        
-                        const detailLatLon = detailPolyLines.reduce((allLatLngs, polyline) => {
-                            return allLatLngs.concat(google.maps.geometry.encoding.decodePath(polyline));
-                        }, []);
-                        const twoWheelerPolyline = new google.maps.Polyline({
-                            path: detailLatLon,
-                            strokeColor: '#4285F4',
-                            strokeOpacity: 0.7,
-                            strokeWeight: 5,
-                            map: map
-                        });
-                    }
-                });
-    
-                
-                directionsService.route(request2, function(twoWheelerResponse, status) {
-                    if (status === 'OK') {
-                        const twoWheelerPolyline = new google.maps.Polyline({
-                            path: twoWheelerResponse.routes[0].overview_path,
-                            strokeColor: 'red',
-                            strokeOpacity: 0.7,
-                            strokeWeight: 5,
-                            map: map
-                        });
-                    }
-                });
-
-            }
-            
-            for(var i = 0; i < latLon.length; i+=3){
-                let label;
-                if(i === 0 || i === latLon.length - 3){
-                    label = 'X';
-                    new google.maps.Marker({
-                        position: {lat: latLon[i], lng: latLon[i+1]},
-                        map: map,
-                        title: 'Waypoint Marker',
-                        label: {text: ' ', color: 'white'},
-                        icon:'assets/gmaps_marker.png'
-                    });
-                }else{
-                    label = i/3;
-                    label = label.toString();
-                    new google.maps.Marker({
-                        position: {lat: latLon[i], lng: latLon[i+1]},
-                        map: map,
-                        title: 'Waypoint Marker',
-                        label: {text: label, color: 'white'}
-                    });
-                }
-            }
-
-            directionsService.route(request1, function (result, status) {
-                if (status === google.maps.DirectionsStatus.OK) {
-                    directionsRenderer1.setMap(map);
-                    directionsRenderer1.setDirections(result);
-                    let totalTravelTime1 = 0;
-
-                    for (let i = 0; i < result.routes[0].legs.length; i++) {
-                        totalTravelTime1 += result.routes[0].legs[i].duration.value;
-                    }
-
-                    totalTravelTime1 = (totalTravelTime1 / 60).toFixed(3);
-
-                    console.log(totalTravelTime1 + 'mins');
-    
-                } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
-                    const polyline = new google.maps.Polyline({
-                        path: waypoints.map(waypoint => waypoint.location),
-                        geodesic: true,
-                        strokeColor: '#FF0000',
-                        strokeOpacity: 1.0,
-                        strokeWeight: 2
-                    });
-                    polyline.setMap(map);
-                } else {
-                    console.error('Directions request failed. Status: ' + status);
-                }
-            });
-
-            directionsService.route(request2, (result, status)=>{
-                if(status === google.maps.DirectionsStatus.OK){
-                    directionsRenderer2.setMap(map);
-                    directionsRenderer2.setDirections(result);
-                    let totalTravelTime2 = 0;
-
-                    for (let i = 0; i < result.routes[0].legs.length; i++) {
-                        totalTravelTime2 += result.routes[0].legs[i].duration.value;
-                    }
-
-                    totalTravelTime2 = (totalTravelTime2 / 60).toFixed(3);
-
-                    console.log(totalTravelTime2 + 'mins');
-                }
-            })
-            */
             
         }
 

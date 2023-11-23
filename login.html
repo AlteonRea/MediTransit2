@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+    <!-- Include Bootstrap from the node_modules directory -->
+    <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+    <!--<div class="teamName">MediTransit</div>-->
+    <div class="teamName"><img src="assets/logo.png" alt=""></div>
+    
+    <div class="container">
+        <div class="login">
+            <h1>Log in</h1>
+            <form id="login-form" class="mb-3">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div class="login-button">
+                    <button type="button" class="btn btn-primary" id="uploadBtn" onclick="handleLogin()">Log In</button>
+                    <div class="spinner-border text-primary loading-spinner" role="status" style="display: none;"></div>
+                </div>
+            </form>
+        </div>
+        
+        
+        <!-- <a href="/assets/panduan.pdf" download="panduan" class="btn btn-success">Download</a> -->
+    </div>
+    
+
+    <script>
+        function handleLogin() {
+            const usernameInput = document.getElementById('username');
+            const username = usernameInput.value;
+            localStorage.setItem('username', username);
+            if(username === 'admin'){
+               window.location.href = 'dashboard.html';
+                
+            }else if(username === 'packer'){
+                window.location.href = 'VehiclePacking.html?folder=PackingResults&idDriver=2';
+            }
+            else{
+                window.location.href = 'routemysql.html';
+            }
+            console.log(username);
+        }
+    </script>
+</body>
+</html>
