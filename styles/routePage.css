@@ -84,7 +84,16 @@ button:hover {
     border-color: #218838;
 }
 
-#routes,
+#routes{
+    margin-top: 10px;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: scroll;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    box-sizing: border-box;
+}
 #order-id-container {
     margin-top: 10px;
     width: 100%;
@@ -95,6 +104,7 @@ button:hover {
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     box-sizing: border-box;
 }
+
 #routes{
     justify-content: center;
 }
@@ -147,9 +157,11 @@ table {
     table-layout: fixed;
     height: 0px !important;
 }
-tr.address-row{
+
+tr.address-row {
     max-height: 30px !important;
 }
+
 th, td {
     text-align: left;
     overflow: hidden;
@@ -160,4 +172,30 @@ th, td {
 td:nth-child(1), th:nth-child(1) {
     width: 150px;
     text-align: center;
+}
+
+td:nth-child(3), th:nth-child(3) {
+    width: 100px; 
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+
+
+.wa-button {
+    background-color: #25D366;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 150px;
+    margin-bottom: 20px;
 }

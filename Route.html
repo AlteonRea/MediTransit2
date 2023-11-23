@@ -27,6 +27,12 @@
             </a>
           </li>
           <li>
+            <a href="laporanDriver.html" class="nav-link text-white">
+              <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+              Report
+            </a>
+          </li>
+          <li>
             <a href="#" id = 'vehicle-packing-link'class="nav-link text-white">
               <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
               Vehicle Packing
@@ -170,7 +176,7 @@
                 const headerRow = thead.insertRow();
                 
 
-                const headers = ['Posisi', 'Alamat'];
+                const headers = ['Posisi', 'Alamat', 'Status'];
                 headers.forEach(headerText => {
                     const th = document.createElement('th');
                     th.scope = 'col';
@@ -201,6 +207,8 @@
                     }
             
                     const addressCell = row.insertCell(1);
+                    const statusCell = row.insertCell(2);
+                    statusCell.innerText = 'Pending';
             
 
                     row.addEventListener('click', () => {
@@ -213,14 +221,20 @@
             
                         row.appendChild(cell);
                         row.appendChild(addressCell);
+                        row.appendChild(statusCell);
                         tbody.appendChild(row);
                     } catch (error) {
                         console.error(error);
                     }
                 }
-            
+                const whatsappButton = document.createElement('button');
+                whatsappButton.classList.add('wa-button');
+                whatsappButton.innerText = 'Berangkat';
+                
                 table.appendChild(tbody);
+                
                 routesElem.appendChild(table);
+                routesElem.appendChild(whatsappButton);
             }
             processLatLon(latLon);
 
