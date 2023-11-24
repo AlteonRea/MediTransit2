@@ -1,8 +1,0 @@
-*__pycache__*
-*.html
-*_frames
-data/*
-!data/*.py
-!data/*.sql
-Dummy*
-PackingResults/*

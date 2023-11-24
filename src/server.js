@@ -5,7 +5,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require("fs");
 const execSync = require('child_process').execSync;
-const mysql = require('mysql');
+const mysql = require('mysql2');
 
 const app = express();
 const port = 3000;
@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 
 // Set up multer for file upload
 const storage = multer.diskStorage({
-    destination: 'uploads/',
+    destination: 'vrp3d/',
     filename: (req, file, cb) => {
         cb(null, file.originalname);
     }
@@ -60,7 +60,7 @@ app.get('../assets/panduan.pdf', (req, res) => {
 /*
 app.get('/checkFileStatus', (req, res) => {
     const encodedFileName = req.query.fileName;
-    const filePath = path.join(__dirname, '../uploads', encodedFileName);
+    const filePath = path.join(__dirname, '../vrp3d', encodedFileName);
 
     if (fs.existsSync(filePath)) {
         res.json({ fileExists: true });
@@ -71,7 +71,7 @@ app.get('/checkFileStatus', (req, res) => {
 */
 app.post('/getFileList', (req, res) => {
     const idDriver = req.query.idDriver;
-    const folderPath = path.join(__dirname, '../uploads/PackingResults/', idDriver);
+    const folderPath = path.join(__dirname, '../vrp3d/PackingResults/', idDriver);
     console.log(folderPath);
     
     fs.readdir(folderPath, (err, data) => {
@@ -86,7 +86,7 @@ app.post('/getFileList', (req, res) => {
 });
 
 app.post('/runcmd', (req, res) => {
-    execSync('cd uploads && python main.py', (error, stdout, stderr) => {
+    execSync('cd vrp3d && python main.py', (error, stdout, stderr) => {
         if (error) {
             console.error(`Error: ${error.message}`);   
             return;
@@ -97,7 +97,7 @@ app.post('/runcmd', (req, res) => {
 });
 
 app.post('/runcmd', (req, res) => {
-    execSync('cd uploads && python main.py', (error, stdout, stderr) => {
+    execSync('cd vrp3d && python main.py', (error, stdout, stderr) => {
         if (error) {
             console.error(`Error: ${error.message}`);   
             return;
@@ -108,7 +108,7 @@ app.post('/runcmd', (req, res) => {
 });
 
 app.post('/runRebuildDatabase', (req, res) => {
-    execSync('cd uploads && python rebuild_database.py', (error, stdout, stderr) => {
+    execSync('cd vrp3d && python rebuild_database.py', (error, stdout, stderr) => {
         if (error) {
             console.error(`Error: ${error.message}`);   
             return;
@@ -119,7 +119,7 @@ app.post('/runRebuildDatabase', (req, res) => {
 });
 
 app.post('/runGenerateOrders', (req, res) => {
-    execSync('cd uploads && python generate_orders.py', (error, stdout, stderr) => {
+    execSync('cd vrp3d && python generate_orders.py', (error, stdout, stderr) => {
         if (error) {
             console.error(`Error: ${error.message}`);   
             return;
@@ -130,7 +130,7 @@ app.post('/runGenerateOrders', (req, res) => {
 });
 
 app.post('/runGenerateAvalVehicle', (req, res) => {
-    execSync('cd uploads && python generate_vehicles.py', (error, stdout, stderr) => {
+    execSync('cd vrp3d && python generate_vehicles.py', (error, stdout, stderr) => {
         if (error) {
             console.error(`Error: ${error.message}`);   
             return;
@@ -141,7 +141,7 @@ app.post('/runGenerateAvalVehicle', (req, res) => {
 });
 
 app.post('/runDeliverAll', (req, res) => {
-    execSync('cd uploads && python deliver_orders.py', (error, stdout, stderr) => {
+    execSync('cd vrp3d && python deliver_orders.py', (error, stdout, stderr) => {
         if (error) {
             console.error(`Error: ${error.message}`);   
             return;
