@@ -16,7 +16,7 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li>
-                <a href="#" id = "vehicle-link"class="nav-link text-white">
+                <a href="#" id="vehicle-link" class="nav-link text-white">
                     <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
                     Vehicle Packing
                 </a>
@@ -28,77 +28,70 @@
                 </a>
             </li>
         </ul>
+        <!-- Dropdown for idDriver selection -->
+        <label for="id-driver-select" class="form-label text-white">Select idDriver:</label>
+        <select id="id-driver-select" class="form-select">
+            <!-- You can populate this dynamically based on your actual idDriver values -->
+            <option value="2">Driver 2</option>
+            <option value="6">Driver 6</option>
+            <!-- Add more options as needed -->
+        </select>
+        <button id="loadDataBtn" class="btn btn-primary mt-2">Load Data</button>
     </div>
-    
 
     <div id="container"></div>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const folderName = urlParams.get('folder');
-        const idDriver = urlParams.get('idDriver');
-        const folderPath = `uploads/${folderName}/${idDriver}`;
-        let filesList;
+        document.addEventListener('DOMContentLoaded', function () {
+            const idDriverSelect = document.getElementById('id-driver-select');
+            const loadDataBtn = document.getElementById('loadDataBtn');
 
-        const vehicleLink = document.getElementById('vehicle-link');
-        const url = `VehiclePacking.html?folder=${folderName}&idDriver=${idDriver}`;
-        vehicleLink.href = url;
-        
+            loadDataBtn.addEventListener('click', function () {
+                const selectedIdDriver = idDriverSelect.value;
+                const folderName = 'PackingResults';
+                const folderPath = `uploads/${folderName}/${selectedIdDriver}`;
+                const iframeElement = document.getElementById('app-frame');
 
-        fetch(`/getFileList?idDriver=${idDriver}`,{
-            method: 'POST',
-            headers:{
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({folderPath}),
-        })
-        .then(response => response.json())
-        .then(fileList=>{
-            const fileListDiv = document.getElementById('fileList');
-            //fileListDiv.innerHTML = fileList.files;
-            filesList = fileList.files;
-            console.log(filesList);
-            const mainContainer = document.getElementById('container');
+                function createFileStructure(fileName) {
+                    const xDiv = document.createElement('div');
+                    xDiv.classList.add('x');
 
-            let counter = 1;
-            for(var i = 0; i < filesList.length; i+=2){
+                    const iframeContainer = document.createElement('div');
+                    iframeContainer.classList.add('container');
 
-                const xDiv = document.createElement('div');
-                xDiv.classList.add('x');
+                    const iframe = document.createElement('iframe');
+                    iframe.classList.add('app-frame');
+                    iframe.src = `${folderPath}/${fileName}`;
+                    iframeContainer.appendChild(iframe);
 
-                const contentDiv = document.createElement('div');
-                contentDiv.classList.add('content');
-                fetch(`${folderPath}/${filesList[i+1]}`)
-                .then(response => {
-                    if(!response.ok){
-                        throw new Error('Error fetching file');
-                    }
-                    return response.text();
+                    xDiv.appendChild(iframeContainer);
+
+                    return xDiv;
+                }
+
+                fetch(`/getFileList?idDriver=${selectedIdDriver}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ folderPath }),
                 })
-                .then(fileContent => {
-                    fileContent = fileContent.replace(/\t/g, '&emsp;');
-                    fileContent = fileContent.replace(/\n/g, '<br>');
-                    contentDiv.innerHTML = fileContent;
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-                
-                const iframeContainer = document.createElement('div');
-                iframeContainer.classList.add('container');
+                    .then(response => response.json())
+                    .then(fileList => {
+                        filesList = fileList.files;
+                        const mainContainer = document.getElementById('container');
 
-                const iframe = document.createElement('iframe');
-                iframe.classList.add('app-frame');
-                iframe.src = `${folderPath}/${filesList[i]}`;
-                iframeContainer.appendChild(iframe);
-                xDiv.appendChild(contentDiv);
-                xDiv.appendChild(iframeContainer);
-                mainContainer.appendChild(xDiv);
+                        for (let i = 0; i < filesList.length; i += 2) {
+                            const fileName = filesList[i];
+                            const contentFileName = filesList[i + 1];
 
-            }
-        })
-        .catch(error => console.error(error));
-        
+                            const fileStructure = createFileStructure(fileName);
+                            mainContainer.appendChild(fileStructure);
+                        }
+                    })
+                    .catch(error => console.error(error));
+            });
+        });
     </script>
 </body>
 </html>

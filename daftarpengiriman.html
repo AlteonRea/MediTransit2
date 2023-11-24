@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/dashboard.css">
+    <link rel="stylesheet" href="styles/daftarPengiriman.css">
+    <title>Document</title>
+</head>
+<body>
+  <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; position: fixed; top: 0; bottom: 0; overflow-y: auto;">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+      <span class="fs-4">MediTransit</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li>
+        <a href="dashboard.html" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+          Dashboard
+        </a>
+      </li>
+      <li>
+        <a href="result.html" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+          Result
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link active text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+          Daftar Pengiriman 
+        </a>
+      </li>
+      <li>
+        <a href="alert.html" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+          Delivery Trouble
+        </a>
+      </li>
+    </ul>
+  </div>
+    <div class="d-flex main-container">
+          <div class="content">
+            <h2>Daftar Pengiriman</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Branch ID</th>
+                        <th>Dispatch Date</th>
+                        <th>Distance Cost</th>
+                        <th>ID Shipment</th>
+                        <th>Status</th>
+                        <th>Vehicle ID</th>
+                        <th>Weight Cost</th>
+                    </tr>
+                </thead>
+                <tbody id="onDeliveryTableBody">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", async function(){
+        try{
+          const response = await fetch('/shipmentList');
+          const data = await response.json();
+          if(data){
+              const onDeliveryTableBody = document.getElementById('onDeliveryTableBody');
+              onDeliveryTableBody.innerHTML = '';
+              console.log(data);
+              data.forEach((item) => {
+                  const row = document.createElement('tr');
+                  const dateString = item.dispatch_date;
+                  const date = new Date(dateString);
+                  const formattedDate = date.toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric',
+                    timeZoneName: 'short',
+                    timeZone: 'Asia/Bangkok'
+                  });
+
+                  console.log(formattedDate);
+
+                  row.innerHTML = `
+                    <td>${item.branch_id}</td>
+                    <td>${formattedDate}</td>
+                    <td>${item.distance_cost}</td>
+                    <td>${item.id}</td>
+                    <td>${item.status}</td>
+                    <td>${item.vehicle_id}</td>
+                    <td>${item.weight_cost}</td>
+                  `;
+                  onDeliveryTableBody.appendChild(row);
+              });
+
+          }
+        }catch(err){
+          console.log(err);
+        }
+      })
+    </script>
+</body>
+</html>

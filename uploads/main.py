@@ -8,49 +8,39 @@ from vns.route_dp import improve_tours_by_dp
 from vrp3d.vrp3d import VRP3D
 
 from data.parse_output import parse_output, parse_input
+from data.database import Database
 
 
 def run():
-    ProblemGenerator.initialize()
+    Database.Initialize()
+    Database.generate_random_orders(9, 3, 10)
+    Database.generate_available_vehicles(10)
+
+    # map id cabang ke list of order
+    o_map = {}
+    # map id cabang ke list of vec
+    v_map = {}
     
-    depot_coords = []
-    orders = []
-    vehicle_lists = []
-    kode_cabangs = []
-    '''
-    depot_coords, orders, kode_cabangs = parse_input()
+    order_list1 = Database.get_pending_orders()
+    for order in order_list1:
+        id_cabang = Database.get_by_columns(Database.ORDERS, ["id"], [[order.id]])[0].branch_id
+        
+        if id_cabang not in o_map.keys():
+            o_map[id_cabang] = []
+        o_map[id_cabang].append(order)
 
-    vehicle_lists = []
-    for i in range(len(depot_coords)):
-        vehicle_list1 = ProblemGenerator.generate_random_vehicles(10)
-        vehicle_lists.append(vehicle_list1)
-    '''
-    
-    for i in range(1):
-        kode_cabang, depot_coord1 = ProblemGenerator.get_random_depot()
-        order_list1 = ProblemGenerator.generate_random_orders(5, 3, 10, kode_cabang)
-        vehicle_list1 = ProblemGenerator.generate_random_vehicles(10)
-        depot_coords.append(depot_coord1)
-        orders.append(order_list1)
-        vehicle_lists.append(vehicle_list1)
-        kode_cabangs.append(kode_cabang)
+        if id_cabang not in v_map.keys():
+            v_map[id_cabang] = Database.get_available_vehicles_by_branch(id_cabang)
 
-    
 
-    #depot_coords, orders = parse_input()
-
-    #depot_coords = [depot_coord1]
-    #orders = [order_list]
-
-    
     problems = []
     solutions = []
     
-    for k in range(len(depot_coords)):
-        depot_coord = depot_coords[k]
-        order_list = orders[k]
-        vehicle_list = vehicle_lists[k]
-        cbox_type_list = ProblemGenerator.get_all_duses(1)
+    for k, v in o_map.items():
+        depot_coord = Database.get_depots_coords([k])[0]
+        order_list = o_map[k]
+        vehicle_list = v_map[k]
+        cbox_type_list = Database.get_all_duses(100)
         cbox_type_list = sorted(cbox_type_list, key=lambda box: box.volume)    
         for i, order in enumerate(order_list):
             print("Packing order ",i," into cardboxes")
@@ -58,7 +48,8 @@ def run():
 
         problem = VRP3D(vehicle_list,
                         order_list,
-                        depot_coord)
+                        depot_coord,
+                        k)
         print("START SOLUTION GENERATION")
 
                         
@@ -71,7 +62,8 @@ def run():
         problems.append(problem)
         solutions.append(solution)
 
-    parse_output(problems, solutions, depot_coords, kode_cabangs)
+    Database.deliver_orders(problems, solutions)
+    parse_output(problems, solutions, Database.get_depots_coords(list(o_map.keys())), list(o_map.keys()))
 
 
 if __name__ == "__main__":

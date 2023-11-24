@@ -16,14 +16,14 @@ import os
 
 class Box(Item):
     def __init__(self, 
+                 id: int,
                  size: np.ndarray, 
                  max_weight:int,
                  name:str,
                  support_alpha:float=0.51,
                  temperature:int= 0,
                  ):
-        super(Box, self).__init__(size, name)
-        self.id = str(uuid1())
+        super(Box, self).__init__(id, size, name)
         self.max_weight = max_weight
         self.support_alpha = support_alpha
         self.packed_items: List[Item] = []
@@ -32,11 +32,11 @@ class Box(Item):
         self.temperature = temperature
         self.ep_list: np.ndarray = None
         self.alternative_sizes = self.alternative_sizes[np.lexsort((-self.alternative_sizes[:,0], -self.alternative_sizes[:,1], -self.alternative_sizes[:,2]))]
-        d_item1 = Item(np.asanyarray([size[0],size[1],1],dtype=np.int64),"dummy")
+        d_item1 = Item(uuid1(), np.asanyarray([size[0],size[1],1],dtype=np.int64),"dummy")
         d_item1.position = np.asanyarray([0,0,-1], dtype=np.int64)
-        d_item2 = Item(np.asanyarray([size[0],1,size[2]],dtype=np.int64),"dummy")
+        d_item2 = Item(uuid1(), np.asanyarray([size[0],1,size[2]],dtype=np.int64),"dummy")
         d_item2.position = np.asanyarray([0,-1,0], dtype=np.int64)
-        d_item3 = Item(np.asanyarray([1,size[1],size[2]],dtype=np.int64),"dummy")
+        d_item3 = Item(uuid1(), np.asanyarray([1,size[1],size[2]],dtype=np.int64),"dummy")
         d_item3.position = np.asanyarray([-1,0,0], dtype=np.int64)
         self.dummy_items = [d_item1, d_item2, d_item3]
         self.reset()

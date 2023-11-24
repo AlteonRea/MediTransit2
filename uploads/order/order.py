@@ -27,7 +27,7 @@ class Order:
         item_list = copy(self.item_list)
         used_box, unpacked_items = pack_items_to_boxes(box_list, item_list)
         for bi, box in enumerate(used_box):
-            used_box[bi].id = self.id+"-"+used_box[bi].id
+            used_box[bi].id = self.id+"-"+str(used_box[bi].id)
             # used_box[bi].visualize_packed_items()
         self.packed_item_list = used_box + unpacked_items 
         self.num_item_packed = len(self.packed_item_list)

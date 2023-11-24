@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Packing</title>
+    <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/VehiclePacking.css">
+</head>
+<body>
+  <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+      <span class="fs-4">MediTransit</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li>
+        <a href="#" class="nav-link active">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
+          Vehicle Packing
+        </a>
+      </li>
+      <li>
+        <a href="#" id = "cardbox-link" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
+          Cardbox Packing
+        </a>
+      </li>
+    </ul>
+  </div>
+
+    <div class="x">
+        <div id="content"></div>
+        <div class="container">
+            <iframe id = "app-frame" src=""></iframe>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const folderName = urlParams.get('folder');
+        const idDriver = urlParams.get('idDriver');
+        const txtFilePath = `uploads/${folderName}/${idDriver}.txt`;
+        const htmlFilePath = `uploads/${folderName}/${idDriver}.html`;
+        const contentElement = document.getElementById('content');
+        const iframeElement = document.getElementById('app-frame');
+        iframeElement.src = htmlFilePath;
+
+        const cardboxLink = document.getElementById('cardbox-link');
+        const url = `CardboxPacking.html?folder=${folderName}&idDriver=${idDriver}`;
+        cardboxLink.href = url;
+    
+        fetch(txtFilePath)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error fetching file');
+                }
+                return response.text();
+            })
+            .then(fileContent => {
+                fileContent = fileContent.replace(/\t/g, '&emsp;');
+                fileContent = fileContent.replace(/\n/g, '<br>');
+                contentElement.innerHTML = fileContent;
+            })
+            .catch(error => {
+                contentElement.innerHTML = error;
+                console.error(error);
+            });
+    </script>
+    
+</body>
+</html>

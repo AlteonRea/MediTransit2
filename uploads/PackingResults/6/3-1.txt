@@ -1,6 +1,0 @@
-Siapkan Kardus (1) 10UKPLAS001 untuk Order 3
-	(1). Rotasi Obat KOLI001 dari Order 3 menjadi (5, 21, 7), dan letakkan pada posisi : (0, 0, 0)
-	(2). Rotasi Obat KOLI001 dari Order 3 menjadi (5, 21, 7), dan letakkan pada posisi : (0, 0, 7)
-	(3). Rotasi Obat KOLI001 dari Order 3 menjadi (5, 21, 7), dan letakkan pada posisi : (0, 0, 14)
-	(4). Rotasi Obat RAIV001 dari Order 3 menjadi (6, 17, 10), dan letakkan pada posisi : (0, 0, 21)
-	(5). Rotasi Obat EBAT001 dari Order 3 menjadi (6, 3, 3), dan letakkan pada posisi : (0, 17, 21)

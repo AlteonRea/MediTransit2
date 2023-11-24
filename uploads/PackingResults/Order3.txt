@@ -1,12 +1,5 @@
-(1). Kardus 10UKPLAS001 :
-	(1). Obat KOLI001
-	(2). Obat KOLI001
-	(3). Obat KOLI001
-	(4). Obat RAIV001
-	(5). Obat EBAT001
-(2). Kardus 50PBCB01 :
-	(1). Obat RICO001
-	(2). Obat RICO001
-(3). Obat BIOL088
-(4). Obat BIOL088
-(5). Obat RICO001
+(1). Obat 846
+(2). Obat 2122
+(3). Obat 380
+(4). Obat 1659
+(5). Obat 994

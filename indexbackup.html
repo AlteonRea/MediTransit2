@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+    <!-- Include Bootstrap from the node_modules directory -->
+    <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+    <!--<div class="teamName">MediTransit</div>-->
+    <div class="teamName"><img src="assets/logo.png" alt=""></div>
+    
+    <div class="container">
+        <h1>File Upload</h1>
+        <label for="fileInput" class="form-label">Upload file Order (.csv)</label>
+        <form id="uploadForm" enctype="multipart/form-data" class="mb-3">
+            <input type="file" class="form-control" name="fileInput" id="fileInput" accept=".csv">
+            <div class="uploadButton">
+                <button type="button" class="btn btn-primary" id="uploadBtn" onclick="uploadFile()">Upload</button>
+                <div class="spinner-border text-primary loading-spinner" role="status" style="display: none;">
+                    
+                </div>
+            </div>
+        </form>
+    
+        <!-- <a href="/assets/panduan.pdf" download="panduan" class="btn btn-success">Download</a> -->
+    </div>
+    
+
+    <script>
+        
+        if (localStorage.getItem('rowData')) {
+            localStorage.removeItem('rowData');
+        } 
+
+          
+        function uploadFile() {
+            var fileInput = document.getElementById('fileInput');
+            var file = fileInput.files[0];
+        
+            if (file) {
+                var formData = new FormData();
+                formData.append('file', file);
+                
+
+                var uploadBtn = document.getElementById('uploadBtn');
+                var loadingSpinner = document.querySelector('.loading-spinner');
+                uploadBtn.style.display = 'none';
+                loadingSpinner.style.display = 'inline-block';
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/runcmd', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+
+                xhr.send();
+                
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    //console.log('File uploaded successfully:', data);
+                    let uploadedFileName;
+                    uploadedFileName = data.fileName;
+                    //window.location.href = '/result.html?file=' + encodeURIComponent(data.fileName.replace('.csv', ''));
+                    //console.log(uploadedFileName);
+                    const encodedFileName = encodeURIComponent(uploadedFileName.replace('.csv', '_result.csv'));
+                    
+                    //window.location.href = '/result.html?file=' + encodedFileName;
+                    window.location.href = 'login.html';
+                })
+                .catch(error => {
+                    console.error('Error uploading file:', error);
+                });
+            } else {
+                console.error('Please select a file to upload.');
+            }
+        }
+    </script>
+</body>
+</html>

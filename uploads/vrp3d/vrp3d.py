@@ -36,6 +36,7 @@ class VRP3D:
                 vehicle_list: List[Vehicle],
                 order_list: List[Order],
                 depot_coord: Tuple[float,float],
+                depot_id: int,
                 distance_matrix: Optional[List[List[float]]] = None,
                 velocity:int=40):
         self.vehicle_list: List[Vehicle] = vehicle_list
@@ -53,12 +54,13 @@ class VRP3D:
         if distance_matrix is not None:
             self.distance_matrix = np.asanyarray(distance_matrix,dtype=float)
         else:
-            self.distance_matrix = get_real_distance_matrix(self.coords)
-            #self.distance_matrix = haversine_distances(np.radians(self.coords)).astype(float) * 6371000/1000 #earth's radius in KM
+            #self.distance_matrix = get_real_distance_matrix(self.coords)
+            self.distance_matrix = haversine_distances(np.radians(self.coords)).astype(float) * 6371000/1000 #earth's radius in KM
         self.velocity = velocity
         self.driving_duration_matrix = self.distance_matrix/velocity
         self.weight_cost_list: List[float] = [0]*self.num_vehicle
         self.distance_cost_list: List[float] = [0]*self.num_vehicle
+        self.depot_id = depot_id
 
     """
         reset the objects to its initial state,

@@ -28,46 +28,41 @@
         </a>
       </li>
     </ul>
+     <label for="id-driver-select" class="form-label text-white">Select idDriver:</label>
+     <select id="id-driver-select" class="form-select">
+         <option value="2">Driver 2</option>
+         <option value="6">Driver 6</option>
+     </select>
+     <button id="loadDataBtn" class="btn btn-primary mt-2">Load Data</button>
   </div>
 
     <div class="x">
-        <div id="content"></div>
+        <!-- <div id="content"></div> -->
         <div class="container">
             <iframe id = "app-frame" src=""></iframe>
         </div>
     </div>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const folderName = urlParams.get('folder');
-        const idDriver = urlParams.get('idDriver');
-        const txtFilePath = `uploads/${folderName}/${idDriver}.txt`;
-        const htmlFilePath = `uploads/${folderName}/${idDriver}.html`;
-        const contentElement = document.getElementById('content');
-        const iframeElement = document.getElementById('app-frame');
-        iframeElement.src = htmlFilePath;
-
-        const cardboxLink = document.getElementById('cardbox-link');
-        const url = `CardboxPacking.html?folder=${folderName}&idDriver=${idDriver}`;
-        cardboxLink.href = url;
-    
-        fetch(txtFilePath)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Error fetching file');
-                }
-                return response.text();
-            })
-            .then(fileContent => {
-                fileContent = fileContent.replace(/\t/g, '&emsp;');
-                fileContent = fileContent.replace(/\n/g, '<br>');
-                contentElement.innerHTML = fileContent;
-            })
-            .catch(error => {
-                contentElement.innerHTML = error;
-                console.error(error);
-            });
-    </script>
+      document.addEventListener('DOMContentLoaded', function () {
+          const idDriverSelect = document.getElementById('id-driver-select');
+          const loadDataBtn = document.getElementById('loadDataBtn');
+  
+          // Event listener for the Load Data button
+          loadDataBtn.addEventListener('click', function () {
+              const selectedIdDriver = idDriverSelect.value;
+              const folderName = 'PackingResults';  // replace with your actual folder name
+              const htmlFilePath = `uploads/${folderName}/${selectedIdDriver}.html`;
+              const iframeElement = document.getElementById('app-frame');
+              iframeElement.src = htmlFilePath;
+  
+              // Update the Cardbox link
+              const cardboxLink = document.getElementById('cardbox-link');
+              const cardboxUrl = `CardboxPacking.html?folder=${folderName}&idDriver=${selectedIdDriver}`;
+              cardboxLink.href = cardboxUrl;
+          });
+      });
+  </script>
     
 </body>
 </html>

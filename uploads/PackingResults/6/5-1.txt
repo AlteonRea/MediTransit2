@@ -1,6 +1,0 @@
-Siapkan Kardus (1) 10RMADIL08 untuk Order 5
-	(1). Rotasi Obat RESP006 dari Order 5 menjadi (5, 9, 4), dan letakkan pada posisi : (0, 0, 0)
-	(2). Rotasi Obat RESP006 dari Order 5 menjadi (5, 9, 4), dan letakkan pada posisi : (0, 0, 4)
-	(3). Rotasi Obat RESP006 dari Order 5 menjadi (5, 9, 4), dan letakkan pada posisi : (0, 0, 8)
-	(4). Rotasi Obat DUMI005 dari Order 5 menjadi (4, 11, 4), dan letakkan pada posisi : (0, 0, 12)
-	(5). Rotasi Obat SAFE015 dari Order 5 menjadi (3, 3, 9), dan letakkan pada posisi : (0, 9, 0)

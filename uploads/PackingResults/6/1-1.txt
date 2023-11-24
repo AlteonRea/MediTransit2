@@ -1,4 +1,0 @@
-Siapkan Kardus (1) 10UKSW005 untuk Order 1
-	(1). Rotasi Obat TUBE104 dari Order 1 menjadi (9, 15, 18), dan letakkan pada posisi : (0, 0, 0)
-	(2). Rotasi Obat TERM001 dari Order 1 menjadi (11, 3, 2), dan letakkan pada posisi : (0, 0, 18)
-	(3). Rotasi Obat ACRY014 dari Order 1 menjadi (2, 11, 17), dan letakkan pada posisi : (9, 0, 0)

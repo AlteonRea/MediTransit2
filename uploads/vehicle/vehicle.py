@@ -60,7 +60,7 @@ def create_vehicle(vendor: str,
                     max_duration: int,
                     vehicle_type: str,
                     id: int) -> Vehicle:
-    box = Box(box_size, box_max_weight, "BoxKendaraan", temperature=temp_class)
+    box = Box(id, box_size, box_max_weight, "BoxKendaraan", temperature=temp_class)
     return  Vehicle(vendor, 
                       box, 
                       cost_per_km, 

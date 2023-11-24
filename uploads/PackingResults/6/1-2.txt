@@ -1,3 +1,0 @@
-Siapkan Kardus (2) 10UKSW156 untuk Order 1
-	(1). Rotasi Obat SENT002 dari Order 1 menjadi (12, 12, 9), dan letakkan pada posisi : (0, 0, 0)
-	(2). Rotasi Obat SENT002 dari Order 1 menjadi (12, 12, 9), dan letakkan pada posisi : (0, 0, 9)

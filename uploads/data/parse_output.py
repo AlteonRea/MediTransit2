@@ -14,7 +14,6 @@ import shutil
 import os
 
 def parse_output(problems, solutions, depot_coords, kode_cabangs, output_file_name="Dummy"):
-
     folder = 'PackingResults'
     if not os.path.exists(folder):
         os.makedirs(folder)
@@ -43,8 +42,6 @@ def parse_output(problems, solutions, depot_coords, kode_cabangs, output_file_na
                     vehicle.box.generate_packing_animation(str(vehicle.id), "PackingResults", "..")
 
                     file.write(f"{vehicle.id},{vehicle.vehicle_type},{vehicle.vendor},{kode_cabang},{depot_coords[k][0]},{depot_coords[k][1]},-1")
-
-                    print(c_tour_list)
 
                     tempitems = []
 
@@ -81,12 +78,13 @@ def parse_output(problems, solutions, depot_coords, kode_cabangs, output_file_na
                     tempitems = sorted(tempitems, key=lambda item: item[0].insertion_order)
                     for tempitemindex in range(len(tempitems)):
                         item = tempitems[tempitemindex][0]
+                        orderid = tempitems[tempitemindex][1]
                         itemtype = None
                         if isinstance(item, Box):
                             itemtype = "Dus"
                         elif isinstance(item, Medicine):
                             itemtype = "Obat"
-                        file2.write(f"({tempitemindex + 1}). Rotasi {itemtype} {item.name} dari Order {order.id} menjadi ({item.size[0]}, {item.size[1]}, {item.size[2]}), dan letakkan pada posisi : ({item.position[0]}, {item.position[1]}, {item.position[2]})\n")
+                        file2.write(f"({tempitemindex + 1}). Rotasi {itemtype} {item.name} dari Order {orderid} menjadi ({item.size[0]}, {item.size[1]}, {item.size[2]}), dan letakkan pada posisi : ({item.position[0]}, {item.position[1]}, {item.position[2]})\n")
 
                     file.write(f",{depot_coords[k][0]},{depot_coords[k][1]},-1\n")
 

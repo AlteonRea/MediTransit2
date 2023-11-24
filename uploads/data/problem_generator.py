@@ -232,15 +232,18 @@ class ProblemGenerator:
         return [ProblemGenerator.generate_random_medicine_nocus() for i in range(number_of_medicines)]
     
     def generate_medicine(product_id, order_id, customer_id, number):
-        med = MasterProduk.get_product(product_id)
+        medt = MasterProduk.get_product(product_id)
+        med = copy.deepcopy(medt)
         size0 = int(float(med["Panjang Cm"].replace(',', '')))
         size1 = int(float(med["Lebar Cm"].replace(',', '')))
         size2 = int(float(med["Tinggi Cm"].replace(',', '')))
+        '''
         while size0 == 0 or size1 == 0 or size2 == 0:
             med = MasterProduk.get_product(product_id)
             size0 = int(float(med["Panjang Cm"].replace(',', '')))
             size1 = int(float(med["Lebar Cm"].replace(',', '')))
             size2 = int(float(med["Tinggi Cm"].replace(',', '')))
+        '''
         return Medicine(str(order_id), str(customer_id), product_id, number, med["UOM"], (size0, size1, size2), int(float(med["Berat Gram"].replace(',', ''))), TEMP_CLASS[med["Kategori Pengiriman"]])
     
     def generate_random_medicine(order_id, customer_id, number): 

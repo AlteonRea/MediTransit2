@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/dashboard.css">
+    <title>Document</title>
+</head>
+<body>
+  <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; position: fixed; top: 0; bottom: 0; overflow-y: auto;">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+      <span class="fs-4">MediTransit</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li>
+        <a href="dashboard.html" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+          Dashboard
+        </a>
+      </li>
+      <li>
+        <a href="result.html" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+          Result
+        </a>
+      </li>
+      <li>
+        <a href="daftarpengiriman.html" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+          Daftar Pengiriman 
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link active text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+          Delivery Trouble
+        </a>
+      </li>
+    </ul>
+  </div>
+    <div class="d-flex main-container">
+        <div class="content">
+            <h2>Delivery Trouble</h2>
+            
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Driver ID</th>
+                        <th>Trouble Type</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>1</td>
+                        <td>DR001</td>
+                        <td>1</td>
+                        <td>Traffic Accident</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>DR002</td>
+                        <td>2</td>
+                        <td>others</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function(){
+            try{
+                const response = await fetch('/deliverytroubleAll');
+                const data = await response.json();
+                console.log('Delivery trouble: ', data);
+
+            }catch{
+
+            }
+        })
+    </script>
+</body>
+</html>

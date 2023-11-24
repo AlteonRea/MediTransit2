@@ -8,37 +8,73 @@
     <link rel="stylesheet" href="styles/laporanDriver.css">
 </head>
 <body>
-    <div id = 'sidebar' class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
+    <div id="sidebar" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-          <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-          <span class="fs-4">MediTransit</span>
+            <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+            <span class="fs-4">MediTransit</span>
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <a href="routemysql.html" class="nav-link text-white">
-              <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
-              Routes
+                <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+                Routes
             </a>
-          </li>
-          <li>
-            <a href="laporanDriver.html" class="nav-link active">
-              <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
-              Report
-            </a>
-          </li>
+            </li>
+            <li>
+                <a href="laporanDriver.html" class="nav-link active">
+                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+                    Report
+                </a>
+            </li>
         </ul>
     </div>
 
     <div class="container">
         <h2>Laporan Kejadian Kecelakaan</h2>
-        <form action="#" method="post" id="incidentForm">
-    
-          <button type="submit">Kecelakaan</button>
-          <button type="submit">Kemacatan</button>
-          <button type="submit">Others</button>
-        </form>
+        <form id="incidentForm">
 
+            <button class="troubleType" value="Traffic Accident">Kecelakaan</button>
+            <button class="troubleType" value="Traffic Congestion">Kemacetan</button>
+            <button class="troubleType" value="Others">Others</button>
+        </form>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const incidentForm = document.getElementById('incidentForm');
+            const driverId = parseInt(localStorage.getItem('username'));
+
+            incidentForm.addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                const selectedButton = document.querySelector('.troubleType:checked');
+                const troubleType = selectedButton ? selectedButton.value : '';
+                const details = 'blank';
+
+                try {
+                    const response = await fetch('/report', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            driverId,
+                            troubleType,
+                            details,
+                        }),
+                    });
+
+                    if (response.ok) {
+                        alert('Incident reported successfully!');
+                    } else {
+                        alert('Error reporting incident. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again later.');
+                }
+            });
+        });
+    </script>
 
 </body>
 </html>

@@ -2,8 +2,10 @@ import numpy as np
 
 class Item:
     def __init__(self,
+                 id:int,
                  size:np.ndarray,
                  name:str):
+        self.id = id
         self.original_size = size
         self.weight:float
         self.volume = np.prod(size)

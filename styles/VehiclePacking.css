@@ -7,7 +7,8 @@ body {
 
 .x{
     display: flex;
-    height: 600px;
+    height: 700px;
+    width: 700px;
     background-color: #fff;
     margin: 50px;
 }
@@ -25,37 +26,99 @@ body {
 }
 
 .container {
-    width: 600px;
-    height: 600px;
-    display: flex;
-    justify-content: space-between;
-    overflow-x: hidden;
-    overflow-y: hidden;
-    margin: 0px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  margin: 0px;
 }
 
 #app-frame, .app-frame {
     width: 100%;
-    height: 100vh;
+    height: 100%;
 }
 
 iframe {
     border-radius: 10px;
-    background-color: #fff;
 }
 
 ::-webkit-scrollbar {
-    width: 12px;
-  }
-  
-  ::-webkit-scrollbar-track {
-    background: #f0f7fc;
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background: #3498db;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background: #007bb5;
-  }
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f7fc;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3498db;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #007bb5;
+}
+
+
+/* body {
+  display: flex;
+  margin: 0;
+  background-color: #d4e6f1;
+  height: 100vh;
+}
+
+.x{
+  display: flex;
+  height: 600px;
+  background-color: #fff;
+  margin: 50px;
+}
+#content, .content {
+  border-radius: 10px;
+  height: 600px;
+  width: 900px;
+  overflow-y: scroll;
+  background-color: #fff;
+  padding: 20px;
+  box-sizing: border-box;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease; 
+  font-weight: 700;
+}
+
+.container {
+  width: 600px;
+  height: 600px;
+  display: flex;
+  justify-content: space-between;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  margin: 0px;
+}
+
+#app-frame, .app-frame {
+  width: 100%;
+  height: 100vh;
+}
+
+iframe {
+  border-radius: 10px;
+  background-color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f7fc;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3498db;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #007bb5;
+} */
