@@ -210,7 +210,10 @@
                     const addressCell = row.insertCell(1);
                     const statusCell = row.insertCell(2);
                     statusCell.innerText = 'Pending';
-            
+                    const departCell = row.insertCell(3);
+                    const arriveCell = row.insertCell(4);
+                    departCell.innerHTML = 'Depart';
+                    arriveCell.innerHTML = 'Arrive';
 
                     row.addEventListener('click', () => {
                         handleAddressContainerClick(orderId);
@@ -223,6 +226,8 @@
                         row.appendChild(cell);
                         row.appendChild(addressCell);
                         row.appendChild(statusCell);
+                        row.appendChild(departCell);
+                        row.appendChild(arriveCell);
                         tbody.appendChild(row);
                     } catch (error) {
                         console.error(error);

@@ -64,7 +64,7 @@
           const nameElement = document.getElementById('name');
           nameElement.innerHTML = driverName;
 
-          const response2 = await fetch(`/shipmentIdList?idDriver=${idDriver}`);
+          const response2 = await fetch(`/shipmentList?idDriver=${idDriver}`);
           const data2 = await response2.json();
 
           const shipmentIdSelect = document.getElementById("shipment-id-select");
@@ -80,6 +80,9 @@
           }
           const loadDataBtn = document.getElementById('loadDataBtn');
           loadDataBtn.addEventListener('click', async function(){
+            const orderIdContainer = document.getElementById('order-id-container');
+            orderIdContainer.classList.add('inactive');
+            orderIdContainer.innerHTML = 'No Defined Order ID';
             const selectedIdShipment = shipmentIdSelect.value;
             console.log(selectedIdShipment);
             const latLon = [];
@@ -108,30 +111,44 @@
             
             let addressIndex = 1;
       
-            function handleAddressContainerClick(orderId) {
-              const orderIdFilePath = `vrp3d/PackingResults/Order${orderId}.txt`;
-      
-              fetch(orderIdFilePath)
-                .then(response => {
-                  if (!response.ok) {
-                    throw new Error('Error fetch orderId txt file');
-                  }
-                  orderIdContainerElement.classList.remove('inactive');
-                  return response.text();
-                })
-                .then(fileContent => {
-                  fileContent = fileContent.replace(/\t/g, '&emsp;&emsp;');
-                  fileContent = fileContent.replace(/\n/g, '<br>');
-                  orderIdContainerElement.innerHTML = fileContent;
-                })
-                .catch(error => {
-                  if (orderId === -1) {
-                    orderIdContainerElement.innerHTML = `Gudang`;
-                  } else {
-                    orderIdContainerElement.innerHTML = `Order${orderId}.txt not found`;
-                  }
-                  console.error(error);
-                })
+            async function getProductList(orderId) {
+              const response5 = await fetch(`/productList?orderId=${orderId}`);
+              const data5 = await response5.json();
+              console.log(data5);
+              if(data5.length>0){
+                const orderIdContainer = document.getElementById('order-id-container');
+                orderIdContainer.classList.remove('inactive');
+                orderIdContainer.innerHTML = '';
+                const productTable = document.createElement('table');
+                productTable.classList.add('table', 'table-striped', 'table-bordered');
+
+                const thead = document.createElement('thead');
+                thead.classList.add('thead-dark');
+                const headerRow = thead.insertRow();
+                const headers = ['Product ID', 'Product Code', 'Harga', 'Quantity', 'Harga Total'];
+                headers.forEach(headerText => {
+                  const th = document.createElement('th');
+                  th.scope = 'col';
+                  th.textContent = headerText;
+                  headerRow.appendChild(th);
+                });
+                productTable.appendChild(thead);
+                
+                const tbody = document.createElement('tbody');
+                data5.forEach((item) => {
+                  const row = document.createElement('tr');
+                  row.innerHTML = `
+                    <td>${item.product_id}</td>
+                    <td>${item.product_code}</td>
+                    <td>${item.harga}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.quantity * item.harga}</td>
+                    `;
+                  tbody.appendChild(row);
+                });
+                productTable.appendChild(tbody);
+                orderIdContainer.appendChild(productTable);
+              }
             }
       
             function geocodeAddress(lat, lng) {
@@ -161,8 +178,8 @@
               const thead = document.createElement('thead');
               thead.classList.add('thead-dark');
               const headerRow = thead.insertRow();
-      
-              const headers = ['Posisi', 'Alamat'];
+              
+              const headers = ['Posisi', 'Alamat', 'Order ID', 'Depart', 'Arrive'];
               headers.forEach(headerText => {
                 const th = document.createElement('th');
                 th.scope = 'col';
@@ -171,7 +188,6 @@
               });
       
               table.appendChild(thead);
-              thead.classList.add('thead-dark');
       
               const tbody = document.createElement('tbody');
       
@@ -193,9 +209,20 @@
                 }
       
                 const addressCell = row.insertCell(1);
-      
-                row.addEventListener('click', () => {
-                  handleAddressContainerClick(orderId);
+                const listItemCell  = row.insertCell(2);
+                listItemCell.innerText = orderId;
+                const departCell = row.insertCell(3);
+                const arriveCell = row.insertCell(4);
+                const btnDepart = document.createElement('button');
+                const btnArrive = document.createElement('button');
+                btnDepart.classList.add('btn', 'btn-primary');
+                btnArrive.classList.add('btn', 'btn-primary');
+                btnArrive.innerHTML = 'Depart';
+                btnDepart.innerHTML = 'Arrive';
+                departCell.appendChild(btnDepart);
+                arriveCell.appendChild(btnArrive);
+                listItemCell.addEventListener('click', () => {
+                  getProductList(orderId);
                 })
       
                 try {
@@ -206,6 +233,9 @@
       
                   row.appendChild(cell);
                   row.appendChild(addressCell);
+                  row.appendChild(listItemCell);
+                  row.appendChild(departCell);
+                  row.appendChild(arriveCell);
                   tbody.appendChild(row);
                 } catch (error) {
                   console.error(error);
