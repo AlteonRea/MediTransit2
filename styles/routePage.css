@@ -94,12 +94,15 @@ button:hover {
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     box-sizing: border-box;
 }
+
 #order-id-container {
     margin-top: 10px;
     width: 100%;
     text-align: left;
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
     overflow-y: scroll;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     box-sizing: border-box;
@@ -109,17 +112,10 @@ button:hover {
     justify-content: center;
 }
 
-#routes {
+#routes, #order-id-container {
     height: 400px;
 }
 
-#order-id-container {
-    padding: 20px;
-    height: 400px;
-    margin-left: 20px;
-    margin-right: 20px;
-    font-weight: 550;
-}
 
 #routes.inactive,
 #order-id-container.inactive {
@@ -132,7 +128,6 @@ button:hover {
 }
 
 .address-container {
-    font-weight: 550;
     cursor: pointer;
     border: 1px solid #ddd;
     padding: 8px;
@@ -174,10 +169,15 @@ td:nth-child(1), th:nth-child(1) {
     text-align: center;
 }
 
-td:nth-child(3), th:nth-child(3) {
+#address-container td:last-child, #address-container th:last-child,
+#address-container td:nth-child(4),#address-container th:nth-child(4) ,
+#address-container td:nth-child(3), #address-container th:nth-child(3) {
     width: 100px; 
 }
 
+#order-id-container td:nth-child(4), #order-id-container th:nth-child(4) {
+    width: 100px;
+}
 th, td {
     padding: 10px;
     border: 1px solid #ddd;

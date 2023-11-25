@@ -135,3 +135,8 @@ body {
 .container2{
     padding: 20px;
 }
+.weather-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
