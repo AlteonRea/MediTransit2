@@ -6,6 +6,7 @@
     <title>Cardbox Packing</title>
     <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles/CardboardPacking.css">
+    <link rel="stylesheet" href="styles/sidebar.css">
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
 </head>
 <body>
@@ -17,7 +18,7 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li>
-                <a href="#" id="vehicle-link" class="nav-link text-white">
+                <a href="VehiclePacking.html" id="vehicle-link" class="nav-link text-white">
                     <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
                     Vehicle Packing
                 </a>
@@ -29,12 +30,16 @@
                 </a>
             </li>
         </ul>
-        <!-- Dropdown for idDriver selection -->
         <label for="shipment-id-select" class="form-label text-white">Select Shipment ID:</label>
         <select id="shipment-id-select" class="form-select">
             <option value="">No Shipment</option>
         </select>
         <button id="loadDataBtn" class="btn btn-primary mt-2">Load Data</button>
+        <hr>
+        <div class="dropdown">
+            <h4 id="name">Packer</h4>
+          </a>
+        </div>
     </div>
 
     <div id="container"></div>

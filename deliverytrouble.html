@@ -23,12 +23,6 @@
         </a>
       </li>
       <li>
-        <a href="result.html" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
-          Result
-        </a>
-      </li>
-      <li>
         <a href="daftarpengiriman.html" class="nav-link text-white">
           <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
           Daftar Pengiriman 
@@ -41,96 +35,101 @@
         </a>
       </li>
     </ul>
-  </div>
-    <div class="d-flex main-container">
-          <div class="content">
-            <h2>Delivery Trouble List</h2>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Trouble ID</th>
-                        <th>Driver ID</th>
-                        <th>Name</th>
-                        <th>Vehicle ID</th>
-                        <th>Trouble Type</th>
-                        <th>Status</th>
-                        <th>Event Time</th>
-                        <th>Resolve</th>
-                    </tr>
-                </thead>
-                <tbody id="onDeliveryTableBody">
-
-                </tbody>
-            </table>
-        </div>
+    <hr>
+    <div class="dropdown">
+      <h4 id="name">Admin</h4>
+    </a>
     </div>
-    <script>
-      document.addEventListener("DOMContentLoaded", async function(){
-        try{
-          const response = await fetch('/deliveryTroubleList');
-          const data = await response.json();
-          if(data){
-              const onDeliveryTableBody = document.getElementById('onDeliveryTableBody');
-              onDeliveryTableBody.innerHTML = '';
-              console.log(data);
-              data.forEach((item) => {
-                  const row = document.createElement('tr');
-                  const dateString = item.event_time;
-                  const date = new Date(dateString);
-                  const formattedDate = date.toLocaleString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: 'numeric',
-                    minute: 'numeric',
-                    second: 'numeric',
-                    timeZoneName: 'short',
-                    timeZone: 'Asia/Bangkok'
-                  });
+  </div>
+  <div class="d-flex main-container">
+        <div class="content">
+          <h2>Delivery Trouble List</h2>
+          <table class="table table-striped">
+              <thead>
+                  <tr>
+                      <th>Trouble ID</th>
+                      <th>Driver ID</th>
+                      <th>Name</th>
+                      <th>Vehicle ID</th>
+                      <th>Trouble Type</th>
+                      <th>Status</th>
+                      <th>Event Time</th>
+                      <th>Resolve</th>
+                  </tr>
+              </thead>
+              <tbody id="onDeliveryTableBody">
 
-                  console.log(formattedDate);
+              </tbody>
+          </table>
+      </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", async function(){
+      try{
+        const response = await fetch('/deliveryTroubleList');
+        const data = await response.json();
+        if(data){
+            const onDeliveryTableBody = document.getElementById('onDeliveryTableBody');
+            onDeliveryTableBody.innerHTML = '';
+            console.log(data);
+            data.forEach((item) => {
+                const row = document.createElement('tr');
+                const dateString = item.event_time;
+                const date = new Date(dateString);
+                const formattedDate = date.toLocaleString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: 'numeric',
+                  second: 'numeric',
+                  timeZoneName: 'short',
+                  timeZone: 'Asia/Bangkok'
+                });
 
-                  row.innerHTML = `
-                    <td>${item.id}</td>
-                    <td>${item.driver_id}</td>
-                    <td>${item.name}</td>
-                    <td>${item.vehicle_id}</td>
-                    <td>${item.trouble_type}</td>
-                    <td>${item.status}</td>
-                    <td>${formattedDate}</td>
-                  `;
-                  const cell = document.createElement('td');
-                  const btn = document.createElement('button');
+                console.log(formattedDate);
 
-                  btn.classList.add('btn', 'btn-danger');
-                  btn.innerHTML = 'Resolve';
-                  cell.appendChild(btn);
+                row.innerHTML = `
+                  <td>${item.id}</td>
+                  <td>${item.driver_id}</td>
+                  <td>${item.name}</td>
+                  <td>${item.vehicle_id}</td>
+                  <td>${item.trouble_type}</td>
+                  <td>${item.status}</td>
+                  <td>${formattedDate}</td>
+                `;
+                const cell = document.createElement('td');
+                const btn = document.createElement('button');
 
-                  cell.addEventListener('click', async () => {
-                    try{
-                      const response2 = await fetch('/deliveryTroubleResolve', {
-                        method: 'POST',
-                        headers: {
-                          'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                          id: item.id,
-                        }), 
-                      });
-                      location.reload();
-                    }catch(error){
-                      console.error(error);
-                    }
-                  });
-                  row.appendChild(cell);
-                  onDeliveryTableBody.appendChild(row);
-              });
+                btn.classList.add('btn', 'btn-danger');
+                btn.innerHTML = 'Resolve';
+                cell.appendChild(btn);
 
-          }
-        }catch(err){
-          console.log(err);
+                cell.addEventListener('click', async () => {
+                  try{
+                    const response2 = await fetch('/deliveryTroubleResolve', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({
+                        id: item.id,
+                      }), 
+                    });
+                    location.reload();
+                  }catch(error){
+                    console.error(error);
+                  }
+                });
+                row.appendChild(cell);
+                onDeliveryTableBody.appendChild(row);
+            });
+
         }
-      })
-    </script>
+      }catch(err){
+        console.log(err);
+      }
+    })
+  </script>
 </body>
 </html>

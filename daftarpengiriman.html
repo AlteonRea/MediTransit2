@@ -23,12 +23,6 @@
         </a>
       </li>
       <li>
-        <a href="result.html" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
-          Result
-        </a>
-      </li>
-      <li>
         <a href="#" class="nav-link active text-white">
           <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
           Daftar Pengiriman 
@@ -41,28 +35,34 @@
         </a>
       </li>
     </ul>
+    <hr>
+    <div class="dropdown">
+      <h4 id="name">Admin</h4>
+    </a>
+    </div>
   </div>
     <div class="d-flex main-container">
-          <div class="content">
-            <h2>Delivery List</h2>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Branch ID</th>
-                        <th>Dispatch Date</th>
-                        <th>Distance Cost</th>
-                        <th>ID Shipment</th>
-                        <th>Status</th>
-                        <th>Vehicle ID</th>
-                        <th>Weight Cost</th>
-                    </tr>
-                </thead>
-                <tbody id="onDeliveryTableBody">
+      <div class="content">
+        <h2>Delivery List</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Branch ID</th>
+                    <th>Dispatch Date</th>
+                    <th>Distance Cost</th>
+                    <th>ID Shipment</th>
+                    <th>Status</th>
+                    <th>Vehicle ID</th>
+                    <th>Weight Cost</th>
+                </tr>
+            </thead>
+            <tbody id="onDeliveryTableBody">
 
-                </tbody>
-            </table>
-        </div>
+            </tbody>
+        </table>
+      </div>
     </div>
+
     <script>
       document.addEventListener("DOMContentLoaded", async function(){
         try{

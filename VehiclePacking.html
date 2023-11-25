@@ -6,33 +6,39 @@
     <title>Vehicle Packing</title>
     <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles/VehiclePacking.css">
+    <link rel="stylesheet" href="styles/sidebar.css">
 </head>
 <body>
-  <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
+  <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark sidebar">
     <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-      <span class="fs-4">MediTransit</span>
+        <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+        <span class="fs-4">MediTransit</span>
     </a>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
-      <li>
-        <a href="#" class="nav-link active">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-          Vehicle Packing
-        </a>
-      </li>
-      <li>
-        <a href="CardboxPacking.html" id = "cardbox-link" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
-          Cardbox Packing
-        </a>
-      </li>
+        <li>
+            <a href="#" id="vehicle-link" class="nav-link text-white active">
+                <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
+                Vehicle Packing
+            </a>
+        </li>
+        <li>
+            <a href="CardboxPacking.html" class="nav-link text-white">
+                <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
+                Cardbox Packing
+            </a>
+        </li>
     </ul>
-     <label for="id-shipment-select" class="form-label text-white">Select idDriver:</label>
-     <select id="id-shipment-select" class="form-select">
-         <option>No Shipment</option>
-     </select>
-     <button id="loadDataBtn" class="btn btn-primary mt-2">Load Data</button>
+    <label for="shipment-id-select" class="form-label text-white">Select Shipment ID:</label>
+    <select id="shipment-id-select" class="form-select">
+        <option value="">No Shipment</option>
+    </select>
+    <button id="loadDataBtn" class="btn btn-primary mt-2">Load Data</button>
+    <hr>
+    <div class="dropdown">
+        <h4 id="name">Packer</h4>
+      </a>
+    </div>
   </div>
 
     <div class="x">
