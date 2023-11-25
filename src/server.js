@@ -187,7 +187,7 @@ app.get('/orderList', (req, res) => {
 app.get('/tbDistributedCount', (req, res) => {
     try{
         const query = `select count(*) from Orders
-        where Orders.status in ('Pending', 'Not-Sent');`;
+        where Orders.status in ('Pending');`;
         db.query(query, (err, result) => {
             if(err){
                 console.error('Database query error: ', err);
@@ -237,6 +237,25 @@ app.get('/distributedCount', (req, res) => {
         console.error('Error in /avalVehicleList', err);
     }
 });
+
+app.get('/delayedCount', (req, res) => {
+    try{
+        const query = `select count(*) from Orders
+        where Orders.status in ('Not-Sent');`;
+        db.query(query, (err, result) => {
+            if(err){
+                console.error('Database query error: ', err);
+                res.status(500).json({error: 'Internal Server Error'});
+            }else{
+                //console.log('Distributed Count: ', result);
+                res.json(result);
+            }
+        })
+    }catch(err){
+        console.error('Error in /avalVehicleList', err);
+    }
+});
+
 
 app.get('/citocount', (req, res) => {
     try{
