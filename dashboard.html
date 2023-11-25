@@ -34,7 +34,7 @@
         </a>
       </li>
       <li>
-        <a href="alert.html" class="nav-link text-white">
+        <a href="deliverytrouble.html" class="nav-link text-white">
           <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
           Delivery Trouble
         </a>
@@ -67,23 +67,22 @@
               </div>
           </nav>
           <div class="container2">
-            <div id = "cito-header" class="cito-header d-none">
+            <div class="popup-container" id="popupCitoContainer">
+              <div class="popup">
+                  <span class="close" onclick="closePopupCito()">&times;</span>
+                  <h2>AVAILABLE VEHICLE</h2>
+                  <p>Kendaraan id 1, mobil available</p>
+                  <button class="btn btn-success" onclick="resolveIssueCito()">Send Driver</button>
+              </div>
+          </div>
+          <div id = "cito-header" class="cito-header d-none">
               <h2>CITO ALERT!!!</h2>
           </div>
   
           <div id = "cito-card" class="cito-card d-none">
               <h3>CITO Counts</h3>
               <p id="cito-detail"></p>
-              <button class="btn btn-danger" onclick="showPopup()">Take Action</button>
-          </div>
-
-          <div class="popup-container" id="popupContainer">
-              <div class="popup">
-                  <span class="close" onclick="closePopup()">&times;</span>
-                  <h2>AVAILABLE VEHICLE</h2>
-                  <p>Kendaraan id 1, mobil available</p>
-                  <button class="btn btn-success" onclick="resolveIssue()">Send Driver</button>
-              </div>
+              <button class="btn btn-danger" onclick="showPopupCito()">Take Action</button>
           </div>
 
           <div id = "accident-header"class="cito-header d-none">
@@ -91,9 +90,9 @@
           </div>
 
           <div id = "accident-card" class="cito-card d-none">
-              <h3>CITO Details</h3>
-              <p id ="accident-detail">4 ACCIDENT DETECTED</p>
-              <button class="btn btn-danger" onclick="showPopup()">Take Action</button>
+              <h3>Accident Details</h3>
+              <p id ="accident-detail"></p>
+              <button class="btn btn-danger" onclick="takeActionAccident()">Take Action</button>
           </div>
           <div class="deliveryCardContainer">
             <div class="delivery-card">
@@ -101,7 +100,7 @@
                 <h2>Distributed</h2>
               </div>
               <div id="distributed" class="delivery-count">
-                <h1>12</h1>
+  
               </div>
             </div>
 
@@ -118,11 +117,10 @@
                 <h2>To-be Distributed</h2>
               </div>
               <div id="to-be-distributed" class="delivery-count">
-                <h1>255</h1>
+
               </div>
             </div>
           </div>
-
           
           <!-- <hr>
           <h2>Order list</h2>
@@ -263,12 +261,15 @@
             console.error(err);
           }
         })
-        function showPopup() {
-            document.getElementById('popupContainer').style.display = 'flex';
+        function takeActionAccident() {
+          window.location.href = 'deliverytrouble.html';
+       }
+        function showPopupCito() {
+          document.getElementById('popupCitoContainer').style.display = 'flex';
         }
         
-        function closePopup() {
-            document.getElementById('popupContainer').style.display = 'none';
+        function closePopupCito() {
+            document.getElementById('popupCitoContainer').style.display = 'none';
         }
 
         function rebuildDatabase(){
