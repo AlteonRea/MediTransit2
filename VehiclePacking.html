@@ -28,10 +28,9 @@
         </a>
       </li>
     </ul>
-     <label for="id-driver-select" class="form-label text-white">Select idDriver:</label>
-     <select id="id-driver-select" class="form-select">
-         <option value="2">Driver 2</option>
-         <option value="6">Driver 6</option>
+     <label for="id-shipment-select" class="form-label text-white">Select idDriver:</label>
+     <select id="id-shipment-select" class="form-select">
+         <option>No Shipment</option>
      </select>
      <button id="loadDataBtn" class="btn btn-primary mt-2">Load Data</button>
   </div>
@@ -39,18 +38,31 @@
     <div class="x">
         <!-- <div id="content"></div> -->
         <div class="container">
-            <iframe id = "app-frame" src="vrp3d/anim.html"></iframe>
+            <iframe id = "app-frame" src=""></iframe>
         </div>
     </div>
 
     <script>
-      document.addEventListener('DOMContentLoaded', function () {
-          const idDriverSelect = document.getElementById('id-driver-select');
+      document.addEventListener('DOMContentLoaded', async function () {
+        try{
+          const idShipmentSelect = document.getElementById('id-shipment-select');
           const loadDataBtn = document.getElementById('loadDataBtn');
+          const response = await fetch('/shipmentIdList');
+          const data = await response.json();
+          console.log(data);
+          if(data.length>0){
+            idShipmentSelect.innerHTML = '';
+            data.forEach((item)=>{
+              const option = document.createElement('option');
+              option.value = item.id;
+              option.innerHTML = `Shipment ${item.id}`;
+              idShipmentSelect.appendChild(option);
+            });
+          }
   
           // Event listener for the Load Data button
           loadDataBtn.addEventListener('click', function () {
-              const selectedIdDriver = idDriverSelect.value;
+              const selectedIdDriver = idShipmentSelect.value;
               const folderName = 'PackingResults';  // replace with your actual folder name
               const htmlFilePath = `vrp3d/${folderName}/${selectedIdDriver}.html`;
               const iframeElement = document.getElementById('app-frame');
@@ -61,6 +73,9 @@
               const cardboxUrl = `CardboxPacking.html?folder=${folderName}&idDriver=${selectedIdDriver}`;
               cardboxLink.href = cardboxUrl;
           });
+        }catch(error){
+          console.error(error);
+        }
       });
   </script>
     
