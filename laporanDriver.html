@@ -27,6 +27,11 @@
                 </a>
             </li>
         </ul>
+        <hr>
+        <div class="dropdown">
+            <h4 id="name"></h4>
+          </a>
+        </div>
     </div>
 
     <div class="container">
@@ -42,39 +47,50 @@
         document.addEventListener('DOMContentLoaded', async function () {
             const incidentForm = document.getElementById('incidentForm');
             const driverId = parseInt(localStorage.getItem('username'));
-
-            incidentForm.addEventListener('submit', async function (event) {
-                event.preventDefault();
-
-                const selectedButton = document.querySelector('.troubleType:checked');
-                const troubleType = selectedButton ? selectedButton.value : '';
-                const details = 'blank';
-
-                try {
-                    const response = await fetch('/report', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            driverId,
-                            troubleType,
-                            details,
-                        }),
-                    });
-
-                    if (response.ok) {
-                        alert('Incident reported successfully!');
-                    } else {
-                        alert('Error reporting incident. Please try again.');
+            const driverName = localStorage.getItem('driverName');
+            const nameElement = document.getElementById('name');
+            nameElement.innerHTML = driverName;
+        
+            // GET VEHICLE ID
+            const response2 = await fetch(`/vehicleId?idDriver=${driverId}`);
+            const data2 = await response2.json();
+            const vehicleId = data2[0].id;
+        
+            incidentForm.addEventListener('click', async function (event) {
+                if (event.target.classList.contains("troubleType")) {
+                    event.preventDefault(); // Prevents the form from being submitted
+        
+                    const troubleType = event.target.value;
+                    const details = 'NULL';
+        
+                    try {
+                        const response = await fetch('/report', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                vehicleId,
+                                troubleType,
+                                details,
+                            }),
+                        });
+        
+                        if (response.ok) {
+                            alert('Success');
+                        } else {
+                            alert('Failed');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
                     }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('An error occurred. Please try again later.');
                 }
             });
         });
+        
+        
     </script>
+    
 
 </body>
 </html>

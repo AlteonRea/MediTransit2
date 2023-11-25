@@ -6,7 +6,7 @@
     <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles/dashboard.css">
     <link rel="stylesheet" href="styles/daftarPengiriman.css">
-    <title>Document</title>
+    <title>Delivery Trouble</title>
 </head>
 <body>
   <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; position: fixed; top: 0; bottom: 0; overflow-y: auto;">
@@ -29,13 +29,13 @@
         </a>
       </li>
       <li>
-        <a href="#" class="nav-link active text-white">
+        <a href="daftarpengiriman.html" class="nav-link text-white">
           <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
           Daftar Pengiriman 
         </a>
       </li>
       <li>
-        <a href="deliverytrouble.html" class="nav-link text-white">
+        <a href="#" class="nav-link active text-white">
           <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
           Delivery Trouble
         </a>
@@ -44,17 +44,18 @@
   </div>
     <div class="d-flex main-container">
           <div class="content">
-            <h2>Delivery List</h2>
+            <h2>Delivery Trouble List</h2>
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Branch ID</th>
-                        <th>Dispatch Date</th>
-                        <th>Distance Cost</th>
-                        <th>ID Shipment</th>
-                        <th>Status</th>
+                        <th>Trouble ID</th>
+                        <th>Driver ID</th>
+                        <th>Name</th>
                         <th>Vehicle ID</th>
-                        <th>Weight Cost</th>
+                        <th>Trouble Type</th>
+                        <th>Status</th>
+                        <th>Event Time</th>
+                        <th>Resolve</th>
                     </tr>
                 </thead>
                 <tbody id="onDeliveryTableBody">
@@ -66,7 +67,7 @@
     <script>
       document.addEventListener("DOMContentLoaded", async function(){
         try{
-          const response = await fetch('/shipmentList');
+          const response = await fetch('/deliveryTroubleList');
           const data = await response.json();
           if(data){
               const onDeliveryTableBody = document.getElementById('onDeliveryTableBody');
@@ -74,7 +75,7 @@
               console.log(data);
               data.forEach((item) => {
                   const row = document.createElement('tr');
-                  const dateString = item.dispatch_date;
+                  const dateString = item.event_time;
                   const date = new Date(dateString);
                   const formattedDate = date.toLocaleString('en-US', {
                     year: 'numeric',
@@ -90,14 +91,38 @@
                   console.log(formattedDate);
 
                   row.innerHTML = `
-                    <td>${item.branch_id}</td>
-                    <td>${formattedDate}</td>
-                    <td>${item.distance_cost}</td>
                     <td>${item.id}</td>
-                    <td>${item.status}</td>
+                    <td>${item.driver_id}</td>
+                    <td>${item.name}</td>
                     <td>${item.vehicle_id}</td>
-                    <td>${item.weight_cost}</td>
+                    <td>${item.trouble_type}</td>
+                    <td>${item.status}</td>
+                    <td>${formattedDate}</td>
                   `;
+                  const cell = document.createElement('td');
+                  const btn = document.createElement('button');
+
+                  btn.classList.add('btn', 'btn-danger');
+                  btn.innerHTML = 'Resolve';
+                  cell.appendChild(btn);
+
+                  cell.addEventListener('click', async () => {
+                    try{
+                      const response2 = await fetch('/deliveryTroubleResolve', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                          id: item.id,
+                        }), 
+                      });
+                      location.reload();
+                    }catch(error){
+                      console.error(error);
+                    }
+                  });
+                  row.appendChild(cell);
                   onDeliveryTableBody.appendChild(row);
               });
 

@@ -96,16 +96,6 @@ app.post('/runcmd', (req, res) => {
     });
 });
 
-app.post('/runcmd', (req, res) => {
-    execSync('cd vrp3d && python main.py', (error, stdout, stderr) => {
-        if (error) {
-            console.error(`Error: ${error.message}`);   
-            return;
-        }
-        console.log(`stdout: ${stdout}`);
-        res.status(200).send(`stdout: ${stdout}\nstderr: ${stderr}`);
-    });
-});
 
 app.post('/runRebuildDatabase', (req, res) => {
     execSync('cd vrp3d && python rebuild_database.py', (error, stdout, stderr) => {
@@ -164,7 +154,7 @@ app.get('/avalVehicleList', (req, res) => {
                 console.error('Database query error: ', err);
                 res.status(500).json({error: 'Internal Server Error'});
             }else{
-                console.log('Available Vehicle query: ', result);
+                //console.log('Available Vehicle query: ', result);
                 res.json(result);
             }
         })
@@ -185,7 +175,7 @@ app.get('/orderList', (req, res) => {
                 console.error('Database query error: ', err);
                 res.status(500).json({error: 'Internal Server Error'});
             }else{
-                console.log('Order List Query: ', result);
+                //console.log('Order List Query: ', result);
                 res.json(result);
             }
         })
@@ -197,13 +187,13 @@ app.get('/orderList', (req, res) => {
 app.get('/tbDistributedCount', (req, res) => {
     try{
         const query = `select count(*) from Orders
-        where Orders.status in ('Pending', 'Not-Sent');`;
+        where Orders.status in ('Pending');`;
         db.query(query, (err, result) => {
             if(err){
                 console.error('Database query error: ', err);
                 res.status(500).json({error: 'Internal Server Error'});
             }else{
-                console.log('To-be Distributed count: ', result);
+                //console.log('To-be Distributed count: ', result);
                 res.json(result);
             }
         })
@@ -221,7 +211,7 @@ app.get('/onDistributionCount', (req, res) => {
                 console.error('Database query error: ', err);
                 res.status(500).json({error: 'Internal Server Error'});
             }else{
-                console.log('On Distribution count:  ', result);
+                //console.log('On Distribution count:  ', result);
                 res.json(result);
             }
         })
@@ -239,7 +229,7 @@ app.get('/distributedCount', (req, res) => {
                 console.error('Database query error: ', err);
                 res.status(500).json({error: 'Internal Server Error'});
             }else{
-                console.log('Distributed Count: ', result);
+                //console.log('Distributed Count: ', result);
                 res.json(result);
             }
         })
@@ -247,6 +237,25 @@ app.get('/distributedCount', (req, res) => {
         console.error('Error in /avalVehicleList', err);
     }
 });
+
+app.get('/delayedCount', (req, res) => {
+    try{
+        const query = `select count(*) from Orders
+        where Orders.status in ('Not-Sent');`;
+        db.query(query, (err, result) => {
+            if(err){
+                console.error('Database query error: ', err);
+                res.status(500).json({error: 'Internal Server Error'});
+            }else{
+                //console.log('Distributed Count: ', result);
+                res.json(result);
+            }
+        })
+    }catch(err){
+        console.error('Error in /avalVehicleList', err);
+    }
+});
+
 
 app.get('/citocount', (req, res) => {
     try{
@@ -261,7 +270,7 @@ app.get('/citocount', (req, res) => {
                 console.error('Database query error: ', err);
                 res.status(500).json({error: 'Internal Server Error'});
             }else{
-                console.log('CITO count: ', result);
+                //console.log('CITO count: ', result);
                 res.json(result);
             }
         })
@@ -273,14 +282,14 @@ app.get('/citocount', (req, res) => {
 app.get('/accidentCount', (req, res) => {
     try{
         const query = `select count(*) from DeliveryTrouble 
-        where status = 'Urgent' and trouble_type = 'TrafficAccident';`;
+        where status = 'Urgent' and trouble_type = 'Traffic Accident';`;
 
         db.query(query, (err, result) => {
             if(err){
                 console.error('Database query error: ', err);
                 res.status(500).json({error: 'Internal Server Error'});
             }else{
-                console.log('Accident Count: ', result);
+                //console.log('Accident Count: ', result);
                 res.json(result);
             }
         })
@@ -298,12 +307,46 @@ app.get('/shipmentList', (req, res) => {
                 console.error('Database query error: ', err);
                 res.status(500).json({error: 'Internal Server Error'});
             }else{
-                console.log('On Delivery List: ', result);
+                //console.log('On Delivery List: ', result);
                 res.json(result);
             }
         })
     }catch(err){
         console.error('Error in /avalVehicleList', err);
+    }
+});
+
+app.get('/deliveryTroubleList', (req, res) => {
+    try{
+        const query = `select Vehicle.driver_id, Driver.name, DeliveryTrouble.id, DeliveryTrouble.vehicle_id, DeliveryTrouble.trouble_type, DeliveryTrouble.status, DeliveryTrouble.event_time from DeliveryTrouble 
+        inner join Vehicle on DeliveryTrouble.vehicle_id = Vehicle.id
+        inner join Driver on Vehicle.driver_id = Driver.id
+        where DeliveryTrouble.status = 'Urgent' and (trouble_type = 'Traffic Congestion' OR trouble_type = 'Traffic Accident');`;
+        db.query(query, (err, result) => {
+            if(err){
+                console.error('Database query error: ', err);
+                res.status(500).json({error: 'Internal Server Error'});
+            }else{
+                //console.log('Delivery Troubles: ', result);
+                res.json(result);
+            }
+        })
+    }catch(err){
+        console.error('Error in /avalVehicleList', err);
+    }
+});
+
+app.post('/deliveryTroubleResolve', (req, res) => {
+    try {
+        const { id } = req.body; 
+
+        const query = 'UPDATE DeliveryTrouble SET status = "Resolved" WHERE id = ?';
+        db.query(query, [id]);
+
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -315,7 +358,7 @@ app.get('/deliverytroubleAll', (req, res) => {
                 console.error('Database query error:', err);
                 res.status(500).json({error: 'Internal Server Error'});
             } else{
-                console.log('Delivery trouble query: ', result);
+                //console.log('Delivery trouble query: ', result);
                 res.json(result);
             }
         })
@@ -333,7 +376,7 @@ app.get('/deliverytroubleAccident', (req, res) => {
                 console.error('Database query error:', err);
                 res.status(500).json({error: 'Internal Server Error'});
             } else{
-                console.log('Delivery trouble query: ', result);
+                //console.log('Delivery trouble query: ', result);
                 res.json(result);
             }
         })
@@ -354,7 +397,7 @@ app.get('/shipmentIdList', (req, res) => {
                 console.error('Database query error:', err);
                 res.status(500).json({error: 'Internal Server Error'});
             } else{
-                console.log('Delivery trouble query: ', result);
+                //console.log('Delivery trouble query: ', result);
                 res.json(result);
             }
         })
@@ -378,14 +421,14 @@ app.get('/routes', async (req, res) => {
         inner join Orders on Orders.shipment_id = Shipment.id and Orders.relation_id = Relation.id
         where Shipment.id = ${idShipment}
         order by visitation_order;`;
-        console.log('Query:', query);
+        //console.log('Query:', query);
 
         db.query(query, (err, result) => {
             if (err) {
                 console.error('Database query error:', err);
                 res.status(500).json({ error: 'Internal Server Error' });
             } else {
-                console.log('Routes List:', result);
+                //console.log('Routes List:', result);
                 res.json(result);
             }
         });
@@ -404,14 +447,14 @@ app.get('/warehouseLocation', async (req, res) => {
         const query = `select Branch.code, latitude, longitude, address from Branch
         inner join Shipment on Branch.id = Shipment.branch_id
         where Shipment.id = ${idShipment};`;
-        console.log('Query:', query);
+        //console.log('Query:', query);
 
         db.query(query, (err, result) => {
             if (err) {
                 console.error('Database query error:', err);
                 res.status(500).json({ error: 'Internal Server Error' });
             } else {
-                console.log('Routes List:', result);
+                //console.log('Routes List:', result);
                 res.json(result);
             }
         });
@@ -428,14 +471,14 @@ app.get('/username', async (req, res) => {
         idDriver = parseInt(idDriver);
 
         const query = `select name from driver where id=${idDriver};`;
-        console.log('Query:', query);
+        //console.log('Query:', query);
 
         db.query(query, (err, result) => {
             if (err) {
                 console.error('Database query error:', err);
                 res.status(500).json({ error: 'Internal Server Error' });
             } else {
-                console.log('Routes List:', result);
+                //console.log('Routes List:', result);
                 res.json(result);
             }
         });
@@ -445,13 +488,42 @@ app.get('/username', async (req, res) => {
     }
 });
 
-
-app.post('/report', async (req, res) => {
+app.get('/vehicleId', async (req, res) => {
     try {
-        const { driverId, troubleType, details } = req.body;
-        const query = 'INSERT INTO deliverytrouble (driver_id, trouble_type, details) VALUES (?, ?, ?)';
-        console.log(query, [driverId, troubleType, details]);
-        //await db.query(query, [driverId, troubleType, details]);
+        let idDriver = req.query.idDriver;
+
+        idDriver = parseInt(idDriver);
+
+        const query = `select Vehicle.id from Vehicle
+        inner join Driver on Vehicle.driver_id = Driver.id
+        where Driver.id = ${idDriver};`;
+
+        //console.log('Query:', query);
+
+        db.query(query, (err, result) => {
+            if (err) {
+                console.error('Database query error:', err);
+                res.status(500).json({ error: 'Internal Server Error' });
+            } else {
+                //console.log('Routes List:', result);
+                res.json(result);
+            }
+        });
+    } catch (error) {
+        console.error('Error in /routes:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.post('/report', (req, res) => {
+    try {
+        const { vehicleId, troubleType, details } = req.body;
+        const query = `INSERT INTO DeliveryTrouble(vehicle_id, trouble_type, details, status, event_time)
+                       VALUES (?, ?, ?, 'Urgent', NOW());`;
+
+        //console.log('Executing SQL query:', query);
+        //console.log('Query parameters:', [vehicleId, troubleType, details]);
+        db.query(query, [vehicleId, troubleType, details]);
 
         res.status(200).json({ success: true });
     } catch (error) {
