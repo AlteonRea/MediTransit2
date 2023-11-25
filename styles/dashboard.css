@@ -75,7 +75,7 @@ body {
 }
 
 .delivery-card {
-    flex: 0 0 30%;
+    flex: 0 0 20%;
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -94,7 +94,8 @@ body {
 
 #delivered,
 #on-distributed,
-#to-be-distributed {
+#to-be-distributed,
+#delayed {
     font-size: 24px;
     font-weight: bold;
     margin-top: 10px;

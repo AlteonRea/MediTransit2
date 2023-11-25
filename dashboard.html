@@ -120,6 +120,15 @@
 
                 </div>
               </div>
+
+              <div class="delivery-card">
+                <div class="deliver-header">
+                  <h2>Delayed</h2>
+                </div>
+                <div id="delayed" class="delivery-count">
+
+                </div>
+              </div>
             </div>
           
           <!-- <hr>
@@ -245,6 +254,15 @@
             if(data6){
               const onDistribution = document.getElementById('on-distribution');
               onDistribution.innerHTML = `<h1>${data6[0]['count(*)']}</h1>`;
+            }
+
+            // DELAYED COUNT
+            const response8 = await fetch('/delayedCount');
+            const data8 = await response8.json();
+
+            if(data8){
+              const delayed = document.getElementById('delayed');
+              delayed.innerHTML = `<h1>${data8[0]['count(*)']}</h1>`;
             }
 
             const response7 = await fetch('accidentCount');
