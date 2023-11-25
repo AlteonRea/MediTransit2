@@ -187,7 +187,7 @@ app.get('/orderList', (req, res) => {
 app.get('/tbDistributedCount', (req, res) => {
     try{
         const query = `select count(*) from Orders
-        where Orders.status in ('Pending', 'Not-Sent');`;
+        where Orders.status in ('Pending');`;
         db.query(query, (err, result) => {
             if(err){
                 console.error('Database query error: ', err);
@@ -230,6 +230,24 @@ app.get('/distributedCount', (req, res) => {
                 res.status(500).json({error: 'Internal Server Error'});
             }else{
                 //console.log('Distributed Count: ', result);
+                res.json(result);
+            }
+        })
+    }catch(err){
+        console.error('Error in /avalVehicleList', err);
+    }
+});
+
+app.get('/delayedCount', (req, res) => {
+    try{
+        const query = `select count(*) from Orders
+        where Orders.status in ('Not-Sent');`;
+        db.query(query, (err, result) => {
+            if(err){
+                console.error('Database query error: ', err);
+                res.status(500).json({error: 'Internal Server Error'});
+            }else{
+                //console.log('To-be Distributed count: ', result);
                 res.json(result);
             }
         })
@@ -566,7 +584,7 @@ app.get('/cardboxIDnItemCount', async (req, res) => {
         const shipmentId = req.query.shipmentId;
         
         const query = `select PackingProductCardboardBox.cardboardbox_instance_id, count(*) as jumlah_item_dalam_kardus, 
-        CardBoardBox.length as size_x, CardBoardBox.width as size_y, CardBoardBox.height as size_z
+        CardboardBoxInstance.size_x, CardboardBoxInstance.size_y, CardboardBoxInstance.size_z
         from PackingProductCardboardBox
         inner join CardboardBoxInstance on CardboardBoxInstance.id = PackingProductCardboardBox.cardboardbox_instance_id
         inner join CardboardBox on CardboardBoxInstance.cardboardbox_id = CardboardBox.id
