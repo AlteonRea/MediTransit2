@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
+</head>
+<body>
+    <div id="myDiv" style="width:600px;height:600px;"></div>
+    <script>
+    function getCubeEdges(pos,size){
+        var x1 = [pos[0], pos[0]+size[0], pos[0]+size[0], pos[0]];
+        var y1 = [pos[1], pos[1], pos[1]+size[1], pos[1]+size[1]];
+        var z1 = [pos[2], pos[2], pos[2], pos[2]];
+        
+        var x2 = [pos[0], pos[0], pos[0], pos[0]];
+        var y2 = [pos[1], pos[1], pos[1]+size[1], pos[1]+size[1]];
+        var z2 = [pos[2], pos[2]+size[2], pos[2]+size[2], pos[2]];
+
+        var x3 = [pos[0], pos[0]+size[0], pos[0]+size[0]];
+        var y3 = [pos[1]+size[1], pos[1]+size[1], pos[1]+size[1]];
+        var z3 = [pos[2]+size[2], pos[2]+size[2], pos[2]];
+
+        var x4 = [pos[0]+size[0], pos[0]+size[0], pos[0]+size[0]];
+        var y4 = [pos[1]+size[1], pos[1], pos[1]];
+        var z4 = [pos[2]+size[2], pos[2]+size[2], pos[2]];
+
+        var x5 = [pos[0]+size[0], pos[0]];
+        var y5 = [pos[1], pos[1]];
+        var z5 = [pos[2]+size[2], pos[2]+size[2]];
+
+        var x = x1.concat(x2, x3, x4, x5);
+        var y = y1.concat(y2, y3, y4, y5);
+        var z = z1.concat(z2, z3, z4, z5);
+        return [x,y,z];
+    }
+
+    function getEdgesImg(pos, size, color){
+        var [boxX, boxY, boxZ] = getCubeEdges(pos, size);
+        var box_img = {
+            type: 'scatter3d',
+            mode: 'lines',
+            x: boxX,
+            y: boxY,
+            z: boxZ,
+            line: {
+                width: 6,
+                color: color,
+                reversescale: false
+            }
+        };
+        return box_img;
+    }
+
+    function getCubeMesh(pos, size){
+        var meshX= [pos[0],         pos[0],         pos[0]+size[0], pos[0]+size[0], pos[0],         pos[0],         pos[0]+size[0], pos[0]+size[0]];    
+        var meshY= [pos[1], pos[1]+size[1], pos[1]+size[1], pos[1],         pos[1],         pos[1]+size[1], pos[1]+size[1], pos[1],       ];   
+        var meshZ= [pos[2],         pos[2],         pos[2],         pos[2],         pos[2]+size[2], pos[2]+size[2], pos[2]+size[2], pos[2]+size[2]];        
+        return [meshX, meshY, meshZ];
+    }
+
+    function getMeshImg(pos, size, color){
+        var [meshX, meshY, meshZ] = getCubeMesh(pos, size);
+        img = {
+            type: "mesh3d",
+            x: meshX,
+            y: meshY,
+            z: meshZ,
+            i: [7, 0, 0, 0, 4, 4, 6, 6, 4, 0, 3, 2],
+            j: [3, 4, 1, 2, 5, 6, 5, 2, 0, 1, 6, 3],
+            k: [0, 7, 2, 3, 6, 7, 1, 1, 5, 5, 7, 6],
+            color:color
+        };
+        return img;
+    }
+
+    function drawBox(boxPos, boxSize, itemPosList, itemSizeList, lastItemIdx, divName){
+        var plotlyData = []
+        var box_img = getEdgesImg(boxPos, boxSize, 'red');
+        plotlyData = plotlyData.concat([box_img]);
+        for(let i=0; i<lastItemIdx;i++){
+            console.log(i, itemPosList[i]);
+            var item_img = getMeshImg(itemPosList[i], itemSizeList[i], 'grey');
+            var item_edge_img = getEdgesImg(itemPosList[i], itemSizeList[i], 'black');
+            plotlyData = plotlyData.concat([item_img, item_edge_img]);
+        }
+        if (lastItemIdx<=itemPosList.length){
+            var item_img = getMeshImg(itemPosList[lastItemIdx], itemSizeList[lastItemIdx], 'blue');
+            var item_edge_img = getEdgesImg(itemPosList[lastItemIdx], itemSizeList[lastItemIdx], 'black');
+            plotlyData = plotlyData.concat([item_img, item_edge_img]);
+        }
+        Plotly.newPlot(divName, plotlyData, {});
+    }
+    var boxPos = [0,0,0];
+    var boxSize = [7,7,7]
+    
+    var itemPosList = [
+        [0,0,0],
+        [0,3,0],
+        [0,5,0]
+    ];
+    var itemSizeList  =[
+        [3,3,3],
+        [2,2,1],
+        [5,2,2]
+    ]
+
+    console.log('box pos: ', boxPos);
+    console.log(typeof boxPos);
+
+    console.log('box Size: ', boxSize);
+    console.log(typeof boxSize);
+
+    console.log(`item pos: `, itemPosList);
+    console.log(typeof itemPosList);
+
+    console.log('item size list: ', itemSizeList);
+    console.log(typeof itemSizeList);
+    
+    
+    
+    
+    
+    
+    
+    
+    drawBox(boxPos, boxSize, itemPosList, itemSizeList, 0, 'myDiv');
+    </script>
+</body>
+
+</html>

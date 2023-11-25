@@ -563,7 +563,10 @@ app.get('/shipmentIdList', async (req, res) => {
 
 app.get('/cardboxIDnItemCount', async (req, res) => {
     try {
-        const query = `select PackingProductCardboardBox.cardboardbox_instance_id, count(*) as jumlah_item_dalam_kardus
+        const shipmentId = req.query.shipmentId;
+        
+        const query = `select PackingProductCardboardBox.cardboardbox_instance_id, count(*) as jumlah_item_dalam_kardus, 
+        CardBoardBox.length as size_x, CardBoardBox.width as size_y, CardBoardBox.height as size_z
         from PackingProductCardboardBox
         inner join CardboardBoxInstance on CardboardBoxInstance.id = PackingProductCardboardBox.cardboardbox_instance_id
         inner join CardboardBox on CardboardBoxInstance.cardboardbox_id = CardboardBox.id
@@ -572,7 +575,7 @@ app.get('/cardboxIDnItemCount', async (req, res) => {
         inner join PackingCardboardBoxVehicle on PackingCardboardBoxVehicle.cardboardbox_instance_id = PackingProductCardboardBox.cardboardbox_instance_id
         inner join ProductInstance on PackingProductCardboardBox.product_instance_id = ProductInstance.id
         inner join Product on ProductInstance.product_id = Product.id
-        where Shipment.id = 1
+        where Shipment.id = ${shipmentId}
         group by PackingProductCardboardBox.cardboardbox_instance_id;`;
 
         db.query(query, (err, result) => {
@@ -581,7 +584,7 @@ app.get('/cardboxIDnItemCount', async (req, res) => {
                 return res.status(500).json({ error: 'Internal Server Error' });
             }
 
-            console.log('Id Kardus dan Jumlah Kardus:', result);
+            console.log('Id Kardus dan Jumlah Item:', result);
             res.json(result);
         });
     } catch (error) {
@@ -589,6 +592,39 @@ app.get('/cardboxIDnItemCount', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+app.get('/listItemOfCardbox', async (req, res) => {
+    try {
+        const shipmentId = req.query.shipmentId;
+        const cardboxId = req.query.cardboxId;
+        const query = `select Shipment.id as shipment_id, Product.code as product_code, CardboardBox.details as cardboardbox_details, 
+        PackingProductCardboardBox.pos_x, PackingProductCardboardBox.pos_y, PackingProductCardboardBox.pos_z,
+        PackingProductCardboardBox.size_x, PackingProductCardboardBox.size_y, PackingProductCardboardBox.size_z
+        from PackingProductCardboardBox
+        inner join CardboardBoxInstance on CardboardBoxInstance.id = PackingProductCardboardBox.cardboardbox_instance_id
+        inner join CardboardBox on CardboardBoxInstance.cardboardbox_id = CardboardBox.id
+        inner join Orders on Orders.id = CardboardBoxInstance.order_id
+        inner join Shipment on Shipment.id = Orders.shipment_id
+        inner join PackingCardboardBoxVehicle on PackingCardboardBoxVehicle.cardboardbox_instance_id = PackingProductCardboardBox.cardboardbox_instance_id
+        inner join ProductInstance on PackingProductCardboardBox.product_instance_id = ProductInstance.id
+        inner join Product on ProductInstance.product_id = Product.id
+        where Shipment.id = ${shipmentId} and CardboardBoxInstance.id = ${cardboxId}
+        order by PackingCardboardBoxVehicle.insertion_order, PackingProductCardboardBox.insertion_order;`;
+        db.query(query, (err, result) => {
+            if (err) {
+                console.error('Database query error:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+
+            console.log('Item data:', result);
+            res.json(result);
+        });
+    } catch (error) {
+        console.error('Error in /routes:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
