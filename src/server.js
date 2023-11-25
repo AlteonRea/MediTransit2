@@ -566,7 +566,7 @@ app.get('/cardboxIDnItemCount', async (req, res) => {
         const shipmentId = req.query.shipmentId;
         
         const query = `select PackingProductCardboardBox.cardboardbox_instance_id, count(*) as jumlah_item_dalam_kardus, 
-        CardBoardBox.length as size_x, CardBoardBox.width as size_y, CardBoardBox.height as size_z
+        CardboardBoxInstance.size_x, CardboardBoxInstance.size_y, CardboardBoxInstance.size_z
         from PackingProductCardboardBox
         inner join CardboardBoxInstance on CardboardBoxInstance.id = PackingProductCardboardBox.cardboardbox_instance_id
         inner join CardboardBox on CardboardBoxInstance.cardboardbox_id = CardboardBox.id
