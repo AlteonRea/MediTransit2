@@ -162,17 +162,22 @@ th, td {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    padding: 5px;
 }
 
 td:nth-child(1), th:nth-child(1) {
     width: 150px;
-    text-align: center;
 }
 
 #address-container td:last-child, #address-container th:last-child,
 #address-container td:nth-child(4),#address-container th:nth-child(4) ,
 #address-container td:nth-child(3), #address-container th:nth-child(3) {
-    width: 100px; 
+    width: 100px;
+    text-align: center;
+}
+#address-container td:nth-child(3):hover {
+    background-color: #e6f7ff !important;
+    cursor: pointer;
 }
 
 #order-id-container td:nth-child(4), #order-id-container th:nth-child(4) {
@@ -186,8 +191,6 @@ th, td {
 th {
     background-color: #f2f2f2;
 }
-
-
 
 .wa-button {
     background-color: #25D366;
