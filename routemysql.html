@@ -123,6 +123,7 @@
           // GET VEHICLE ID FROM SHIPMENT ID
           const responseVehicleId = await fetch(`/vehicleIdByShipmentId?shipmentId=${selectedIdShipment}`);
           const dataVehicleId = await responseVehicleId.json();
+          console.log(dataVehicleId);
           ////console.log(dataVehicleId);
           const vehicleId = dataVehicleId[0].vehicle_id;
           //console.log(vehicleId);

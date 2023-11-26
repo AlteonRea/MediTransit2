@@ -8,8 +8,8 @@ body {
 }
 
 #myDiv {
-  height: 600px;
-  width: 800px;
+  height: 90vh;
+  width: 1200px;
 }
 
 .button-container {
@@ -27,4 +27,21 @@ body {
   border: none;
   padding: 10px 20px;
   cursor: pointer;
+}
+
+.inner-container{
+  width: 100% !important;
+  display: flex;
+  flex-direction: row;
+}
+.inner-container .left-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.inner-container .right-container{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

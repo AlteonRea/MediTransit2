@@ -413,7 +413,7 @@
                         map: map,
                         title: 'Waypoint Marker',
                         label: { text: ' ', color: 'white' },
-                        icon: 'assets/gmaps_marker.png',
+                        icon: ' ',
                       });
                       resolve();
                     },
@@ -435,9 +435,6 @@
                 const waypoints = [];
                 //console.log(driverPos);
                 //console.log(latLon);
-                waypoints.push({
-                  location: new google.maps.LatLng(driverPos.lat, driverPos.lng),
-                });
 
                 for (let i = arriveIndex * 3; i < latLon.length; i += 3) {
                   waypoints.push({

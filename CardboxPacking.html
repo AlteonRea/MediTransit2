@@ -65,8 +65,6 @@
             };
         });
 
-
-        
         loadDataBtn.addEventListener("click", function(){
             containerElem.innerHTML = '';
             async function getData() {
@@ -85,6 +83,7 @@
                             const boxSize = [box.size_x, box.size_y, box.size_z];
                             let itemPosList = [];
                             let itemSizeList = [];
+                            let productCodeList = []
                             const cardboxId = box.cardboardbox_instance_id;
                             const itemAmount = box.jumlah_item_dalam_kardus;
                             console.log('Box pos: ', boxPos);
@@ -95,10 +94,13 @@
                             data2.forEach((item) => {
                                 itemPosList.push([item.pos_x, item.pos_y, item.pos_z]);
                                 itemSizeList.push([item.size_x, item.size_y, item.size_z]);
+                                productCodeList.push(item.product_code);
                             });
                             console.log("item pos: ", itemPosList);
                             console.log("item size: ", itemSizeList);
-                            generateAnim(boxPos, boxSize, itemPosList, itemSizeList);
+                            generateAnim(boxPos, boxSize, itemPosList, itemSizeList, productCodeList);
+
+                            
                             boxIndex++;
                         }
                     }
@@ -109,7 +111,7 @@
                 }
             }
         
-            function generateAnim(boxPos, boxSize, itemPosList, itemSizeList){
+            function generateAnim(boxPos, boxSize, itemPosList, itemSizeList, productCodeList){
                 function getCubeEdges(pos,size){
                     var x1 = [pos[0], pos[0]+size[0], pos[0]+size[0], pos[0]];
                     var y1 = [pos[1], pos[1], pos[1]+size[1], pos[1]+size[1]];
@@ -176,10 +178,10 @@
                     return img;
                 }
             
-                function drawBox(boxPos, boxSize, itemPosList, itemSizeList, lastItemIdx, divName) {
+                function drawBox(boxPos, boxSize, itemPosList, itemSizeList, lastItemIdx, divName, leftContainerDiv, productCodeList, rightContainerDiv) {
                     var plotlyData = [];
                     var box_img = getEdgesImg(boxPos, boxSize, 'red');
-                
+                    
                     // CREATE BUTTON CONTAINER
                     const buttonContainer = document.createElement('div');
                     buttonContainer.classList.add('button-container');
@@ -214,8 +216,32 @@
                     inputNumber.step = 1;
                     inputNumber.value = lastItemIdx;
                     inputNumber.classList.add('form-control', 'mr-2');
-                    
 
+                    console.log(productCodeList);
+                    const table = document.createElement('table');
+                    table.classList.add('table', 'table-striped', 'table-bordered');
+
+                    const thead = document.createElement('thead');
+                    thead.innerHTML = `<th scope = "col">Number</th> <th scope = "col">Product Code</th>`;
+
+                   
+
+                    const tbody = document.createElement('tbody');
+
+                    productCodeList.forEach((code, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                        <td>${index+1}</td>
+                        <td>${code}</td>
+                        `;
+                        tbody.appendChild(row);
+                    })
+
+
+                    table.appendChild(thead);
+                    table.appendChild(tbody);
+
+                    rightContainerDiv.appendChild(table);
                     form.appendChild(inputNumber);
 
                     buttonContainer.appendChild(firstButton);
@@ -225,7 +251,7 @@
                     buttonContainer.appendChild(lastButton);
 
                     
-                    containerElem.appendChild(buttonContainer);
+                    leftContainerDiv.appendChild(buttonContainer);
                     
 
                     function updateInputValue(){
@@ -284,8 +310,8 @@
                     function updatePlot() {
                         plotlyData = [box_img];
                 
-                        for (let i = 0; i < lastItemIdx; i++) {
-                            var item_img = getMeshImg(itemPosList[i], itemSizeList[i], 'grey');
+                        for (let i = 1; i <= lastItemIdx; i++) {
+                            var item_img = getMeshImg(itemPosList[i-1], itemSizeList[i-1], 'grey');
                             var item_edge_img = getEdgesImg(itemPosList[i], itemSizeList[i], 'black');
                             plotlyData = plotlyData.concat([item_img, item_edge_img]);
                         }
@@ -300,11 +326,23 @@
                     }
                     updatePlot();
                 }
+                const innerContainer = document.createElement('div');
+                innerContainer.classList.add('inner-container');
+                const leftContainer = document.createElement('div');
+                leftContainer.classList.add('left-container');
+                const rightContainer = document.createElement('div');
+                rightContainer.classList.add('right-container');
                 
                 const myDiv = document.createElement('div');
                 myDiv.id = 'myDiv';
-                containerElem.appendChild(myDiv);
-                drawBox(boxPos, boxSize, itemPosList, itemSizeList, 0, myDiv);
+
+                leftContainer.appendChild(myDiv);
+
+                innerContainer.appendChild(leftContainer);
+                innerContainer.appendChild(rightContainer);
+
+                containerElem.appendChild(innerContainer);
+                drawBox(boxPos, boxSize, itemPosList, itemSizeList, 0, myDiv, leftContainer, productCodeList, rightContainer);
             }
             getData();
         });
