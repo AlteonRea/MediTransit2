@@ -106,26 +106,28 @@
           const orderIdContainerHeader = document.getElementById('order-id-container-header');
           orderIdContainerHeader.innerHTML = 'Order List';
           const selectedIdShipment = shipmentIdSelect.value;
-          console.log(selectedIdShipment);
+          //console.log(selectedIdShipment);
           const latLon = [];
           const response3 = await fetch(`/warehouseLocation?shipmentId=${selectedIdShipment}`);
           const data3 = await response3.json();
-          console.log('Warehouse Data: ', data3);
+          ////console.log('Warehouse Data: ', data3);
 
           // GET VEHICLE ID FROM SHIPMENT ID
           const responseVehicleId = await fetch(`/vehicleIdByShipmentId?shipmentId=${selectedIdShipment}`);
           const dataVehicleId = await responseVehicleId.json();
-          console.log(dataVehicleId);
+          ////console.log(dataVehicleId);
+          const vehicleId = dataVehicleId[0].vehicle_id;
+          //console.log(vehicleId);
 
           data3.forEach((item) => {
             latLon.push(item.latitude, item.longitude, -1);
           })
           const response = await fetch(`/routes?shipmentId=${selectedIdShipment}`);
           const data = await response.json();
-          console.log('Route Data:', data);
+          ////console.log('Route Data:', data);
 
           vehicleType = data[0].vehicle_type;
-          console.log(vehicleType);
+          //console.log(vehicleType);
           data.forEach(item => {
             latLon.push(item.latitude, item.longitude, item.order_id);
           });
@@ -134,16 +136,15 @@
             latLon.push(item.latitude, item.longitude, -1);
           })
 
-          console.log('Array of latLon:', latLon);
+          ////console.log('Array of latLon:', latLon);
 
           const routesElem = document.getElementById('routes');
 
-          let addressIndex = 1;
-
+          
           async function getProductList(orderId) {
             const response5 = await fetch(`/productList?orderId=${orderId}`);
             const data5 = await response5.json();
-            console.log(data5);
+            //console.log(data5);
             if (data5.length > 0) {
               const orderIdContainer = document.getElementById('order-id-container');
               const orderIdContainerHeader = document.getElementById('order-id-container-header');
@@ -221,7 +222,7 @@
             table.appendChild(thead);
 
             const tbody = document.createElement('tbody');
-
+            let addressIndex = 1;
             for (let i = 0; i < latLon.length; i += 3) {
               const lat = latLon[i];
               const lng = latLon[i + 1];
@@ -231,6 +232,7 @@
               row.classList.add('address-row');
 
               const cell = row.insertCell(0);
+              
               cell.scope = 'row';
               if (i === 0 || i === latLon.length - 3) {
                 cell.innerText = 'Gudang';
@@ -253,40 +255,66 @@
               btnArrive.innerHTML = 'Arrive';
               const responseOrderStatus = await fetch(`/orderStatusByOrderId?orderId=${orderId}`);
               const orderStatusData = await responseOrderStatus.json();
-              console.log(orderStatusData);
+              //console.log(orderStatusData);
 
               if(orderId === -1 || orderStatusData[0].status === 'Delivered'){
                 btnDepart.classList.add('inactive', 'btn-secondary');
                 btnArrive.classList.add('inactive', 'btn-secondary');
                 btnDepart.addEventListener('click', () => {
-                  console.log('inactive');
+                  //console.log('inactive');
                 });
                 btnArrive.addEventListener('click', () => {
-                  console.log('inactive');
+                  //console.log('inactive');
                 });
               }else{
                 btnDepart.classList.add('btn-success');
                 btnArrive.classList.add('btn-success');
-                btnDepart.addEventListener('click', () => {
+                btnDepart.addEventListener('click', async () => {
                   departIndex = i/3;
-                  console.log(departIndex);
-
-                  // ARRIVE HANDLER 1
-
-                  try{
-
-                  }catch(err){
-                    console.error(err);
-                  }
-
-
-                  processLatLon(latLon);
+                  //console.log(departIndex);
+                  
+                  await processLatLon(latLon);
                   loadGoogleMapsScript2();
                 })
-                btnArrive.addEventListener('click', () => {
+                btnArrive.addEventListener('click', async () => {
                   arriveIndex = i / 3;
-                  console.log(arriveIndex);
-                  processLatLon(latLon);
+                  //console.log(arriveIndex);
+                  // ARRIVE HANDLER 1
+                  console.log(vehicleId);
+                  const arriveResponse = await fetch(`/handlerArrive1`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      vehicleId,
+                    }),
+
+                  });
+                  
+                  // ARRIVE HANDLER 2 
+                  const arriveResponse2 = await fetch(`/handlerArrive2`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      orderId,
+                    }),
+                  });
+
+                  // ARRIVE HANDLER 3
+                  const arriveResponse3 = await fetch(`/handlerArrive3`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      vehicleId,
+                      orderId,
+                    }),
+                  });
+                  await processLatLon(latLon);
                   loadGoogleMapsScript();
                 });
               }
@@ -321,7 +349,7 @@
 
           // Load the Google Maps API
           function loadGoogleMapsScript() {
-            console.log('this is inside load gmap script', arriveIndex);
+            //console.log('this is inside load gmap script', arriveIndex);
             const script = document.createElement('script');
             script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDJqtI-6EiQBZbO1psVwzrUzjRTfvE4BrA&callback=initMap`;
             script.async = true;
@@ -329,7 +357,7 @@
             document.head.appendChild(script);
           }
           function loadGoogleMapsScript2() {
-            console.log('this is inside load gmap script', arriveIndex);
+            //console.log('this is inside load gmap script', arriveIndex);
             const script = document.createElement('script');
             script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDJqtI-6EiQBZbO1psVwzrUzjRTfvE4BrA&callback=dirMap`;
             script.async = true;
@@ -348,7 +376,7 @@
           }
           // 2nd callback function for Google Maps API
           window.dirMap = function () {
-            console.log(departIndex);
+            //console.log(departIndex);
             const map = new google.maps.Map(document.getElementById('map'), {
               center: { lat: latLon[0], lng: latLon[1] },
               zoom: 10,
@@ -366,7 +394,7 @@
                         lng: position.coords.longitude,
                       };
                       driverPos = pos;
-                      console.log(pos);
+                      //console.log(pos);
                       infoWindow.open(map);
                       map.setCenter(pos);
                       resolve();
@@ -387,8 +415,8 @@
             getDriverPosition()
               .then(() => {
                 const waypoints = [];
-                console.log(driverPos);
-                console.log(latLon);
+                //console.log(driverPos);
+                //console.log(latLon);
                 waypoints.push({
                   location: new google.maps.LatLng(driverPos.lat, driverPos.lng),
                 });
@@ -424,7 +452,7 @@
 
           // Callback function for Google Maps API
           window.initMap = function () {
-            console.log(arriveIndex);
+            //console.log(arriveIndex);
             const map = new google.maps.Map(document.getElementById('map'), {
               center: { lat: latLon[0], lng: latLon[1] },
               zoom: 10,
@@ -442,7 +470,7 @@
                         lng: position.coords.longitude,
                       };
                       driverPos = pos;
-                      console.log(pos);
+                      //console.log(pos);
                       infoWindow.open(map);
                       map.setCenter(pos);
                       new google.maps.Marker({
@@ -470,8 +498,8 @@
             getDriverPosition()
               .then(() => {
                 const waypoints = [];
-                console.log(driverPos);
-                console.log(latLon);
+                //console.log(driverPos);
+                //console.log(latLon);
                 waypoints.push({
                   location: new google.maps.LatLng(driverPos.lat, driverPos.lng),
                 });
@@ -499,7 +527,7 @@
                   },
                 });
 
-                console.log(waypoints);
+                //console.log(waypoints);
 
                 const request1 = {
                   origin: waypoints[0].location,
@@ -599,7 +627,7 @@
 
                     totalTravelTime1 = (totalTravelTime1 / 60).toFixed(3);
 
-                    console.log(totalTravelTime1 + 'mins');
+                    //console.log(totalTravelTime1 + 'mins');
                   } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
                     const polyline = new google.maps.Polyline({
                       path: waypoints.map((waypoint) => waypoint.location),
@@ -627,7 +655,7 @@
 
                     totalTravelTime2 = (totalTravelTime2 / 60).toFixed(3);
 
-                    console.log(totalTravelTime2 + 'mins');
+                    //console.log(totalTravelTime2 + 'mins');
                   }
                 });
                 processLatLon(latLon);
