@@ -1,455 +1,520 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Route Page</title>
-    <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles/routePage.css">
-    <link rel="stylesheet" href="styles/sidebar.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Route Page</title>
+  <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles/routePage.css">
+  <link rel="stylesheet" href="styles/sidebar.css">
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 </head>
+
 <body>
-  
-    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark sidebar">
-      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-          <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-          <span class="fs-4">MediTransit</span>
-      </a>
-      <hr>
-      <ul class="nav nav-pills flex-column mb-auto">
-          <li>
-              <a href="#" id="vehicle-link" class="nav-link text-white active">
-                  <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-                  Route
-              </a>
-          </li>
-          <li>
-              <a href="laporanDriver.html" class="nav-link text-white">
-                  <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
-                  Report
-              </a>
-          </li>
-      </ul>
-      <label for="shipment-id-select" class="form-label text-white">Select Shipment ID:</label>
-      <select id="shipment-id-select" class="form-select">
-        <option value="">No Shipment</option>
-      </select>
-      <button id="loadDataBtn" class="btn btn-primary mt-2">Load Data</button>
-      <hr>
-      <div class="dropdown">
-          <h4 id="name"></h4>
+
+  <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark sidebar">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+      <svg class="bi me-2" width="40" height="32">
+        <use xlink:href="#bootstrap" />
+      </svg>
+      <span class="fs-4">MediTransit</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li>
+        <a href="#" id="vehicle-link" class="nav-link text-white active">
+          <svg class="bi me-2" width="16" height="16">
+            <use xlink:href="#grid" />
+          </svg>
+          Route
         </a>
+      </li>
+      <li>
+        <a href="laporanDriver.html" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16">
+            <use xlink:href="#people-circle" />
+          </svg>
+          Report
+        </a>
+      </li>
+    </ul>
+    <label for="shipment-id-select" class="form-label text-white">Select Shipment ID:</label>
+    <select id="shipment-id-select" class="form-select">
+      <option value="">No Shipment</option>
+    </select>
+    <button id="loadDataBtn" class="btn btn-primary mt-2">Load Data</button>
+    <hr>
+    <div class="dropdown">
+      <h4 id="name"></h4>
+      </a>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <div class="container">
+      <div class="inner-container">
+        <h2>Rute</h2>
+        <div id="routes" class="inactive">SELECT SHIPMENT ID</div>
+      </div>
+      <div class="inner-container">
+        <h2 id="order-id-container-header">Order List</h2>
+        <div id="order-id-container" class="inactive">No Defined Order ID</div>
       </div>
     </div>
-
-    <div class="main-container">
-      <div class="container">
-        <div class="inner-container">
-          <h2>Rute</h2>
-          <div id="routes" class="inactive">SELECT SHIPMENT ID</div>
-        </div>
-        <div class="inner-container">
-          <h2 id = "order-id-container-header">Order List</h2>
-          <div id="order-id-container" class = "inactive">No Defined Order ID</div>
-        </div>
-     </div>
-      <div class="map-container">
-          <div id="map"></div>
-      </div>
+    <div class="map-container">
+      <div id="map"></div>
     </div>
-    
-    <script>
-      document.addEventListener('DOMContentLoaded', async function () {
-        try {
-          const idDriver = localStorage.getItem('username');
-          //get username
-          const response4 = await fetch(`/username?idDriver=${idDriver}`);
-          const data4 = await response4.json();
-          localStorage.setItem('driverName', data4[0].name);
-          const driverName = localStorage.getItem('driverName');
-          const nameElement = document.getElementById('name');
-          nameElement.innerHTML = driverName;
+  </div>
 
-          const response2 = await fetch(`/shipmentIdListbyIdDriver?idDriver=${idDriver}`);
-          const data2 = await response2.json();
+  <script>
+    document.addEventListener('DOMContentLoaded', async function () {
+      try {
+        const idDriver = localStorage.getItem('username');
+        //get username
+        const response4 = await fetch(`/username?idDriver=${idDriver}`);
+        const data4 = await response4.json();
+        localStorage.setItem('driverName', data4[0].name);
+        const driverName = localStorage.getItem('driverName');
+        const nameElement = document.getElementById('name');
+        nameElement.innerHTML = driverName;
 
-          const shipmentIdSelect = document.getElementById("shipment-id-select");
-          if(data2.length > 0){
-            shipmentIdSelect.innerHTML = '';
-            data2.forEach((item) => {
-              
-              const option = document.createElement('option');
-              option.value = item.id;
-              option.innerHTML = `Shipment ${item.id}`;
-              shipmentIdSelect.appendChild(option);
-            })
-          }
-          const loadDataBtn = document.getElementById('loadDataBtn');
-          loadDataBtn.addEventListener('click', async function(){
-            const orderIdContainer = document.getElementById('order-id-container');
-            orderIdContainer.classList.add('inactive');
-            orderIdContainer.innerHTML = 'No Defined Order ID';
-            const orderIdContainerHeader = document.getElementById('order-id-container-header');
-            orderIdContainerHeader.innerHTML = 'Order List';
-            const selectedIdShipment = shipmentIdSelect.value;
-            console.log(selectedIdShipment);
-            const latLon = [];
-            const response3 = await fetch(`/warehouseLocation?shipmentId=${selectedIdShipment}`);
-            const data3 = await response3.json();
-            console.log('Warehouse Data: ', data3);
+        let departIndex;
 
-            data3.forEach((item) => {
-              latLon.push(item.latitude, item.longitude, -1);
-            })
-            const response = await fetch(`/routes?shipmentId=${selectedIdShipment}`);
-            const data = await response.json();
-            console.log('Route Data:', data);
-      
-            data.forEach(item => {
-              latLon.push(item.latitude, item.longitude, item.order_id);
-            });
-      
-            data3.forEach((item) => {
-              latLon.push(item.latitude, item.longitude, -1);
-            })
+        const response2 = await fetch(`/shipmentIdListbyIdDriver?idDriver=${idDriver}`);
+        const data2 = await response2.json();
 
-            console.log('Array of latLon:', latLon);
-      
-            const routesElem = document.getElementById('routes');
-            
-            let addressIndex = 1;
-      
-            async function getProductList(orderId) {
-              const response5 = await fetch(`/productList?orderId=${orderId}`);
-              const data5 = await response5.json();
-              console.log(data5);
-              if(data5.length>0){
-                const orderIdContainer = document.getElementById('order-id-container');
-                const orderIdContainerHeader = document.getElementById('order-id-container-header');
-                orderIdContainer.classList.remove('inactive');
-                orderIdContainer.innerHTML = '';
-                orderIdContainerHeader.innerHTML = `Product List for Order ID ${orderId}`;
-                const productTable = document.createElement('table');
-                productTable.classList.add('table', 'table-striped', 'table-bordered');
+        const shipmentIdSelect = document.getElementById("shipment-id-select");
+        if (data2.length > 0) {
+          shipmentIdSelect.innerHTML = '';
+          data2.forEach((item) => {
 
-                const thead = document.createElement('thead');
-                thead.classList.add('thead-dark');
-                const headerRow = thead.insertRow();
-                const headers = ['Product ID', 'Product Code', 'Harga', 'Quantity', 'Harga Total'];
-                headers.forEach(headerText => {
-                  const th = document.createElement('th');
-                  th.scope = 'col';
-                  th.textContent = headerText;
-                  headerRow.appendChild(th);
-                });
-                productTable.appendChild(thead);
-                
-                const tbody = document.createElement('tbody');
-                data5.forEach((item) => {
-                  const row = document.createElement('tr');
-                  row.innerHTML = `
-                    <td>${item.product_id}</td>
-                    <td>${item.product_code}</td>
-                    <td>${item.harga}</td>
-                    <td>${item.quantity}</td>
-                    <td>${item.quantity * item.harga}</td>
-                    `;
-                  tbody.appendChild(row);
-                });
-                productTable.appendChild(tbody);
-                orderIdContainer.appendChild(productTable);
-              }
-            }
-      
-            function geocodeAddress(lat, lng) {
-              return new Promise((resolve, reject) => {
-                const latLng = new google.maps.LatLng(lat, lng);
-                const geocoder = new google.maps.Geocoder();
-      
-                geocoder.geocode({ 'location': latLng }, (results, status) => {
-                  if (status === google.maps.GeocoderStatus.OK) {
-                    if (results[0]) {
-                      resolve(results[0].formatted_address);
-                    } else {
-                      reject('No result found');
-                    }
-                  } else {
-                    reject('Geocoding failed due to: ' + status);
-                  }
-                });
-              });
-            }
-      
-            async function processLatLon(latLon) {
-              const table = document.createElement('table');
-              table.setAttribute('id', 'address-container');
-              table.classList.add('table', 'table-striped', 'table-bordered');
-      
+            const option = document.createElement('option');
+            option.value = item.id;
+            option.innerHTML = `Shipment ${item.id}`;
+            shipmentIdSelect.appendChild(option);
+          })
+        }
+        const loadDataBtn = document.getElementById('loadDataBtn');
+        loadDataBtn.addEventListener('click', async function () {
+          const orderIdContainer = document.getElementById('order-id-container');
+          orderIdContainer.classList.add('inactive');
+          orderIdContainer.innerHTML = 'No Defined Order ID';
+          const orderIdContainerHeader = document.getElementById('order-id-container-header');
+          orderIdContainerHeader.innerHTML = 'Order List';
+          const selectedIdShipment = shipmentIdSelect.value;
+          console.log(selectedIdShipment);
+          const latLon = [];
+          const response3 = await fetch(`/warehouseLocation?shipmentId=${selectedIdShipment}`);
+          const data3 = await response3.json();
+          console.log('Warehouse Data: ', data3);
+
+
+          data3.forEach((item) => {
+            latLon.push(item.latitude, item.longitude, -1);
+          })
+          const response = await fetch(`/routes?shipmentId=${selectedIdShipment}`);
+          const data = await response.json();
+          console.log('Route Data:', data);
+
+          data.forEach(item => {
+            latLon.push(item.latitude, item.longitude, item.order_id);
+          });
+
+          data3.forEach((item) => {
+            latLon.push(item.latitude, item.longitude, -1);
+          })
+
+          console.log('Array of latLon:', latLon);
+
+          const routesElem = document.getElementById('routes');
+
+          let addressIndex = 1;
+
+          async function getProductList(orderId) {
+            const response5 = await fetch(`/productList?orderId=${orderId}`);
+            const data5 = await response5.json();
+            console.log(data5);
+            if (data5.length > 0) {
+              const orderIdContainer = document.getElementById('order-id-container');
+              const orderIdContainerHeader = document.getElementById('order-id-container-header');
+              orderIdContainer.classList.remove('inactive');
+              orderIdContainer.innerHTML = '';
+              orderIdContainerHeader.innerHTML = `Product List for Order ID ${orderId}`;
+              const productTable = document.createElement('table');
+              productTable.classList.add('table', 'table-striped', 'table-bordered');
+
               const thead = document.createElement('thead');
               thead.classList.add('thead-dark');
               const headerRow = thead.insertRow();
-              
-              const headers = ['Posisi', 'Alamat', 'Order ID', 'Depart', 'Arrive'];
+              const headers = ['Product ID', 'Product Code', 'Harga', 'Quantity', 'Harga Total'];
               headers.forEach(headerText => {
                 const th = document.createElement('th');
                 th.scope = 'col';
                 th.textContent = headerText;
                 headerRow.appendChild(th);
               });
-      
-              table.appendChild(thead);
-      
+              productTable.appendChild(thead);
+
               const tbody = document.createElement('tbody');
-      
-              for (let i = 0; i < latLon.length; i += 3) {
-                const lat = latLon[i];
-                const lng = latLon[i + 1];
-                const orderId = latLon[i + 2];
-      
-                const row = tbody.insertRow();
-                row.classList.add('address-row');
-      
-                const cell = row.insertCell(0);
-                cell.scope = 'row';
-                if (i === 0 || i === latLon.length - 3) {
-                  cell.innerText = 'Gudang';
-                } else {
-                  cell.innerText = `Pos: ${addressIndex}`;
-                  addressIndex++;
-                }
-      
-                const addressCell = row.insertCell(1);
-                const listItemCell  = row.insertCell(2);
-                listItemCell.innerText = orderId;
-                const departCell = row.insertCell(3);
-                const arriveCell = row.insertCell(4);
-                const btnDepart = document.createElement('button');
-                const btnArrive = document.createElement('button');
-                btnDepart.classList.add('btn', 'btn-success');
-                btnArrive.classList.add('btn', 'btn-success');
-                btnArrive.innerHTML = 'Depart';
-                btnDepart.innerHTML = 'Arrive';
-                departCell.appendChild(btnDepart);
-                arriveCell.appendChild(btnArrive);
-                listItemCell.addEventListener('click', () => {
-                  getProductList(orderId);
-                })
-      
-                try {
-                  routesElem.innerHTML = '';
-                  routesElem.classList.remove('inactive');
-                  const formattedAddress = await geocodeAddress(lat, lng);
-                  addressCell.innerText = formattedAddress;
-      
-                  row.appendChild(cell);
-                  row.appendChild(addressCell);
-                  row.appendChild(listItemCell);
-                  row.appendChild(departCell);
-                  row.appendChild(arriveCell);
-                  tbody.appendChild(row);
-                } catch (error) {
-                  console.error(error);
-                }
-              }
-      
-              table.appendChild(tbody);
-              routesElem.appendChild(table);
-            }
-      
-            // Load the Google Maps API
-            function loadGoogleMapsScript() {
-              const script = document.createElement('script');
-              script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDJqtI-6EiQBZbO1psVwzrUzjRTfvE4BrA&callback=initMap`;
-              script.async = true;
-              script.defer = true;
-              document.head.appendChild(script);
-            }
-      
-            // Callback function for Google Maps API
-            window.initMap = function () {
-              const map = new google.maps.Map(document.getElementById('map'), {
-                center: { lat: latLon[0], lng: latLon[1] },
-                zoom: 10,
+              data5.forEach((item) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.product_id}</td>
+                    <td>${item.product_code}</td>
+                    <td>${item.harga}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.quantity * item.harga}</td>
+                    `;
+                tbody.appendChild(row);
               });
-      
-              const waypoints = [];
-              for (let i = 0; i < latLon.length; i += 3) {
-                waypoints.push({
-                  location: new google.maps.LatLng(latLon[i], latLon[i + 1])
-                });
-              }
-
-              const directionsService = new google.maps.DirectionsService();
-
-              const directionsRenderer1 = new google.maps.DirectionsRenderer({
-                  map: map,
-                  suppressMarkers: true
-              }); 
-
-              const directionsRenderer2 = new google.maps.DirectionsRenderer({
-                  map: map,
-                  suppressMarkers: true,
-                  polylineOptions: {
-                      strokeColor: 'red',
-                      strokeOpacity: 0.8,
-                      strokeWeight: 6
-                  },
-              }); 
-              
-              console.log(waypoints);
-              
-              const request1 = {
-                  origin: waypoints[0].location,
-                  destination: waypoints[waypoints.length - 2].location,
-                  waypoints: waypoints.slice(1, -2),
-                  travelMode: google.maps.TravelMode.DRIVING
-              };
-
-              const request2 = {
-                  origin: waypoints[waypoints.length - 1].location,
-                  destination: waypoints[waypoints.length - 2].location,
-                  travelMode: google.maps.TravelMode.DRIVING
-              }
-              let transportType = 'Motor';
-              if(transportType === 'Motor'){
-                request1.travelMode = google.maps.TravelMode.TWO_WHEELER;
-                request2.travelMode = google.maps.TravelMode.TWO_WHEELER;
-                
-                directionsRenderer1.setOptions({
-                    suppressPolylines: true,
-                });
-                directionsRenderer2.setOptions({
-                    suppressPolylines: true,
-                });
-
-                directionsService.route(request1, function(twoWheelerResponse, status) {
-                    if (status === 'OK') {
-                        const detailPolyLines = twoWheelerResponse.routes[0].legs.reduce((allPolylines, leg) => {
-                            const stepPolylines = leg.steps.map(step => step.polyline.points);
-                            return allPolylines.concat(stepPolylines);
-                        }, []);
-                        
-                        const detailLatLon = detailPolyLines.reduce((allLatLngs, polyline) => {
-                            return allLatLngs.concat(google.maps.geometry.encoding.decodePath(polyline));
-                        }, []);
-                        const twoWheelerPolyline = new google.maps.Polyline({
-                            path: detailLatLon,
-                            strokeColor: '#4285F4',
-                            strokeOpacity: 0.7,
-                            strokeWeight: 5,
-                            map: map
-                        });
-                    }
-                });
-
-                
-                directionsService.route(request2, function(twoWheelerResponse, status) {
-                    if (status === 'OK') {
-                        const twoWheelerPolyline = new google.maps.Polyline({
-                            path: twoWheelerResponse.routes[0].overview_path,
-                            strokeColor: 'red',
-                            strokeOpacity: 0.7,
-                            strokeWeight: 5,
-                            map: map
-                        });
-                    }
-                });
-                for(var i = 0; i < latLon.length; i+=3){
-                  let label;
-                  if(i === 0 || i === latLon.length - 3){
-                      label = 'X';
-                      new google.maps.Marker({
-                          position: {lat: latLon[i], lng: latLon[i+1]},
-                          map: map,
-                          title: 'Waypoint Marker',
-                          label: {text: ' ', color: 'white'},
-                          icon:'assets/gmaps_marker.png'
-                      });
-                  }else{
-                      label = i/3;
-                      label = label.toString();
-                      new google.maps.Marker({
-                          position: {lat: latLon[i], lng: latLon[i+1]},
-                          map: map,
-                          title: 'Waypoint Marker',
-                          label: {text: label, color: 'white'}
-                      });
-                  }
-              }
-
-                directionsService.route(request1, function (result, status) {
-                  if (status === google.maps.DirectionsStatus.OK) {
-                      directionsRenderer1.setMap(map);
-                      directionsRenderer1.setDirections(result);
-                      let totalTravelTime1 = 0;
-
-                      for (let i = 0; i < result.routes[0].legs.length; i++) {
-                          totalTravelTime1 += result.routes[0].legs[i].duration.value;
-                      }
-
-                      totalTravelTime1 = (totalTravelTime1 / 60).toFixed(3);
-
-                      console.log(totalTravelTime1 + 'mins');
-
-                  } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
-                      const polyline = new google.maps.Polyline({
-                          path: waypoints.map(waypoint => waypoint.location),
-                          geodesic: true,
-                          strokeColor: '#FF0000',
-                          strokeOpacity: 1.0,
-                          strokeWeight: 2
-                      });
-                      polyline.setMap(map);
-                  } else {
-                      console.error('Directions request failed. Status: ' + status);
-                  }
-              });
-              directionsService.route(request2, (result, status)=>{
-                if(status === google.maps.DirectionsStatus.OK){
-                    directionsRenderer2.setMap(map);
-                    directionsRenderer2.setDirections(result);
-                    let totalTravelTime2 = 0;
-
-                    for (let i = 0; i < result.routes[0].legs.length; i++) {
-                        totalTravelTime2 += result.routes[0].legs[i].duration.value;
-                    }
-
-                    totalTravelTime2 = (totalTravelTime2 / 60).toFixed(3);
-
-                    console.log(totalTravelTime2 + 'mins');
-                }
-            })
+              productTable.appendChild(tbody);
+              orderIdContainer.appendChild(productTable);
+            }
           }
 
-            
-            processLatLon(latLon);
-          };
-    
-          loadGoogleMapsScript();
-    
-          const orderIdContainerElement = document.getElementById('order-id-container');
-          })
+          function geocodeAddress(lat, lng) {
+            return new Promise((resolve, reject) => {
+              const latLng = new google.maps.LatLng(lat, lng);
+              const geocoder = new google.maps.Geocoder();
+
+              geocoder.geocode({ 'location': latLng }, (results, status) => {
+                if (status === google.maps.GeocoderStatus.OK) {
+                  if (results[0]) {
+                    resolve(results[0].formatted_address);
+                  } else {
+                    reject('No result found');
+                  }
+                } else {
+                  reject('Geocoding failed due to: ' + status);
+                }
+              });
+            });
+          }
+
+          async function processLatLon(latLon) {
+            const table = document.createElement('table');
+            table.setAttribute('id', 'address-container');
+            table.classList.add('table', 'table-striped', 'table-bordered');
+
+            const thead = document.createElement('thead');
+            thead.classList.add('thead-dark');
+            const headerRow = thead.insertRow();
+
+            const headers = ['Posisi', 'Alamat', 'Order ID', 'Depart', 'Arrive'];
+            headers.forEach(headerText => {
+              const th = document.createElement('th');
+              th.scope = 'col';
+              th.textContent = headerText;
+              headerRow.appendChild(th);
+            });
+
+            table.appendChild(thead);
+
+            const tbody = document.createElement('tbody');
+
+            for (let i = 0; i < latLon.length; i += 3) {
+              const lat = latLon[i];
+              const lng = latLon[i + 1];
+              const orderId = latLon[i + 2];
+
+              const row = tbody.insertRow();
+              row.classList.add('address-row');
+
+              const cell = row.insertCell(0);
+              cell.scope = 'row';
+              if (i === 0 || i === latLon.length - 3) {
+                cell.innerText = 'Gudang';
+              } else {
+                cell.innerText = `Pos: ${addressIndex}`;
+                addressIndex++;
+              }
+
+              const addressCell = row.insertCell(1);
+              const listItemCell = row.insertCell(2);
+              listItemCell.innerText = orderId;
+              const departCell = row.insertCell(3);
+              const arriveCell = row.insertCell(4);
+              const btnDepart = document.createElement('button');
+              btnDepart.classList.add('btn', 'btn-success');
+              btnDepart.innerHTML = 'Depart';
+
+              const btnArrive = document.createElement('button');
+              btnArrive.classList.add('btn', 'btn-success');
+              btnArrive.innerHTML = 'Arrive';
+
+              departCell.appendChild(btnDepart);
+              arriveCell.appendChild(btnArrive);
+
+              btnDepart.addEventListener('click', () => {
+                departIndex = i / 3;
+                console.log(departIndex);
+                loadGoogleMapsScript();
+              });
+              listItemCell.addEventListener('click', () => {
+                getProductList(orderId);
+              })
+
+              try {
+                routesElem.innerHTML = '';
+                routesElem.classList.remove('inactive');
+                const formattedAddress = await geocodeAddress(lat, lng);
+                addressCell.innerText = formattedAddress;
+
+                row.appendChild(cell);
+                row.appendChild(addressCell);
+                row.appendChild(listItemCell);
+                row.appendChild(departCell);
+                row.appendChild(arriveCell);
+                tbody.appendChild(row);
+              } catch (error) {
+                console.error(error);
+              }
+            }
+
+            table.appendChild(tbody);
+            routesElem.appendChild(table);
+          }
+
+          // Load the Google Maps API
           function loadGoogleMapsScript() {
+            console.log('this is inside load gmap script', departIndex);
             const script = document.createElement('script');
             script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDJqtI-6EiQBZbO1psVwzrUzjRTfvE4BrA&callback=initMap`;
             script.async = true;
             script.defer = true;
             document.head.appendChild(script);
           }
-    
+          let infoWindow;
+          function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+            infoWindow.setPosition(pos);
+            infoWindow.setContent(
+              browserHasGeolocation
+                ? "Error: The Geolocation service failed."
+                : "Error: Your browser doesn't support geolocation.",
+            );
+            infoWindow.open(map);
+          }
           // Callback function for Google Maps API
           window.initMap = function () {
+            console.log(departIndex);
             const map = new google.maps.Map(document.getElementById('map'), {
-              center: { lat: -6.2088, lng: 106.8456 }, // Center of Jakarta
+              center: { lat: latLon[0], lng: latLon[1] },
               zoom: 10,
             });
+            infoWindow = new google.maps.InfoWindow();
+            let driverPos;
+            let myPromise = new Promise(function(resolve, reject){
+              if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                  (position) => {
+                    driverPos = {
+                      lat: position.coords.latitude,
+                      lng: position.coords.longitude,
+                    };
+                    infoWindow.open(map);
+                    map.setCenter(driverPos);
+                    new google.maps.Marker({
+                      position: { lat: driverPos.lat, lng: driverPos.lng },
+                      map: map,
+                      title: 'Waypoint Marker',
+                      label: { text: ' ', color: 'white' },
+                      icon: 'assets/gmaps_marker.png'
+                    });
+                  },
+                  () => {
+                    handleLocationError(true, infoWindow, map.getCenter());
+                  },
+                );
+                
+              } else {
+                // Browser doesn't support Geolocation
+                handleLocationError(false, infoWindow, map.getCenter());
+              }
+            })
+            myPromise.then(
+              
+            );
+            console.log(driverPos);
+            const waypoints = [];
+            for (let i = 0; i < latLon.length; i += 3) {
+              waypoints.push({
+                location: new google.maps.LatLng(latLon[i], latLon[i + 1])
+              });
+            }
+
+            const directionsService = new google.maps.DirectionsService();
+
+            const directionsRenderer1 = new google.maps.DirectionsRenderer({
+              map: map,
+              suppressMarkers: true
+            });
+
+            const directionsRenderer2 = new google.maps.DirectionsRenderer({
+              map: map,
+              suppressMarkers: true,
+              polylineOptions: {
+                strokeColor: 'red',
+                strokeOpacity: 0.8,
+                strokeWeight: 6
+              },
+            });
+
+            console.log(waypoints);
+
+            const request1 = {
+              origin: waypoints[0].location,
+              destination: waypoints[waypoints.length - 2].location,
+              waypoints: waypoints.slice(1, -2),
+              travelMode: google.maps.TravelMode.DRIVING
+            };
+
+            const request2 = {
+              origin: waypoints[waypoints.length - 2].location,
+              destination: waypoints[waypoints.length - 1].location,
+              travelMode: google.maps.TravelMode.DRIVING
+            }
+            let transportType = 'Motor';
+            if (transportType === 'Motor') {
+              request1.travelMode = google.maps.TravelMode.TWO_WHEELER;
+              request2.travelMode = google.maps.TravelMode.TWO_WHEELER;
+
+              directionsRenderer1.setOptions({
+                suppressPolylines: true,
+              });
+              directionsRenderer2.setOptions({
+                suppressPolylines: true,
+              });
+
+              directionsService.route(request1, function (twoWheelerResponse, status) {
+                if (status === 'OK') {
+                  const detailPolyLines = twoWheelerResponse.routes[0].legs.reduce((allPolylines, leg) => {
+                    const stepPolylines = leg.steps.map(step => step.polyline.points);
+                    return allPolylines.concat(stepPolylines);
+                  }, []);
+
+                  const detailLatLon = detailPolyLines.reduce((allLatLngs, polyline) => {
+                    return allLatLngs.concat(google.maps.geometry.encoding.decodePath(polyline));
+                  }, []);
+                  const twoWheelerPolyline = new google.maps.Polyline({
+                    path: detailLatLon,
+                    strokeColor: '#4285F4',
+                    strokeOpacity: 0.7,
+                    strokeWeight: 5,
+                    map: map
+                  });
+                }
+              });
+
+
+              directionsService.route(request2, function (twoWheelerResponse, status) {
+                if (status === 'OK') {
+                  const twoWheelerPolyline = new google.maps.Polyline({
+                    path: twoWheelerResponse.routes[0].overview_path,
+                    strokeColor: 'red',
+                    strokeOpacity: 0.7,
+                    strokeWeight: 5,
+                    map: map
+                  });
+                }
+              });
+              for (var i = 0; i < latLon.length; i += 3) {
+                let label;
+                if (i === 0 || i === latLon.length - 3) {
+                  label = 'X';
+                  new google.maps.Marker({
+                    position: { lat: latLon[i], lng: latLon[i + 1] },
+                    map: map,
+                    title: 'Waypoint Marker',
+                    label: { text: ' ', color: 'white' },
+                    icon: 'assets/gmaps_marker.png'
+                  });
+                } else {
+                  label = i / 3;
+                  label = label.toString();
+                  new google.maps.Marker({
+                    position: { lat: latLon[i], lng: latLon[i + 1] },
+                    map: map,
+                    title: 'Waypoint Marker',
+                    label: { text: label, color: 'white' }
+                  });
+                }
+              }
+
+              directionsService.route(request1, function (result, status) {
+                if (status === google.maps.DirectionsStatus.OK) {
+                  directionsRenderer1.setMap(map);
+                  directionsRenderer1.setDirections(result);
+                  let totalTravelTime1 = 0;
+
+                  for (let i = 0; i < result.routes[0].legs.length; i++) {
+                    totalTravelTime1 += result.routes[0].legs[i].duration.value;
+                  }
+
+                  totalTravelTime1 = (totalTravelTime1 / 60).toFixed(3);
+
+                  console.log(totalTravelTime1 + 'mins');
+
+                } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
+                  const polyline = new google.maps.Polyline({
+                    path: waypoints.map(waypoint => waypoint.location),
+                    geodesic: true,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2
+                  });
+                  polyline.setMap(map);
+                } else {
+                  console.error('Directions request failed. Status: ' + status);
+                }
+              });
+              directionsService.route(request2, (result, status) => {
+                if (status === google.maps.DirectionsStatus.OK) {
+                  directionsRenderer2.setMap(map);
+                  directionsRenderer2.setDirections(result);
+                  let totalTravelTime2 = 0;
+
+                  for (let i = 0; i < result.routes[0].legs.length; i++) {
+                    totalTravelTime2 += result.routes[0].legs[i].duration.value;
+                  }
+
+                  totalTravelTime2 = (totalTravelTime2 / 60).toFixed(3);
+
+                  console.log(totalTravelTime2 + 'mins');
+                }
+              })
+            }
+
+
+            processLatLon(latLon);
           };
+
           loadGoogleMapsScript();
-        } catch (error) {
-          console.error('Error fetching data:', error);
+
+          const orderIdContainerElement = document.getElementById('order-id-container');
+        })
+        function loadGoogleMapsScript() {
+          const script = document.createElement('script');
+          script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDJqtI-6EiQBZbO1psVwzrUzjRTfvE4BrA&callback=initMap`;
+          script.async = true;
+          script.defer = true;
+          document.head.appendChild(script);
         }
-      });
-    </script>
-    
+
+        // Callback function for Google Maps API
+        window.initMap = function () {
+          const map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: -6.2088, lng: 106.8456 }, // Center of Jakarta
+            zoom: 10,
+          });
+        };
+        loadGoogleMapsScript();
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    });
+  </script>
+
 </body>
+
 </html>
