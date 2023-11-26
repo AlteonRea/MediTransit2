@@ -79,14 +79,24 @@
             <div class="detail">
               <h2>Details</h2>
               <div class="cito-list">
-                <p>CITO 1, Organs</p>
-                <p>CITO 2, IVAK</p>
-                <p>CITO 3, ESK</p>
-                <p>CITO 4, Narcan</p>
-                <p>CITO 5, Tourniquet</p>
+                <div id="cito-orders" class="delivery-count">
+                </div>
               </div>
             </div>
             <button class="btn btn-danger" onclick="resolveIssueCito()">Send Driver</button>
+          </div>
+        </div>
+        <div class="popup-container" id="popupDelayedContainer">
+          <div class="popup">
+            <span class="close" onclick="closePopupDelayed()">&times;</span>
+            <div class="detail">
+              <h2>Details</h2>
+              <div class="cito-list">
+                <div id="delayed-orders" class="delivery-count">
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-danger" onclick="resolveIssueDelayed()">Send Driver</button>
           </div>
         </div>
         <div id="cito-header" class="cito-header d-none">
@@ -140,6 +150,44 @@
               <h2>Delayed</h2>
             </div>
             <div id="delayed" class="delivery-count">
+
+            </div>
+            <button class="btn btn-primary" onclick="showPopupDelayed()">Deliver All</button>
+          </div>
+        </div>
+
+        <div class="deliveryCardContainer">
+          <div class="delivery-card">
+            <div class="deliver-header">
+              <h2>Available</h2>
+            </div>
+            <div id="available-vehicle" class="delivery-count">
+
+            </div>
+          </div>
+
+          <div class="delivery-card">
+            <div class="deliver-header">
+              <h2>On-Delivery</h2>
+            </div>
+            <div id="on-delivery-vehicle" class="delivery-count">
+            </div>
+          </div>
+
+          <div class="delivery-card">
+            <div class="deliver-header">
+              <h2>On-Maintenance</h2>
+            </div>
+            <div id="on-maintenance-vehicle" class="delivery-count">
+
+            </div>
+          </div>
+
+          <div class="delivery-card">
+            <div class="deliver-header">
+              <h2>Not Available</h2>
+            </div>
+            <div id="not-available-vehicle" class="delivery-count">
 
             </div>
           </div>
@@ -291,6 +339,67 @@
             console.log("accident Count: ", data7);
             accidentDetail.innerHTML = `<p>${data7[0]['count(*)']} ACCIDENT DETECTED</>`
           }
+
+          const response9 = await fetch('/citoOrders');
+          const data9 = await response9.json();
+          console.log(data9)
+
+          if (data9) {
+            const citoorders = document.getElementById('cito-orders');
+            citoorders.innerHTML = ``
+            for (let i = 0; i < data9.length; i++) {
+              citoorders.innerHTML += `<h1>Order ID ${data9[i]['order_id']} on Branch ${data9[i]['branch_code']}</h1>`;
+            }
+          }
+
+          const response10 = await fetch('/delayedOrders');
+          const data10 = await response10.json();
+          console.log(data10)
+
+          if (data10) {
+            const citoorders = document.getElementById('delayed-orders');
+            citoorders.innerHTML = ``
+            for (let i = 0; i < data10.length; i++) {
+              citoorders.innerHTML += `<h1>Order ID ${data10[i]['order_id']} on Branch ${data10[i]['branch_code']}</h1>`;
+            }
+          }
+
+
+
+
+          const response11 = await fetch('/availableVehicleCount');
+          const data11 = await response11.json();
+
+          if (data11) {
+            const availablev = document.getElementById('available-vehicle');
+            availablev.innerHTML = `<h1>${data11[0]['count(*)']}</h1>`;
+          }
+
+          const response12 = await fetch('/onDeliveryVehicleCount');
+          const data12 = await response12.json();
+
+          if (data12) {
+            const deliveryv = document.getElementById('on-delivery-vehicle');
+            deliveryv.innerHTML = `<h1>${data12[0]['count(*)']}</h1>`;
+          }
+
+          const response13 = await fetch('/onMaintenanceVehicleCount');
+          const data13 = await response13.json();
+
+          if (data13) {
+            const maintv = document.getElementById('on-maintenance-vehicle');
+            maintv.innerHTML = `<h1>${data13[0]['count(*)']}</h1>`;
+          }
+
+          const response14 = await fetch('/notAvailableVehicleCount');
+          const data14 = await response14.json();
+
+          if (data14) {
+            const notavailv = document.getElementById('not-available-vehicle');
+            notavailv.innerHTML = `<h1>${data14[0]['count(*)']}</h1>`;
+          }
+          
+
         } catch (err) {
           console.error(err);
         }
@@ -305,6 +414,15 @@
       function closePopupCito() {
         document.getElementById('popupCitoContainer').style.display = 'none';
       }
+
+      function showPopupDelayed() {
+        document.getElementById('popupDelayedContainer').style.display = 'flex';
+      }
+
+      function closePopupDelayed() {
+        document.getElementById('popupDelayedContainer').style.display = 'none';
+      }
+
 
       function rebuildDatabase() {
         var xhr = new XMLHttpRequest();
