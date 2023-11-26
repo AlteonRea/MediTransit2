@@ -25,7 +25,7 @@
       <li>
         <a href="#" class="nav-link active text-white">
           <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
-          Daftar Pengiriman 
+          Delivery List
         </a>
       </li>
       <li>
@@ -44,8 +44,8 @@
     <div class="d-flex main-container">
       <div class="content">
         <h2>Delivery List</h2>
-        <table class="table table-striped">
-            <thead>
+        <table class="table table-striped table-bordered">
+            <thead class = "">
                 <tr>
                     <th>Branch ID</th>
                     <th>Dispatch Date</th>
@@ -66,7 +66,7 @@
     <script>
       document.addEventListener("DOMContentLoaded", async function(){
         try{
-          const response = await fetch('/shipmentList');
+          const response = await fetch('/shipmentOnDeliveryList');
           const data = await response.json();
           if(data){
               const onDeliveryTableBody = document.getElementById('onDeliveryTableBody');
@@ -92,7 +92,7 @@
                   row.innerHTML = `
                     <td>${item.branch_id}</td>
                     <td>${formattedDate}</td>
-                    <td>${item.distance_cost}</td>
+                    <td>${item.distance_cost.toFixed(2)}</td>
                     <td>${item.id}</td>
                     <td>${item.status}</td>
                     <td>${item.vehicle_id}</td>

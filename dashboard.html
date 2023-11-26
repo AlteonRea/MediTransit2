@@ -1,131 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles/dashboard.css">
-    <title>Admin Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles/dashboard.css">
+  <title>Admin Dashboard</title>
 </head>
+
 <body>
-  <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; position: fixed; top: 0; bottom: 0; overflow-y: auto;">
+  <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark"
+    style="width: 280px; position: fixed; top: 0; bottom: 0; overflow-y: auto;">
     <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+      <svg class="bi me-2" width="40" height="32">
+        <use xlink:href="#bootstrap" />
+      </svg>
       <span class="fs-4">MediTransit</span>
     </a>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
       <li>
         <a href="#" class="nav-link active text-white">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+          <svg class="bi me-2" width="16" height="16">
+            <use xlink:href="#speedometer2" />
+          </svg>
           Dashboard
         </a>
       </li>
       <li>
         <a href="daftarpengiriman.html" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
-          Daftar Pengiriman 
+          <svg class="bi me-2" width="16" height="16">
+            <use xlink:href="#speedometer2" />
+          </svg>
+          Delivery List
         </a>
       </li>
       <li>
         <a href="deliverytrouble.html" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+          <svg class="bi me-2" width="16" height="16">
+            <use xlink:href="#speedometer2" />
+          </svg>
           Delivery Trouble
         </a>
       </li>
     </ul>
   </div>
-    <div class="d-flex main-container">
-          <div class="content">
-            <nav class="navbar navbar-expand-lg navbar-light">
-              <div class="container-fluid">
-                  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                      <span class="navbar-toggler-icon"></span>
-                  </button>
-                  <div class="collapse navbar-collapse" id="navbarNav">
-                      <ul class="navbar-nav">
-                          <li class="nav-item">
-                              <button class="btn btn-primary" onclick="rebuildDatabase()">Rebuild Database</button>
-                          </li>
-                          <li class="nav-item">
-                              <button class="btn btn-primary" onclick="generateOrders()">Generate Orders</button>
-                          </li>
-                          <li class="nav-item">
-                              <button class="btn btn-primary" onclick="generateAvalVehicle()">Generate Available Vehicle</button>
-                          </li>
-                          <li class="nav-item">
-                              <button class="btn btn-primary" onclick="deliverAll()">Deliver All</button>
-                          </li>
-                      </ul>
-                  </div>
-              </div>
-          </nav>
-          <div class="container2">
-            <div class="popup-container" id="popupCitoContainer">
-              <div class="popup">
-                  <span class="close" onclick="closePopupCito()">&times;</span>
-                  <h2>AVAILABLE VEHICLE</h2>
-                  <p>Kendaraan id 1, mobil available</p>
-                  <button class="btn btn-success" onclick="resolveIssueCito()">Send Driver</button>
-              </div>
-            </div>
-            <div id = "cito-header" class="cito-header d-none">
-                <h2>CITO ALERT!!!</h2>
-            </div>
-    
-            <div id = "cito-card" class="cito-card d-none">
-                <h3>CITO Counts</h3>
-                <p id="cito-detail"></p>
-                <button class="btn btn-danger" onclick="showPopupCito()">Take Action</button>
-            </div>
-
-            <div id = "accident-header"class="cito-header d-none">
-              <h2>ACCIDENT ALERT!!!</h2>
-            </div>
-
-            <div id = "accident-card" class="cito-card d-none">
-                <h3>Accident Details</h3>
-                <p id ="accident-detail"></p>
-                <button class="btn btn-danger" onclick="takeActionAccident()">Take Action</button>
-            </div>
-            <div class="deliveryCardContainer">
-              <div class="delivery-card">
-                <div class="deliver-header">
-                  <h2>Distributed</h2>
-                </div>
-                <div id="distributed" class="delivery-count">
-    
-                </div>
-              </div>
-
-              <div class="delivery-card">
-                <div class="deliver-header">
-                  <h2>On-Distribution</h2>
-                </div>
-                <div id="on-distribution" class="delivery-count">
-                </div>
-              </div>
-
-              <div class="delivery-card">
-                <div class="deliver-header">
-                  <h2>To-be Distributed</h2>
-                </div>
-                <div id="to-be-distributed" class="delivery-count">
-
-                </div>
-              </div>
-
-              <div class="delivery-card">
-                <div class="deliver-header">
-                  <h2>Delayed</h2>
-                </div>
-                <div id="delayed" class="delivery-count">
-
-                </div>
+  <div class="d-flex main-container">
+    <div class="content">
+      <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <button class="btn btn-primary" onclick="rebuildDatabase()">Rebuild Database</button>
+              </li>
+              <li class="nav-item">
+                <button class="btn btn-primary" onclick="generateOrders()">Generate Orders</button>
+              </li>
+              <li class="nav-item">
+                <button class="btn btn-primary" onclick="generateAvalVehicle()">Generate Available Vehicle</button>
+              </li>
+              <li class="nav-item">
+                <button class="btn btn-primary" onclick="deliverAll()">Deliver All</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <div class="container2">
+        <div class="popup-container" id="popupCitoContainer">
+          <div class="popup">
+            <span class="close" onclick="closePopupCito()">&times;</span>
+            <div class="detail">
+              <h2>Details</h2>
+              <div class="cito-list">
+                <p>CITO 1, Organs</p>
+                <p>CITO 2, IVAK</p>
+                <p>CITO 3, ESK</p>
+                <p>CITO 4, Narcan</p>
+                <p>CITO 5, Tourniquet</p>
               </div>
             </div>
-          
-          <!-- <hr>
+            <button class="btn btn-danger" onclick="resolveIssueCito()">Send Driver</button>
+          </div>
+        </div>
+        <div id="cito-header" class="cito-header d-none">
+          <h2>CITO ALERT!!!</h2>
+        </div>
+
+        <div id="cito-card" class="cito-card d-none">
+          <h3>CITO Counts</h3>
+          <p id="cito-detail"></p>
+          <button class="btn btn-danger" onclick="showPopupCito()">Take Action</button>
+        </div>
+
+        <div id="accident-header" class="cito-header d-none">
+          <h2>ACCIDENT ALERT!!!</h2>
+        </div>
+
+        <div id="accident-card" class="cito-card d-none">
+          <h3>Accident Details</h3>
+          <p id="accident-detail"></p>
+          <button class="btn btn-danger" onclick="takeActionAccident()">Take Action</button>
+        </div>
+        <div class="deliveryCardContainer">
+          <div class="delivery-card">
+            <div class="deliver-header">
+              <h2>Distributed</h2>
+            </div>
+            <div id="distributed" class="delivery-count">
+
+            </div>
+          </div>
+
+          <div class="delivery-card">
+            <div class="deliver-header">
+              <h2>On-Distribution</h2>
+            </div>
+            <div id="on-distribution" class="delivery-count">
+            </div>
+          </div>
+
+          <div class="delivery-card">
+            <div class="deliver-header">
+              <h2>To-be Distributed</h2>
+            </div>
+            <div id="to-be-distributed" class="delivery-count">
+
+            </div>
+          </div>
+
+          <div class="delivery-card">
+            <div class="deliver-header">
+              <h2>Delayed</h2>
+            </div>
+            <div id="delayed" class="delivery-count">
+
+            </div>
+          </div>
+        </div>
+
+        <!-- <hr>
           <h2>Order list</h2>
           <table class="table table-striped">
               <thead>
@@ -157,14 +177,14 @@
               <tbody id="avalVehicleBody">
               </tbody>
           </table> -->
-          </div>
-          <div class="weather-container">
-            <img src="assets/weather.jpg" alt="">
-        </div>
+      </div>
+      <div class="weather-container">
+        <img src="assets/weather.jpg" alt="">
+      </div>
     </div>
     <script>
-        document.addEventListener("DOMContentLoaded", async function(){
-          try{/*
+      document.addEventListener("DOMContentLoaded", async function () {
+        try {/*
             const response = await fetch('/avalVehicleList');
             const data = await response.json();
             console.log('Aval Vehicle: ', data);
@@ -207,116 +227,117 @@
               });
             }*/
 
-            // TO BE DISTRIBUTED COUNT
-            const response3 = await fetch('/tbDistributedCount');
-            const data3 = await response3.json();
+          // TO BE DISTRIBUTED COUNT
+          const response3 = await fetch('/tbDistributedCount');
+          const data3 = await response3.json();
 
-            if (data3) {
-              const tbDistributed = document.getElementById('to-be-distributed');
-              tbDistributed.innerHTML = `<h1>${data3[0]['count(*)']}</h1>`;
-            }
-
-            // CITO COUNT
-            const response4 = await fetch('/citocount');
-            const data4 = await response4.json();
-            //console.log(typeof data4[0]['count(*)']);
-
-            if(data4[0]['count(*)'] > 0){
-              const citoHeader = document.getElementById('cito-header');
-              const citoCard = document.getElementById('cito-card');
-              const citoDetail = document.getElementById('cito-detail');
-              citoHeader.classList.remove('d-none');
-              citoCard.classList.remove('d-none');
-              console.log("Cito Count: ", data4);
-              citoDetail.innerHTML = `<p>${data4[0]['count(*)']} CITO DETECTED</>`
-            }
-
-            // DISTRIBUTED COUNT
-            const response5 = await fetch('/distributedCount');
-            const data5 = await response5.json();
-
-            if(data5){
-              console.log(data5);
-              const distributed = document.getElementById('distributed');
-              distributed.innerHTML = `<h1>${data5[0]['count(*)']}</h1>`;
-            }
-
-            // ON DISTRIBUTION COUNT
-            const response6 = await fetch('/onDistributionCount');
-            const data6 = await response6.json();
-
-            if(data6){
-              const onDistribution = document.getElementById('on-distribution');
-              onDistribution.innerHTML = `<h1>${data6[0]['count(*)']}</h1>`;
-            }
-
-            // DELAYED COUNT
-            const response8 = await fetch('/delayedCount');
-            const data8 = await response8.json();
-
-            if(data8){
-              const delayed = document.getElementById('delayed');
-              delayed.innerHTML = `<h1>${data8[0]['count(*)']}</h1>`;
-            }
-
-            const response7 = await fetch('accidentCount');
-            const data7 = await response7.json();
-          
-            if(data7[0]['count(*)'] > 0){
-              const accidentHeader = document.getElementById('accident-header');
-              const accidentCard = document.getElementById('accident-card');
-              const accidentDetail = document.getElementById('accident-detail');
-              accidentHeader.classList.remove('d-none');
-              accidentCard.classList.remove('d-none');
-              console.log("accident Count: ", data7);
-              accidentDetail.innerHTML = `<p>${data7[0]['count(*)']} ACCIDENT DETECTED</>`
-            }
-          }catch(err){
-            console.error(err);
+          if (data3) {
+            const tbDistributed = document.getElementById('to-be-distributed');
+            tbDistributed.innerHTML = `<h1>${data3[0]['count(*)']}</h1>`;
           }
-        })
-        function takeActionAccident() {
-          window.location.href = 'deliverytrouble.html';
-       }
-        function showPopupCito() {
-          document.getElementById('popupCitoContainer').style.display = 'flex';
-        }
-        
-        function closePopupCito() {
-            document.getElementById('popupCitoContainer').style.display = 'none';
-        }
 
-        function rebuildDatabase(){
-          var xhr = new XMLHttpRequest();
-          xhr.open('POST', '/runRebuildDatabase', true);
-          xhr.setRequestHeader('Content-Type', 'application/json');
-          xhr.send();
-          alert('Rebuild database');
-        }
+          // CITO COUNT
+          const response4 = await fetch('/citocount');
+          const data4 = await response4.json();
+          //console.log(typeof data4[0]['count(*)']);
 
-        function generateOrders(){
-          var xhr = new XMLHttpRequest();
-          xhr.open('POST', '/runGenerateOrders', true);
-          xhr.setRequestHeader('Content-Type', 'application/json');
-          xhr.send();
-          alert('Generate orders');
-        }
+          if (data4[0]['count(*)'] > 0) {
+            const citoHeader = document.getElementById('cito-header');
+            const citoCard = document.getElementById('cito-card');
+            const citoDetail = document.getElementById('cito-detail');
+            citoHeader.classList.remove('d-none');
+            citoCard.classList.remove('d-none');
+            console.log("Cito Count: ", data4);
+            citoDetail.innerHTML = `<p>${data4[0]['count(*)']} CITO DETECTED</>`
+          }
 
-        function generateAvalVehicle(){
-          var xhr = new XMLHttpRequest();
-          xhr.open('POST', 'runGenerateAvalVehicle', true);
-          xhr.setRequestHeader('Content-Type', 'application/json');
-          xhr.send();
-          alert('Generate Available Vehicles');
-        }
+          // DISTRIBUTED COUNT
+          const response5 = await fetch('/distributedCount');
+          const data5 = await response5.json();
 
-        function deliverAll(){
-          var xhr = new XMLHttpRequest();
-          xhr.open('POST', 'runDeliverAll', true);
-          xhr.setRequestHeader('Content-Type', 'application/json');
-          xhr.send();
-          alert('Deliver All');
+          if (data5) {
+            console.log(data5);
+            const distributed = document.getElementById('distributed');
+            distributed.innerHTML = `<h1>${data5[0]['count(*)']}</h1>`;
+          }
+
+          // ON DISTRIBUTION COUNT
+          const response6 = await fetch('/onDistributionCount');
+          const data6 = await response6.json();
+
+          if (data6) {
+            const onDistribution = document.getElementById('on-distribution');
+            onDistribution.innerHTML = `<h1>${data6[0]['count(*)']}</h1>`;
+          }
+
+          // DELAYED COUNT
+          const response8 = await fetch('/delayedCount');
+          const data8 = await response8.json();
+
+          if (data8) {
+            const delayed = document.getElementById('delayed');
+            delayed.innerHTML = `<h1>${data8[0]['count(*)']}</h1>`;
+          }
+
+          const response7 = await fetch('accidentCount');
+          const data7 = await response7.json();
+
+          if (data7[0]['count(*)'] > 0) {
+            const accidentHeader = document.getElementById('accident-header');
+            const accidentCard = document.getElementById('accident-card');
+            const accidentDetail = document.getElementById('accident-detail');
+            accidentHeader.classList.remove('d-none');
+            accidentCard.classList.remove('d-none');
+            console.log("accident Count: ", data7);
+            accidentDetail.innerHTML = `<p>${data7[0]['count(*)']} ACCIDENT DETECTED</>`
+          }
+        } catch (err) {
+          console.error(err);
         }
+      })
+      function takeActionAccident() {
+        window.location.href = 'deliverytrouble.html';
+      }
+      function showPopupCito() {
+        document.getElementById('popupCitoContainer').style.display = 'flex';
+      }
+
+      function closePopupCito() {
+        document.getElementById('popupCitoContainer').style.display = 'none';
+      }
+
+      function rebuildDatabase() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/runRebuildDatabase', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send();
+        alert('Rebuild database');
+      }
+
+      function generateOrders() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/runGenerateOrders', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send();
+        alert('Generate orders');
+      }
+
+      function generateAvalVehicle() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'runGenerateAvalVehicle', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send();
+        alert('Generate Available Vehicles');
+      }
+
+      function deliverAll() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'runDeliverAll', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send();
+        alert('Deliver All');
+      }
     </script>
 </body>
+
 </html>

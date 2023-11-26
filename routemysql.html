@@ -70,7 +70,7 @@
           const nameElement = document.getElementById('name');
           nameElement.innerHTML = driverName;
 
-          const response2 = await fetch(`/shipmentList?idDriver=${idDriver}`);
+          const response2 = await fetch(`/shipmentIdListbyIdDriver?idDriver=${idDriver}`);
           const data2 = await response2.json();
 
           const shipmentIdSelect = document.getElementById("shipment-id-select");
@@ -267,8 +267,6 @@
       
             // Callback function for Google Maps API
             window.initMap = function () {
-              
-      
               const map = new google.maps.Map(document.getElementById('map'), {
                 center: { lat: latLon[0], lng: latLon[1] },
                 zoom: 10,
@@ -431,7 +429,22 @@
     
           const orderIdContainerElement = document.getElementById('order-id-container');
           })
+          function loadGoogleMapsScript() {
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDJqtI-6EiQBZbO1psVwzrUzjRTfvE4BrA&callback=initMap`;
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
+          }
     
+          // Callback function for Google Maps API
+          window.initMap = function () {
+            const map = new google.maps.Map(document.getElementById('map'), {
+              center: { lat: -6.2088, lng: 106.8456 }, // Center of Jakarta
+              zoom: 10,
+            });
+          };
+          loadGoogleMapsScript();
         } catch (error) {
           console.error('Error fetching data:', error);
         }

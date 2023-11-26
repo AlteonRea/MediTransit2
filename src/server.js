@@ -297,7 +297,7 @@ app.get('/accidentCount', (req, res) => {
     }
 });
 
-app.get('/shipmentList', (req, res) => {
+app.get('/shipmentOnDeliveryList', (req, res) => {
     try{
         const query = `select * from Shipment
         where status in ('On-Delivery');`;
@@ -385,7 +385,7 @@ app.get('/deliverytroubleAccident', (req, res) => {
     }
 });
 
-app.get('/shipmentList', (req, res) => {
+app.get('/shipmentIdListbyIdDriver', (req, res) => {
     try {
         const idDriver = req.query.idDriver;
         const query = `select Shipment.id from Shipment
@@ -396,7 +396,7 @@ app.get('/shipmentList', (req, res) => {
                 console.error('Database query error:', err);
                 res.status(500).json({error: 'Internal Server Error'});
             } else{
-                //console.log('Delivery trouble query: ', result);
+                console.log('Delivery trouble query: ', result);
                 res.json(result);
             }
         })
@@ -578,6 +578,64 @@ app.get('/shipmentIdList', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+app.get('/vehicleContainerSize', async (req, res) => {
+    try {
+        const shipmentId = req.query.shipmentId;
+        const query = `select length as size_x, width as size_y, height as size_z from Vehicle
+        inner join Shipment on Shipment.vehicle_id = Vehicle.id
+        where Shipment.id = ${shipmentId};`;
+
+        db.query(query, (err, result) => {
+            if (err) {
+                console.error('Database query error:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+
+            //console.log('Shipment ID list:', result);
+            res.json(result);
+        });
+    } catch (error) {
+        console.error('Error in /routes:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.get('/listItemOfVehicle', async (req, res) => {
+    try {
+        const shipmentId = req.query.shipmentId;
+        const query = `select * from (
+            select PackingProductVehicle.shipment_id, Product.code as product_code, insertion_order, pos_x, pos_y, pos_z, 
+            PackingProductVehicle.size_x, PackingProductVehicle.size_y, PackingProductVehicle.size_z from Shipment
+            inner join PackingProductVehicle on Shipment.id = PackingProductVehicle.shipment_id
+            inner join ProductInstance on PackingProductVehicle.product_instance_id = ProductInstance.id
+            inner join Product on Product.id = ProductInstance.product_id
+            union
+            select PackingCardboardBoxVehicle.shipment_id, CardboardBox.details as cardboardbox_details, insertion_order, pos_x, pos_y, pos_z, 
+            PackingCardboardBoxVehicle.size_x, PackingCardboardBoxVehicle.size_y, PackingCardboardBoxVehicle.size_z from Shipment
+            inner join PackingCardboardBoxVehicle on Shipment.id = PackingCardboardBoxVehicle.shipment_id
+            inner join CardboardBoxInstance on PackingCardboardBoxVehicle.cardboardbox_instance_id = CardboardBoxInstance.id
+            inner join CardboardBox on CardboardBox.id = CardboardBoxInstance.cardboardbox_id
+        ) temp
+        where temp.shipment_id = ${shipmentId}
+        order by insertion_order;`;
+
+        db.query(query, (err, result) => {
+            if (err) {
+                console.error('Database query error:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+
+            //console.log('Shipment ID list:', result);
+            res.json(result);
+        });
+    } catch (error) {
+        console.error('Error in /routes:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 
 app.get('/cardboxIDnItemCount', async (req, res) => {
     try {
