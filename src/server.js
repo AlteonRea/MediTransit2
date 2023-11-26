@@ -702,6 +702,52 @@ app.get('/listItemOfCardbox', async (req, res) => {
 });
 
 
+app.get('/citoOrders', async (req, res) => {
+    try {
+        
+        const query = `select Orders.id as order_id, Branch.code as branch_code from Orders 
+        inner join OrderDetail on Orders.id = OrderDetail.order_id
+        inner join Product on OrderDetail.product_id = Product.id
+        inner join Branch on Orders.branch_id = Branch.id
+        where Orders.status in ('Pending', 'Not-Sent') and Product.is_life_saving = '1' group by Orders.id;`;
+
+        db.query(query, (err, result) => {
+            if (err) {
+                console.error('Database query error:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+
+            console.log('Id Kardus dan Jumlah Item:', result);
+            res.json(result);
+        });
+    } catch (error) {
+        console.error('Error in /routes:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.get('/delayedOrders', async (req, res) => {
+    try {
+        
+        const query = `select Orders.id as order_id, Branch.code as branch_code from Orders 
+        inner join Branch on Orders.branch_id = Branch.id
+        where Orders.status in ('Not-Sent');`;
+
+        db.query(query, (err, result) => {
+            if (err) {
+                console.error('Database query error:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+
+            console.log('Id Kardus dan Jumlah Item:', result);
+            res.json(result);
+        });
+    } catch (error) {
+        console.error('Error in /routes:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
