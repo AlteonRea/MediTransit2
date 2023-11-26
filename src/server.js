@@ -180,7 +180,7 @@ app.get('/orderList', (req, res) => {
             }
         })
     }catch(err){
-        console.error('Error in /avalVehicleList', err);
+        console.error('Error in /orderList', err);
     }
 });
 
@@ -198,7 +198,7 @@ app.get('/tbDistributedCount', (req, res) => {
             }
         })
     }catch(err){
-        console.error('Error in /avalVehicleList', err);
+        console.error('Error in /tbDistributedCount', err);
     }
 });
 
@@ -216,7 +216,7 @@ app.get('/onDistributionCount', (req, res) => {
             }
         })
     }catch(err){
-        console.error('Error in /avalVehicleList', err);
+        console.error('Error in /onDistributionCount', err);
     }
 });
 
@@ -234,7 +234,7 @@ app.get('/distributedCount', (req, res) => {
             }
         })
     }catch(err){
-        console.error('Error in /avalVehicleList', err);
+        console.error('Error in /distributedCount', err);
     }
 });
 
@@ -252,7 +252,7 @@ app.get('/delayedCount', (req, res) => {
             }
         })
     }catch(err){
-        console.error('Error in /avalVehicleList', err);
+        console.error('Error in /delayedCount', err);
     }
 });
 
@@ -274,7 +274,7 @@ app.get('/citocount', (req, res) => {
             }
         })
     }catch(err){
-        console.error('Error in /avalVehicleList', err);
+        console.error('Error in /citocount', err);
     }
 });
 
@@ -293,7 +293,7 @@ app.get('/accidentCount', (req, res) => {
             }
         })
     }catch(err){
-        console.error('Error in /avalVehicleList', err);
+        console.error('Error in /accidentcount', err);
     }
 });
 
@@ -311,7 +311,7 @@ app.get('/shipmentOnDeliveryList', (req, res) => {
             }
         })
     }catch(err){
-        console.error('Error in /avalVehicleList', err);
+        console.error('Error in /shipmentondeliverylist', err);
     }
 });
 
@@ -331,7 +331,7 @@ app.get('/deliveryTroubleList', (req, res) => {
             }
         })
     }catch(err){
-        console.error('Error in /avalVehicleList', err);
+        console.error('Error in /deliveryTroubleList', err);
     }
 });
 
@@ -362,7 +362,7 @@ app.get('/deliverytroubleAll', (req, res) => {
             }
         })
     } catch (err) {
-        console.error('error in /deliverytrouble', error);
+        console.error('error in /deliverytroubleAll', error);
         res.status(500).json({error: 'Internal Server Error'});
     }
 });
@@ -380,7 +380,7 @@ app.get('/deliverytroubleAccident', (req, res) => {
             }
         })
     } catch (err) {
-        console.error('error in /deliverytrouble', error);
+        console.error('error in /deliverytroubleAccident', error);
         res.status(500).json({error: 'Internal Server Error'});
     }
 });
@@ -396,7 +396,7 @@ app.get('/shipmentIdListbyIdDriver', (req, res) => {
                 console.error('Database query error:', err);
                 res.status(500).json({error: 'Internal Server Error'});
             } else{
-                console.log('Delivery trouble query: ', result);
+                //console.log('Shihpment Id List By Id Driver: ', result);
                 res.json(result);
             }
         })
@@ -427,7 +427,7 @@ app.get('/routes', async (req, res) => {
                 console.error('Database query error:', err);
                 res.status(500).json({ error: 'Internal Server Error' });
             } else {
-                //console.log('Routes List:', result);
+                console.log('Routes List:', result);
                 res.json(result);
             }
         });
@@ -437,6 +437,105 @@ app.get('/routes', async (req, res) => {
     }
 });
 
+app.get('/orderStatusByOrderId', async (req, res) => {
+    try {
+        let orderId = req.query.orderId;
+
+        orderId = parseInt(orderId);
+
+        const query = `SELECT status FROM orders WHERE id = ${orderId}`;
+        //console.log('Query:', query);
+
+        db.query(query, (err, result) => {
+            if (err) {
+                console.error('Database query error:', err);
+                res.status(500).json({ error: 'Internal Server Error' });
+            } else {
+                console.log('Routes List:', result);
+                res.json(result);
+            }
+        });
+    } catch (error) {
+        console.error('Error in /orderStatusByOrderId:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.get('/vehicleIdbyShipmentId', async (req, res) => {
+    try {
+        let shipmentId = req.query.shipmentId;
+
+        const query = `SELECT vehicle_id FROM shipment WHERE id = ${shipmentId}`
+
+        db.query(query, (err, result) => {
+            if (err) {
+                console.error('Database query error:', err);
+                res.status(500).json({ error: 'Internal Server Error' });
+            } else {
+                console.log('Routes List:', result);
+                res.json(result);
+            }
+        });
+    } catch (error) {
+        console.error('Error in /orderStatusByOrderId:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.post('/handlerArrive1', (req, res) => {
+    try {
+        let vehicleId = req.query.vehicleId;
+        const query = `update Vehicles
+        set current_routedata_id = NULL
+        where Vehicles.id = ${vehicleId};`;
+
+        db.query(query, [vehicleId, troubleType, details]);
+
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+app.post('/handlerArrive2', (req, res) => {
+    try {
+        let orderId = req.query.orderId;
+        const query = `update Orders
+        set Orders.status = 'Delivered'
+        where Orders.id = ${orderId};`;
+
+        db.query(query, [vehicleId, troubleType, details]);
+
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+app.post('/handlerArrive3', (req, res) => {
+    try {
+        let vehicleId = req.query.vehicleId;
+        let orderId = req.query.orderId;
+        const query = `update RouteData
+        set delivered_time = now()
+        where RouteData.relation_id = (
+            select Relation.id from Relation
+            inner join Orders on Orders.relation_id = Relation.id
+            where Orders.id = ${orderId})
+        and RouteData.shipment_id = (
+            select Shipment.id from Shipment
+            inner join Vehicle on Vehicle.id = Shipment.vehicle_id
+            where Vehicle.id = ${vehicleId} and Vehicle.current_shipment_id = Shipment.id
+        );`;
+
+        db.query(query, [vehicleId, troubleType, details]);
+
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
 app.get('/productList', async (req, res) => {
@@ -459,7 +558,7 @@ app.get('/productList', async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error in /routes:', error);
+        console.error('Error in /productList:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
@@ -485,7 +584,7 @@ app.get('/warehouseLocation', async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error in /routes:', error);
+        console.error('Error in /warehouseLocation:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
@@ -509,7 +608,7 @@ app.get('/username', async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error in /routes:', error);
+        console.error('Error in /username:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
@@ -536,7 +635,7 @@ app.get('/vehicleId', async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error in /routes:', error);
+        console.error('Error in /vehicleId:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });

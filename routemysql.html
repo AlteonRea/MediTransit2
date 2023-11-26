@@ -79,6 +79,8 @@
         const nameElement = document.getElementById('name');
         nameElement.innerHTML = driverName;
 
+
+        let vehicleType;
         let arriveIndex = 0;
         let departIndex = 0;
 
@@ -110,6 +112,10 @@
           const data3 = await response3.json();
           console.log('Warehouse Data: ', data3);
 
+          // GET VEHICLE ID FROM SHIPMENT ID
+          const responseVehicleId = await fetch(`/vehicleIdByShipmentId?shipmentId=${selectedIdShipment}`);
+          const dataVehicleId = await responseVehicleId.json();
+          console.log(dataVehicleId);
 
           data3.forEach((item) => {
             latLon.push(item.latitude, item.longitude, -1);
@@ -118,6 +124,8 @@
           const data = await response.json();
           console.log('Route Data:', data);
 
+          vehicleType = data[0].vehicle_type;
+          console.log(vehicleType);
           data.forEach(item => {
             latLon.push(item.latitude, item.longitude, item.order_id);
           });
@@ -237,24 +245,55 @@
               const departCell = row.insertCell(3);
               const arriveCell = row.insertCell(4);
               const btnDepart = document.createElement('button');
-              btnDepart.classList.add('btn', 'btn-success');
+              btnDepart.classList.add('btn');
               btnDepart.innerHTML = 'Depart';
-
+              
               const btnArrive = document.createElement('button');
-              btnArrive.classList.add('btn', 'btn-success');
+              btnArrive.classList.add('btn');
               btnArrive.innerHTML = 'Arrive';
+              const responseOrderStatus = await fetch(`/orderStatusByOrderId?orderId=${orderId}`);
+              const orderStatusData = await responseOrderStatus.json();
+              console.log(orderStatusData);
 
+              if(orderId === -1 || orderStatusData[0].status === 'Delivered'){
+                btnDepart.classList.add('inactive', 'btn-secondary');
+                btnArrive.classList.add('inactive', 'btn-secondary');
+                btnDepart.addEventListener('click', () => {
+                  console.log('inactive');
+                });
+                btnArrive.addEventListener('click', () => {
+                  console.log('inactive');
+                });
+              }else{
+                btnDepart.classList.add('btn-success');
+                btnArrive.classList.add('btn-success');
+                btnDepart.addEventListener('click', () => {
+                  departIndex = i/3;
+                  console.log(departIndex);
+
+                  // ARRIVE HANDLER 1
+
+                  try{
+
+                  }catch(err){
+                    console.error(err);
+                  }
+
+
+                  processLatLon(latLon);
+                  loadGoogleMapsScript2();
+                })
+                btnArrive.addEventListener('click', () => {
+                  arriveIndex = i / 3;
+                  console.log(arriveIndex);
+                  processLatLon(latLon);
+                  loadGoogleMapsScript();
+                });
+              }
+              
               departCell.appendChild(btnDepart);
               arriveCell.appendChild(btnArrive);
 
-              btnDepart.addEventListener('click', () => {
-
-              })
-              btnArrive.addEventListener('click', () => {
-                arriveIndex = i / 3;
-                console.log(arriveIndex);
-                loadGoogleMapsScript();
-              });
               listItemCell.addEventListener('click', () => {
                 getProductList(orderId);
               })
@@ -330,13 +369,6 @@
                       console.log(pos);
                       infoWindow.open(map);
                       map.setCenter(pos);
-                      new google.maps.Marker({
-                        position: { lat: pos.lat, lng: pos.lng },
-                        map: map,
-                        title: 'Waypoint Marker',
-                        label: { text: ' ', color: 'white' },
-                        icon: 'assets/gmaps_marker.png',
-                      });
                       resolve();
                     },
                     () => {
@@ -361,18 +393,29 @@
                   location: new google.maps.LatLng(driverPos.lat, driverPos.lng),
                 });
 
-                for (let i = arriveIndex * 3; i < latLon.length; i += 3) {
-                  waypoints.push({
-                    location: new google.maps.LatLng(latLon[i], latLon[i + 1]),
-                  });
-                }
-
+                waypoints.push({
+                  location: new google.maps.LatLng(latLon[arriveIndex*3], latLon[arriveIndex*3 + 1]),
+                });
                 const directionsService = new google.maps.DirectionsService();
 
-                const directionsRendered = new google.maps.DirectionsRenderer({
-                  map: map
+                const directionsRenderer = new google.maps.DirectionsRenderer({
+                  map: map,
                 });
 
+                const request = { 
+                  origin: waypoints[0].location,
+                  destination: waypoints[1].location,
+                  travelMode: google.maps.TravelMode.DRIVING
+                };
+                if(vehicleType === 'Motor')request.travelMode = google.maps.TravelMode.TWO_WHEELER;
+               
+                directionsService.route(request, function(response, status) {
+                  if (status == 'OK') {
+                    directionsRenderer.setDirections(response);
+                  } else {
+                    console.error('Directions request failed due to ' + status);
+                  }
+                });
               })
               .catch((error) => {
                 console.error('Error:', error);
@@ -469,126 +512,124 @@
                   destination: waypoints[waypoints.length - 1].location,
                   travelMode: google.maps.TravelMode.DRIVING,
                 };
-                let transportType = 'Motor';
-                if (transportType === 'Motor') {
+                if (vehicleType === 'Motor') {
                   request1.travelMode = google.maps.TravelMode.TWO_WHEELER;
                   request2.travelMode = google.maps.TravelMode.TWO_WHEELER;
-
-                  directionsRenderer1.setOptions({
-                    suppressPolylines: true,
-                  });
-                  directionsRenderer2.setOptions({
-                    suppressPolylines: true,
-                  });
-
-                  directionsService.route(request1, function (twoWheelerResponse, status) {
-                    if (status === 'OK') {
-                      const detailPolyLines = twoWheelerResponse.routes[0].legs.reduce(
-                        (allPolylines, leg) => {
-                          const stepPolylines = leg.steps.map(
-                            (step) => step.polyline.points
-                          );
-                          return allPolylines.concat(stepPolylines);
-                        },
-                        []
-                      );
-
-                      const detailLatLon = detailPolyLines.reduce(
-                        (allLatLngs, polyline) => {
-                          return allLatLngs.concat(
-                            google.maps.geometry.encoding.decodePath(polyline)
-                          );
-                        },
-                        []
-                      );
-                      const twoWheelerPolyline = new google.maps.Polyline({
-                        path: detailLatLon,
-                        strokeColor: '#4285F4',
-                        strokeOpacity: 0.7,
-                        strokeWeight: 5,
-                        map: map,
-                      });
-                    }
-                  });
-
-                  directionsService.route(request2, function (twoWheelerResponse, status) {
-                    if (status === 'OK') {
-                      const twoWheelerPolyline = new google.maps.Polyline({
-                        path: twoWheelerResponse.routes[0].overview_path,
-                        strokeColor: 'red',
-                        strokeOpacity: 0.7,
-                        strokeWeight: 5,
-                        map: map,
-                      });
-                    }
-                  });
-                  for (var i = arriveIndex * 3; i < latLon.length; i += 3) {
-                    let label;
-                    if (i === 0 || i === latLon.length - 3) {
-                      label = 'X';
-                      new google.maps.Marker({
-                        position: { lat: latLon[i], lng: latLon[i + 1] },
-                        map: map,
-                        title: 'Waypoint Marker',
-                        label: { text: ' ', color: 'white' },
-                        icon: 'assets/gmaps_marker.png',
-                      });
-                    } else {
-                      label = i / 3;
-                      label = label.toString();
-                      new google.maps.Marker({
-                        position: { lat: latLon[i], lng: latLon[i + 1] },
-                        map: map,
-                        title: 'Waypoint Marker',
-                        label: { text: label, color: 'white' },
-                      });
-                    }
-                  }
-
-                  directionsService.route(request1, function (result, status) {
-                    if (status === google.maps.DirectionsStatus.OK) {
-                      directionsRenderer1.setMap(map);
-                      directionsRenderer1.setDirections(result);
-                      let totalTravelTime1 = 0;
-
-                      for (let i = 0; i < result.routes[0].legs.length; i++) {
-                        totalTravelTime1 += result.routes[0].legs[i].duration.value;
-                      }
-
-                      totalTravelTime1 = (totalTravelTime1 / 60).toFixed(3);
-
-                      console.log(totalTravelTime1 + 'mins');
-                    } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
-                      const polyline = new google.maps.Polyline({
-                        path: waypoints.map((waypoint) => waypoint.location),
-                        geodesic: true,
-                        strokeColor: '#FF0000',
-                        strokeOpacity: 1.0,
-                        strokeWeight: 2,
-                      });
-                      polyline.setMap(map);
-                    } else {
-                      console.error(
-                        'Directions request failed. Status: ' + status
-                      );
-                    }
-                  });
-                  directionsService.route(request2, (result, status) => {
-                    if (status === google.maps.DirectionsStatus.OK) {
-                      directionsRenderer2.setMap(map);
-                      directionsRenderer2.setDirections(result);
-                      let totalTravelTime2 = 0;
-
-                      for (let i = 0; i < result.routes[0].legs.length; i++) {
-                        totalTravelTime2 += result.routes[0].legs[i].duration.value;
-                      }
-
-                      totalTravelTime2 = (totalTravelTime2 / 60).toFixed(3);
-
-                      console.log(totalTravelTime2 + 'mins');
-                    }
-                  });
                 }
+                directionsRenderer1.setOptions({
+                  suppressPolylines: true,
+                });
+                directionsRenderer2.setOptions({
+                  suppressPolylines: true,
+                });
+
+                directionsService.route(request1, function (twoWheelerResponse, status) {
+                  if (status === 'OK') {
+                    const detailPolyLines = twoWheelerResponse.routes[0].legs.reduce(
+                      (allPolylines, leg) => {
+                        const stepPolylines = leg.steps.map(
+                          (step) => step.polyline.points
+                        );
+                        return allPolylines.concat(stepPolylines);
+                      },
+                      []
+                    );
+
+                    const detailLatLon = detailPolyLines.reduce(
+                      (allLatLngs, polyline) => {
+                        return allLatLngs.concat(
+                          google.maps.geometry.encoding.decodePath(polyline)
+                        );
+                      },
+                      []
+                    );
+                    const twoWheelerPolyline = new google.maps.Polyline({
+                      path: detailLatLon,
+                      strokeColor: '#4285F4',
+                      strokeOpacity: 0.7,
+                      strokeWeight: 5,
+                      map: map,
+                    });
+                  }
+                });
+
+                directionsService.route(request2, function (twoWheelerResponse, status) {
+                  if (status === 'OK') {
+                    const twoWheelerPolyline = new google.maps.Polyline({
+                      path: twoWheelerResponse.routes[0].overview_path,
+                      strokeColor: 'red',
+                      strokeOpacity: 0.7,
+                      strokeWeight: 5,
+                      map: map,
+                    });
+                  }
+                });
+                for (var i = arriveIndex * 3; i < latLon.length; i += 3) {
+                  let label;
+                  if (i === 0 || i === latLon.length - 3) {
+                    label = 'X';
+                    new google.maps.Marker({
+                      position: { lat: latLon[i], lng: latLon[i + 1] },
+                      map: map,
+                      title: 'Waypoint Marker',
+                      label: { text: ' ', color: 'white' },
+                      icon: 'assets/gmaps_marker.png',
+                    });
+                  } else {
+                    label = i / 3;
+                    label = label.toString();
+                    new google.maps.Marker({
+                      position: { lat: latLon[i], lng: latLon[i + 1] },
+                      map: map,
+                      title: 'Waypoint Marker',
+                      label: { text: label, color: 'white' },
+                    });
+                  }
+                }
+
+                directionsService.route(request1, function (result, status) {
+                  if (status === google.maps.DirectionsStatus.OK) {
+                    directionsRenderer1.setMap(map);
+                    directionsRenderer1.setDirections(result);
+                    let totalTravelTime1 = 0;
+
+                    for (let i = 0; i < result.routes[0].legs.length; i++) {
+                      totalTravelTime1 += result.routes[0].legs[i].duration.value;
+                    }
+
+                    totalTravelTime1 = (totalTravelTime1 / 60).toFixed(3);
+
+                    console.log(totalTravelTime1 + 'mins');
+                  } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
+                    const polyline = new google.maps.Polyline({
+                      path: waypoints.map((waypoint) => waypoint.location),
+                      geodesic: true,
+                      strokeColor: '#FF0000',
+                      strokeOpacity: 1.0,
+                      strokeWeight: 2,
+                    });
+                    polyline.setMap(map);
+                  } else {
+                    console.error(
+                      'Directions request failed. Status: ' + status
+                    );
+                  }
+                });
+                directionsService.route(request2, (result, status) => {
+                  if (status === google.maps.DirectionsStatus.OK) {
+                    directionsRenderer2.setMap(map);
+                    directionsRenderer2.setDirections(result);
+                    let totalTravelTime2 = 0;
+
+                    for (let i = 0; i < result.routes[0].legs.length; i++) {
+                      totalTravelTime2 += result.routes[0].legs[i].duration.value;
+                    }
+
+                    totalTravelTime2 = (totalTravelTime2 / 60).toFixed(3);
+
+                    console.log(totalTravelTime2 + 'mins');
+                  }
+                });
                 processLatLon(latLon);
               })
               .catch((error) => {
