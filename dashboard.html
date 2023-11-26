@@ -436,16 +436,14 @@
             const notavailv = document.getElementById('not-available-vehicle');
             notavailv.innerHTML = `<h1>${data14[0]['count(*)']}</h1>`;
           }
-
-
-
-
           const response15 = await fetch('/ordersPerShipment');
           const data15 = await response15.json();
           
           if (data15) {
             const ordpsh = document.getElementById('orders-shipment');
-            ordpsh.innerHTML = `<h1>${data15[0]['temp']}</h1>`;
+            let formattedData = data15[0]['temp'];
+            formattedData = parseFloat(formattedData);
+            ordpsh.innerHTML = `<h1>${formattedData.toFixed(2)}</h1>`;
           }
 
           const response16 = await fetch('/distanceCostPerShipment');
@@ -453,7 +451,9 @@
 
           if (data16) {
             const distpsh = document.getElementById('distance-shipment');
-            distpsh.innerHTML = `<h1>${data16[0]['temp']}</h1>`;
+            let formattedData = data16[0]['temp'];
+            formattedData = parseFloat(formattedData);
+            distpsh.innerHTML = `<h1>${formattedData.toFixed(2)}</h1>`;
           }
 
           const response17 = await fetch('/weightCostPerShipment');
@@ -461,7 +461,9 @@
 
           if (data17) {
             const weipsh = document.getElementById('weight-shipment');
-            weipsh.innerHTML = `<h1>${data17[0]['temp']}</h1>`;
+            let formattedData = data17[0]['temp'];
+            formattedData = parseFloat(formattedData)
+            weipsh.innerHTML = `<h1>${formattedData.toFixed(2)}</h1>`;
           }
 
           const response18 = await fetch('/shipmentCount');
