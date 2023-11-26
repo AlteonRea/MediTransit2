@@ -748,6 +748,94 @@ app.get('/delayedOrders', async (req, res) => {
     }
 });
 
+
+app.get('/availableVehicleCount', async (req, res) => {
+    try {
+        
+        const query = `select count(*) from Vehicle
+        where Vehicle.status = 'Available';`;
+
+        db.query(query, (err, result) => {
+            if (err) {
+                console.error('Database query error:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+
+            console.log('Id Kardus dan Jumlah Item:', result);
+            res.json(result);
+        });
+    } catch (error) {
+        console.error('Error in /routes:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.get('/onDeliveryVehicleCount', async (req, res) => {
+    try {
+        
+        const query = `select count(*) from Vehicle
+        where Vehicle.status = 'On-Delivery';`;
+
+        db.query(query, (err, result) => {
+            if (err) {
+                console.error('Database query error:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+
+            console.log('Id Kardus dan Jumlah Item:', result);
+            res.json(result);
+        });
+    } catch (error) {
+        console.error('Error in /routes:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.get('/onMaintenanceVehicleCount', async (req, res) => {
+    try {
+        
+        const query = `select count(*) from Vehicle
+        where Vehicle.status = 'On-Maintenance';`;
+
+        db.query(query, (err, result) => {
+            if (err) {
+                console.error('Database query error:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+
+            console.log('Id Kardus dan Jumlah Item:', result);
+            res.json(result);
+        });
+    } catch (error) {
+        console.error('Error in /routes:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.get('/notAvailableVehicleCount', async (req, res) => {
+    try {
+        
+        const query = `select count(*) from Vehicle
+        where Vehicle.status = 'Not Available';`;
+
+        db.query(query, (err, result) => {
+            if (err) {
+                console.error('Database query error:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+
+            console.log('Id Kardus dan Jumlah Item:', result);
+            res.json(result);
+        });
+    } catch (error) {
+        console.error('Error in /routes:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
