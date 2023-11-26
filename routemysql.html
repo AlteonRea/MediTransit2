@@ -38,6 +38,14 @@
           Report
         </a>
       </li>
+      <li>
+        <a href="routeHistory.html" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16">
+            <use xlink:href="#people-circle" />
+          </svg>
+          Report
+        </a>
+      </li>
     </ul>
     <label for="shipment-id-select" class="form-label text-white">Select Shipment ID:</label>
     <select id="shipment-id-select" class="form-select">
@@ -272,7 +280,28 @@
                 btnDepart.addEventListener('click', async () => {
                   departIndex = i/3;
                   //console.log(departIndex);
-                  
+                  const departResponse1 = await fetch(`/handlerDepart1`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      orderId,
+                      vehicleId,
+                    }),
+                  });
+
+                  const departResponse2 = await fetch(`/handlerDepart2`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      orderId,
+                      vehicleId,
+                    }),
+                  });
+
                   await processLatLon(latLon);
                   loadGoogleMapsScript2();
                 })
@@ -289,7 +318,6 @@
                     body: JSON.stringify({
                       vehicleId,
                     }),
-
                   });
                   
                   // ARRIVE HANDLER 2 
