@@ -491,14 +491,15 @@ app.post('/handlerDepart1', (req, res) => {
     try {
         const { orderId, vehicleId } = req.body;
         console.log(req.body);
-        const query = `update Vehicles
+        const query = `update Vehicle
         set current_routedata_id = (
             select RouteData.id from RouteData
             inner join Shipment on RouteData.shipment_id = Shipment.id
             inner join Orders on Orders.shipment_id = Shipment.id
             where Orders.id = ${orderId}
+            group by RouteData.id
         )
-        where Vehicle.id = ${vehicleId}`;
+        where Vehicle.id = ${vehicleId};`;
         console.log(query);
         db.query(query);
         res.status(200).json({ success: true });
