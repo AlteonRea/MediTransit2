@@ -427,7 +427,7 @@ app.get('/routes', async (req, res) => {
                 console.error('Database query error:', err);
                 res.status(500).json({ error: 'Internal Server Error' });
             } else {
-                console.log('Routes List:', result);
+                //console.log('Routes List:', result);
                 res.json(result);
             }
         });
@@ -451,7 +451,7 @@ app.get('/orderStatusByOrderId', async (req, res) => {
                 console.error('Database query error:', err);
                 res.status(500).json({ error: 'Internal Server Error' });
             } else {
-                console.log('Routes List:', result);
+                //console.log('Order Status by Order ID:', result);
                 res.json(result);
             }
         });
@@ -472,7 +472,7 @@ app.get('/vehicleIdbyShipmentId', async (req, res) => {
                 console.error('Database query error:', err);
                 res.status(500).json({ error: 'Internal Server Error' });
             } else {
-                console.log('Routes List:', result);
+                //console.log('Vehicle Id By Shipment ID:', result);
                 res.json(result);
             }
         });
@@ -484,28 +484,30 @@ app.get('/vehicleIdbyShipmentId', async (req, res) => {
 
 app.post('/handlerArrive1', (req, res) => {
     try {
-        let vehicleId = req.query.vehicleId;
-        const query = `update Vehicles
+        const { vehicleId } = req.body;
+        console.log(req.body);
+        const query = `update Vehicle
         set current_routedata_id = NULL
-        where Vehicles.id = ${vehicleId};`;
-
-        db.query(query, [vehicleId, troubleType, details]);
-
+        where Vehicle.id = ${vehicleId};`;
+        console.log(query);
+        db.query(query);
         res.status(200).json({ success: true });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 app.post('/handlerArrive2', (req, res) => {
     try {
-        let orderId = req.query.orderId;
+        const {orderId} = req.body;
+        console.log(req.body);
         const query = `update Orders
         set Orders.status = 'Delivered'
         where Orders.id = ${orderId};`;
-
-        db.query(query, [vehicleId, troubleType, details]);
-
+        console.log(query);
+        //db.query(query, [vehicleId, troubleType, details]);
+        db.query(query);
         res.status(200).json({ success: true });
     } catch (error) {
         console.error('Error:', error);
@@ -514,8 +516,8 @@ app.post('/handlerArrive2', (req, res) => {
 });
 app.post('/handlerArrive3', (req, res) => {
     try {
-        let vehicleId = req.query.vehicleId;
-        let orderId = req.query.orderId;
+        const {vehicleId, orderId} = req.body;
+        console.log(req.body);
         const query = `update RouteData
         set delivered_time = now()
         where RouteData.relation_id = (
@@ -527,8 +529,8 @@ app.post('/handlerArrive3', (req, res) => {
             inner join Vehicle on Vehicle.id = Shipment.vehicle_id
             where Vehicle.id = ${vehicleId} and Vehicle.current_shipment_id = Shipment.id
         );`;
-
-        db.query(query, [vehicleId, troubleType, details]);
+        console.log(query);
+        db.query(query);
 
         res.status(200).json({ success: true });
     } catch (error) {
@@ -851,8 +853,7 @@ app.get('/delayedOrders', async (req, res) => {
 app.get('/availableVehicleCount', async (req, res) => {
     try {
         
-        const query = `select count(*) from Vehicle
-        where Vehicle.status = 'Available';`;
+        const query = `select count(*) from Vehicle where Vehicle.status = 'Available';`;
 
         db.query(query, (err, result) => {
             if (err) {
