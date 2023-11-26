@@ -310,8 +310,8 @@
                     function updatePlot() {
                         plotlyData = [box_img];
                 
-                        for (let i = 1; i <= lastItemIdx; i++) {
-                            var item_img = getMeshImg(itemPosList[i-1], itemSizeList[i-1], 'grey');
+                        for (let i = 0; i < lastItemIdx; i++) {
+                            var item_img = getMeshImg(itemPosList[i], itemSizeList[i], 'grey');
                             var item_edge_img = getEdgesImg(itemPosList[i], itemSizeList[i], 'black');
                             plotlyData = plotlyData.concat([item_img, item_edge_img]);
                         }
