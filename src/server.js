@@ -408,6 +408,29 @@ app.get('/shipmentIdListbyIdDriver', (req, res) => {
     }
 });
 
+app.get('/shipmentIdListbyIdDriverHistory', (req, res) => {
+    try {
+        const idDriver = req.query.idDriver;
+        const query = `select * from Shipment
+        inner join Vehicle on Shipment.vehicle_id = Vehicle.id
+        where Vehicle.driver_id = '${idDriver}'
+        and Vehicle.current_shipment_id is NULL`;
+        console.log(query);
+        db.query(query, (err, result) => {
+            if(err){
+                console.error('Database query error:', err);
+                res.status(500).json({error: 'Internal Server Error'});
+            } else{
+                console.log('Delivery trouble query: ', result);
+                res.json(result);
+            }
+        })
+    } catch (err) {
+        console.error('error in /deliverytrouble', error);
+        res.status(500).json({error: 'Internal Server Error'});
+    }
+});
+
 app.get('/routes', async (req, res) => {
     try {
         let idShipment = req.query.shipmentId;
@@ -470,13 +493,13 @@ app.get('/vehicleIdbyShipmentId', async (req, res) => {
         let shipmentId = req.query.shipmentId;
 
         const query = `SELECT vehicle_id FROM shipment WHERE id = ${shipmentId}`
-
+        console.log(query);
         db.query(query, (err, result) => {
             if (err) {
                 console.error('Database query error:', err);
                 res.status(500).json({ error: 'Internal Server Error' });
             } else {
-                //console.log('Vehicle Id By Shipment ID:', result);
+                console.log('Vehicle Id By Shipment ID:', result);
                 res.json(result);
             }
         });
@@ -627,7 +650,14 @@ app.post('/handlerArrive5', (req, res) => {
             select count(*) from Shipment
             inner join Orders on Shipment.id = Orders.shipment_id
             where Orders.status != 'Delivered' and Shipment.id = ${selectedIdShipment}
-        ) temp) = 0, NULL, Vehicle.current_shipment_id))
+        ) temp) = 0, NULL, Vehicle.current_shipment_id)),
+        Vehicle.status = (
+        if 
+        ((select * from(
+            select count(*) from Shipment
+            inner join Orders on Shipment.id = Orders.shipment_id
+            where Orders.status != 'Delivered' and Shipment.id = ${selectedIdShipment}
+        ) temp) = 0, 'Available', Vehicle.status))
         where Vehicle.id = ${vehicleId}`;
         console.log(query);
         db.query(query);
@@ -851,7 +881,7 @@ app.get('/listItemOfVehicle', async (req, res) => {
                 return res.status(500).json({ error: 'Internal Server Error' });
             }
 
-            //console.log('Shipment ID list:', result);
+            console.log('Shipment ID list:', result);
             res.json(result);
         });
     } catch (error) {

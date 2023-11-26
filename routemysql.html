@@ -123,6 +123,7 @@
           // GET VEHICLE ID FROM SHIPMENT ID
           const responseVehicleId = await fetch(`/vehicleIdByShipmentId?shipmentId=${selectedIdShipment}`);
           const dataVehicleId = await responseVehicleId.json();
+          console.log(dataVehicleId);
           ////console.log(dataVehicleId);
           const vehicleId = dataVehicleId[0].vehicle_id;
           //console.log(vehicleId);
@@ -315,6 +316,7 @@
                   arriveIndex = i / 3;
                   //console.log(arriveIndex);
                   // ARRIVE HANDLER 1
+                  currOrderId = 0;
                   console.log(vehicleId);
                   const arriveResponse = await fetch(`/handlerArrive1`, {
                     method: 'POST',
