@@ -209,7 +209,7 @@
               });
             });
           }
-
+          let currOrderId;
           async function processLatLon(latLon) {
             const table = document.createElement('table');
             table.setAttribute('id', 'address-container');
@@ -231,6 +231,7 @@
 
             const tbody = document.createElement('tbody');
             let addressIndex = 1;
+            
             for (let i = 0; i < latLon.length; i += 3) {
               const lat = latLon[i];
               const lng = latLon[i + 1];
@@ -264,8 +265,9 @@
               const responseOrderStatus = await fetch(`/orderStatusByOrderId?orderId=${orderId}`);
               const orderStatusData = await responseOrderStatus.json();
               //console.log(orderStatusData);
-
-              if(orderId === -1 || orderStatusData[0].status === 'Delivered'){
+              console.log(currOrderId);
+              if(orderId === -1 || orderStatusData[0].status === 'Delivered' || 
+              (currOrderId > 0 && orderId !== currOrderId)){
                 btnDepart.classList.add('inactive', 'btn-secondary');
                 btnArrive.classList.add('inactive', 'btn-secondary');
                 btnDepart.addEventListener('click', () => {
@@ -301,7 +303,11 @@
                       vehicleId,
                     }),
                   });
-
+                  
+                  const departResponse3 = await fetch(`/getCurrOrderId?vehicleId=${vehicleId}`);
+                  const departData3 = await departResponse3.json();
+                  currOrderId = departData3[0].id;
+                  console.log(currOrderId);
                   await processLatLon(latLon);
                   loadGoogleMapsScript2();
                 })

@@ -492,11 +492,12 @@ app.post('/handlerDepart1', (req, res) => {
         const { orderId, vehicleId } = req.body;
         console.log(req.body);
         const query = `update Vehicle
-        set current_routedata_id = (
+        set current_routedata_id =     (
             select RouteData.id from RouteData
             inner join Shipment on RouteData.shipment_id = Shipment.id
             inner join Orders on Orders.shipment_id = Shipment.id
-            where Orders.id = ${orderId}
+            where RouteData.relation_id = Orders.relation_id
+            and Orders.id = ${orderId}
             group by RouteData.id
         )
         where Vehicle.id = ${vehicleId};`;
@@ -532,6 +533,9 @@ app.post('/handlerDepart2', (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
+
 
 app.post('/handlerArrive1', (req, res) => {
     try {
@@ -630,6 +634,32 @@ app.post('/handlerArrive5', (req, res) => {
         res.status(200).json({ success: true });
     } catch (error) {
         console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.get('/getCurrOrderId', async (req, res) => {
+    try {
+        const vehicleId = req.query.vehicleId;
+
+        const query = `select Orders.id from Vehicle
+        inner join RouteData on Vehicle.current_routedata_id = RouteData.id 
+        inner join Orders on Orders.relation_id = RouteData.relation_id
+        where Vehicle.id = ${vehicleId}
+        group by Orders.id;`;
+        console.log('Query:', query);
+
+        db.query(query, (err, result) => {
+            if (err) {
+                console.error('Database query error:', err);
+                res.status(500).json({ error: 'Internal Server Error' });
+            } else {
+                console.log('Product List:', result);
+                res.json(result);
+            }
+        });
+    } catch (error) {
+        console.error('Error in /routes:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
