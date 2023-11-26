@@ -193,6 +193,44 @@
           </div>
         </div>
 
+
+        <div class="deliveryCardContainer">
+          <div class="delivery-card">
+            <div class="deliver-header">
+              <h2>Orders / Shipment</h2>
+            </div>
+            <div id="orders-shipment" class="delivery-count">
+
+            </div>
+          </div>
+
+          <div class="delivery-card">
+            <div class="deliver-header">
+              <h2>Distance Cost / Shipment</h2>
+            </div>
+            <div id="distance-shipment" class="delivery-count">
+            </div>
+          </div>
+
+          <div class="delivery-card">
+            <div class="deliver-header">
+              <h2>Weight Cost / Shipment</h2>
+            </div>
+            <div id="weight-shipment" class="delivery-count">
+
+            </div>
+          </div>
+
+          <div class="delivery-card">
+            <div class="deliver-header">
+              <h2>Total Shipment</h2>
+            </div>
+            <div id="total-shipment" class="delivery-count">
+
+            </div>
+          </div>
+        </div>
+
         <!-- <hr>
           <h2>Order list</h2>
           <table class="table table-striped">
@@ -397,6 +435,41 @@
           if (data14) {
             const notavailv = document.getElementById('not-available-vehicle');
             notavailv.innerHTML = `<h1>${data14[0]['count(*)']}</h1>`;
+          }
+
+
+
+
+          const response15 = await fetch('/ordersPerShipment');
+          const data15 = await response15.json();
+          
+          if (data15) {
+            const ordpsh = document.getElementById('orders-shipment');
+            ordpsh.innerHTML = `<h1>${data15[0]['temp']}</h1>`;
+          }
+
+          const response16 = await fetch('/distanceCostPerShipment');
+          const data16 = await response16.json();
+
+          if (data16) {
+            const distpsh = document.getElementById('distance-shipment');
+            distpsh.innerHTML = `<h1>${data16[0]['temp']}</h1>`;
+          }
+
+          const response17 = await fetch('/weightCostPerShipment');
+          const data17 = await response17.json();
+
+          if (data17) {
+            const weipsh = document.getElementById('weight-shipment');
+            weipsh.innerHTML = `<h1>${data17[0]['temp']}</h1>`;
+          }
+
+          const response18 = await fetch('/shipmentCount');
+          const data18 = await response18.json();
+
+          if (data18) {
+            const tosh = document.getElementById('total-shipment');
+            tosh.innerHTML = `<h1>${data18[0]['temp']}</h1>`;
           }
           
 
