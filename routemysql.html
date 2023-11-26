@@ -314,6 +314,28 @@
                       orderId,
                     }),
                   });
+
+                  const arriveResponse4 = await fetch(`/handlerArrive4`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      selectedIdShipment,
+                    }),
+                  });
+
+                  const arriveResponse5 = await fetch(`/handlerArrive5`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      selectedIdShipment,
+                      vehicleId,
+                    }),
+                  });
+                  
                   await processLatLon(latLon);
                   loadGoogleMapsScript();
                 });

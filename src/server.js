@@ -390,7 +390,9 @@ app.get('/shipmentIdListbyIdDriver', (req, res) => {
         const idDriver = req.query.idDriver;
         const query = `select Shipment.id from Shipment
         inner join Vehicle on Shipment.vehicle_id = Vehicle.id
-        where Vehicle.driver_id = '${idDriver}';`;
+        where Vehicle.driver_id = '${idDriver}'
+        and Vehicle.current_shipment_id = Shipment.id`;
+        console.log(query);
         db.query(query, (err, result) => {
             if(err){
                 console.error('Database query error:', err);
@@ -484,6 +486,52 @@ app.get('/vehicleIdbyShipmentId', async (req, res) => {
     }
 });
 
+
+app.post('/handlerDepart1', (req, res) => {
+    try {
+        const { orderId, vehicleId } = req.body;
+        console.log(req.body);
+        const query = `update Vehicles
+        set current_routedata_id = (
+            select RouteData.id from RouteData
+            inner join Shipment on RouteData.shipment_id = Shipment.id
+            inner join Orders on Orders.shipment_id = Shipment.id
+            where Orders.id = ${orderId}
+        )
+        where Vehicle.id = ${vehicleId}`;
+        console.log(query);
+        db.query(query);
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.post('/handlerDepart2', (req, res) => {
+    try {
+        const { orderId, vehicleId } = req.body;
+        console.log(req.body);
+        const query = `update RouteData
+        set departure_time = now()
+        where RouteData.relation_id = (
+            select Relation.id from Relation
+            inner join Orders on Orders.relation_id = Relation.id
+            where Orders.id = ${orderId})
+        and RouteData.shipment_id = (
+            select Shipment.id from Shipment
+            inner join Vehicle on Vehicle.id = Shipment.vehicle_id
+            where Vehicle.id = ${vehicleId} and Vehicle.current_shipment_id = Shipment.id
+        );`;
+        console.log(query);
+        db.query(query);
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 app.post('/handlerArrive1', (req, res) => {
     try {
         const { vehicleId } = req.body;
@@ -541,7 +589,49 @@ app.post('/handlerArrive3', (req, res) => {
     }
 });
 
+app.post('/handlerArrive4', (req, res) => {
+    try {
+        const {selectedIdShipment} = req.body;
+        console.log(req.body);
+        const query = `update Shipment
+        set Shipment.status =(
+        if 
+        ((select * from(
+            select count(*) from Shipment
+            inner join Orders on Shipment.id = Orders.shipment_id
+            where Orders.status != 'Delivered' and Shipment.id = ${selectedIdShipment}
+        ) temp) = 0, 'Delivered', Shipment.status))
+        where Shipment.id = ${selectedIdShipment}`;
+        console.log(query);
+        db.query(query);
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
+app.post('/handlerArrive5', (req, res) => {
+    try {
+        const {selectedIdShipment, vehicleId} = req.body;
+        console.log(req.body);
+        const query = `update Vehicle
+        set Vehicle.current_shipment_id = (
+        if 
+        ((select * from(
+            select count(*) from Shipment
+            inner join Orders on Shipment.id = Orders.shipment_id
+            where Orders.status != 'Delivered' and Shipment.id = ${selectedIdShipment}
+        ) temp) = 0, NULL, Vehicle.current_shipment_id))
+        where Vehicle.id = ${vehicleId}`;
+        console.log(query);
+        db.query(query);
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 app.get('/productList', async (req, res) => {
     try {
