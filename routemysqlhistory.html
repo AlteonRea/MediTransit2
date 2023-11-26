@@ -23,7 +23,7 @@
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
       <li>
-        <a href="#" id="vehicle-link" class="nav-link text-white active">
+        <a href="routemysql.html" id="vehicle-link" class="nav-link text-white active">
           <svg class="bi me-2" width="16" height="16">
             <use xlink:href="#grid" />
           </svg>
@@ -31,7 +31,7 @@
         </a>
       </li>
       <li>
-        <a href="routemysqlhistory.html" id="vehicle-link" class="nav-link text-white active">
+        <a href="#" id="vehicle-link" class="nav-link text-white active">
           <svg class="bi me-2" width="16" height="16">
             <use xlink:href="#grid" />
           </svg>
@@ -40,14 +40,6 @@
       </li>
       <li>
         <a href="laporanDriver.html" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16">
-            <use xlink:href="#people-circle" />
-          </svg>
-          Report
-        </a>
-      </li>
-      <li>
-        <a href="routeHistory.html" class="nav-link text-white">
           <svg class="bi me-2" width="16" height="16">
             <use xlink:href="#people-circle" />
           </svg>
@@ -100,7 +92,7 @@
         let arriveIndex = 0;
         let departIndex = 0;
 
-        const response2 = await fetch(`/shipmentIdListbyIdDriver?idDriver=${idDriver}`);
+        const response2 = await fetch(`/shipmentIdListbyIdDriverHistory?idDriver=${idDriver}`);
         const data2 = await response2.json();
 
         const shipmentIdSelect = document.getElementById("shipment-id-select");
@@ -227,7 +219,7 @@
             thead.classList.add('thead-dark');
             const headerRow = thead.insertRow();
 
-            const headers = ['Posisi', 'Alamat', 'Order ID', 'Depart', 'Arrive'];
+            const headers = ['Posisi', 'Alamat', 'Order ID'];
             headers.forEach(headerText => {
               const th = document.createElement('th');
               th.scope = 'col';
@@ -260,125 +252,10 @@
               const addressCell = row.insertCell(1);
               const listItemCell = row.insertCell(2);
               listItemCell.innerText = orderId;
-              const departCell = row.insertCell(3);
-              const arriveCell = row.insertCell(4);
-              const btnDepart = document.createElement('button');
-              btnDepart.classList.add('btn');
-              btnDepart.innerHTML = 'Depart';
-              
-              const btnArrive = document.createElement('button');
-              btnArrive.classList.add('btn');
-              btnArrive.innerHTML = 'Arrive';
               const responseOrderStatus = await fetch(`/orderStatusByOrderId?orderId=${orderId}`);
               const orderStatusData = await responseOrderStatus.json();
               //console.log(orderStatusData);
 
-              if(orderId === -1 || orderStatusData[0].status === 'Delivered'){
-                btnDepart.classList.add('inactive', 'btn-secondary');
-                btnArrive.classList.add('inactive', 'btn-secondary');
-                btnDepart.addEventListener('click', () => {
-                  //console.log('inactive');
-                });
-                btnArrive.addEventListener('click', () => {
-                  //console.log('inactive');
-                });
-              }else{
-                btnDepart.classList.add('btn-success');
-                btnArrive.classList.add('btn-success');
-                btnDepart.addEventListener('click', async () => {
-                  departIndex = i/3;
-                  //console.log(departIndex);
-                  const departResponse1 = await fetch(`/handlerDepart1`, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                      orderId,
-                      vehicleId,
-                    }),
-                  });
-
-                  const departResponse2 = await fetch(`/handlerDepart2`, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                      orderId,
-                      vehicleId,
-                    }),
-                  });
-
-                  await processLatLon(latLon);
-                  loadGoogleMapsScript2();
-                })
-                btnArrive.addEventListener('click', async () => {
-                  arriveIndex = i / 3;
-                  //console.log(arriveIndex);
-                  // ARRIVE HANDLER 1
-                  console.log(vehicleId);
-                  const arriveResponse = await fetch(`/handlerArrive1`, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                      vehicleId,
-                    }),
-                  });
-                  
-                  // ARRIVE HANDLER 2 
-                  const arriveResponse2 = await fetch(`/handlerArrive2`, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                      orderId,
-                    }),
-                  });
-
-                  // ARRIVE HANDLER 3
-                  const arriveResponse3 = await fetch(`/handlerArrive3`, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                      vehicleId,
-                      orderId,
-                    }),
-                  });
-
-                  const arriveResponse4 = await fetch(`/handlerArrive4`, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                      selectedIdShipment,
-                    }),
-                  });
-
-                  const arriveResponse5 = await fetch(`/handlerArrive5`, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                      selectedIdShipment,
-                      vehicleId,
-                    }),
-                  });
-                  
-                  await processLatLon(latLon);
-                  loadGoogleMapsScript();
-                });
-              }
-              
-              departCell.appendChild(btnDepart);
-              arriveCell.appendChild(btnArrive);
 
               listItemCell.addEventListener('click', () => {
                 getProductList(orderId);
