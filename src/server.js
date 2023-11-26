@@ -411,7 +411,7 @@ app.get('/shipmentIdListbyIdDriver', (req, res) => {
 app.get('/shipmentIdListbyIdDriverHistory', (req, res) => {
     try {
         const idDriver = req.query.idDriver;
-        const query = `select * from Shipment
+        const query = `select Shipment.id from Shipment
         inner join Vehicle on Shipment.vehicle_id = Vehicle.id
         where Vehicle.driver_id = '${idDriver}'
         and Vehicle.current_shipment_id is NULL`;
