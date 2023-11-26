@@ -253,7 +253,12 @@
 
               const addressCell = row.insertCell(1);
               const listItemCell = row.insertCell(2);
-              listItemCell.innerText = orderId;
+              if(orderId === -1){
+                listItemCell.innerHTML = `<button class = "btn btn-secondary" style = "width: 50px;">${orderId}</button>`;
+              }else{
+                listItemCell.innerHTML = `<button class = "btn btn-primary  " style = "width: 50px;">${orderId}</button>`;
+              }
+              
               const departCell = row.insertCell(3);
               const arriveCell = row.insertCell(4);
               const btnDepart = document.createElement('button');
@@ -271,6 +276,7 @@
               (currOrderId > 0 && orderId !== currOrderId)){
                 btnDepart.classList.add('inactive', 'btn-secondary');
                 btnArrive.classList.add('inactive', 'btn-secondary');
+                
                 btnDepart.addEventListener('click', () => {
                   //console.log('inactive');
                 });
