@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,29 +10,38 @@
     <link rel="stylesheet" href="styles/sidebar.css">
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
 </head>
-<body style = "height: 100vh;">
+
+<body style="height: 100vh;">
     <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark sidebar">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-            <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+            <svg class="bi me-2" width="40" height="32">
+                <use xlink:href="#bootstrap" />
+            </svg>
             <span class="fs-4">MediTransit</span>
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li>
                 <a href="#" id="vehicle-link" class="nav-link active text-white">
-                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#grid" />
+                    </svg>
                     Warehouse
                 </a>
             </li>
             <li>
                 <a href="VehiclePacking.html" id="vehicle-link" class="nav-link text-white">
-                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#grid" />
+                    </svg>
                     Vehicle Packing
                 </a>
             </li>
             <li>
                 <a href="CardboxPacking.html" class="nav-link text-white">
-                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
+                    <svg class="bi me-2" width="16" height="16">
+                        <use xlink:href="#people-circle" />
+                    </svg>
                     Cardbox Packing
                 </a>
             </li>
@@ -39,12 +49,12 @@
         <hr>
         <div class="dropdown">
             <h4 id="name">Packer</h4>
-          </a>
+            </a>
         </div>
     </div>
 
-    <div id="container" class="d-flex justify-content-center align-items-center" style="height: 100%;">
-        <div id="myDiv" style = "width: 100%; height: 100%;"></div>
+    <div id="container" class="d-flex justify-content-center align-items-center flex-column" style="height: 100%;">
+        <div id="myDiv" style="width: 100%; height: 100%;"></div>
     </div>
 
     <script>
@@ -52,13 +62,13 @@
         const loadDataBtn = document.getElementById("loadDataBtn");
         const shipmentIdSelect = document.getElementById("shipment-id-select");
 
-        document.addEventListener("DOMContentLoaded", async function(){
-            const response = await fetch ('/shipmentIdList');
+        document.addEventListener("DOMContentLoaded", async function () {
+            const response = await fetch('/shipmentIdList');
             const dataIdList = await response.json();
             console.log(dataIdList);
-            if(dataIdList.length > 0){
+            if (dataIdList.length > 0) {
                 shipmentIdSelect.innerHTML = '';
-                
+
                 dataIdList.forEach((item) => {
                     const option = document.createElement('option');
                     option.value = item.id;
@@ -72,205 +82,309 @@
 
         // Fetch data from the JSON file
         fetch(jsonFilePath)
-        .then(response => {
-            if (!response.ok) {
-            throw new Error(`Failed to fetch ${jsonFilePath}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            
-            function getCubeEdges(pos,size){
-                var x1 = [pos[0], pos[0]+size[0], pos[0]+size[0], pos[0]];
-                var y1 = [pos[1], pos[1], pos[1]+size[1], pos[1]+size[1]];
-                var z1 = [pos[2], pos[2], pos[2], pos[2]];
-                
-                var x2 = [pos[0], pos[0], pos[0], pos[0]];
-                var y2 = [pos[1], pos[1], pos[1]+size[1], pos[1]+size[1]];
-                var z2 = [pos[2], pos[2]+size[2], pos[2]+size[2], pos[2]];
-        
-                var x3 = [pos[0], pos[0]+size[0], pos[0]+size[0]];
-                var y3 = [pos[1]+size[1], pos[1]+size[1], pos[1]+size[1]];
-                var z3 = [pos[2]+size[2], pos[2]+size[2], pos[2]];
-        
-                var x4 = [pos[0]+size[0], pos[0]+size[0], pos[0]+size[0]];
-                var y4 = [pos[1]+size[1], pos[1], pos[1]];
-                var z4 = [pos[2]+size[2], pos[2]+size[2], pos[2]];
-        
-                var x5 = [pos[0]+size[0], pos[0]];
-                var y5 = [pos[1], pos[1]];
-                var z5 = [pos[2]+size[2], pos[2]+size[2]];
-        
-                var x = x1.concat(x2, x3, x4, x5);
-                var y = y1.concat(y2, y3, y4, y5);
-                var z = z1.concat(z2, z3, z4, z5);
-                return [x,y,z];
-            }
-        
-            function getEdgesImg(pos, size, color){
-                var [boxX, boxY, boxZ] = getCubeEdges(pos, size);
-                var box_img = {
-                    type: 'scatter3d',
-                    mode: 'lines',
-                    x: boxX,
-                    y: boxY,
-                    z: boxZ,
-                    line: {
-                        width: 6,
-                        color: color,
-                        reversescale: false
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch ${jsonFilePath}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+
+                function getCubeEdges(pos, size) {
+                    var x1 = [pos[0], pos[0] + size[0], pos[0] + size[0], pos[0]];
+                    var y1 = [pos[1], pos[1], pos[1] + size[1], pos[1] + size[1]];
+                    var z1 = [pos[2], pos[2], pos[2], pos[2]];
+
+                    var x2 = [pos[0], pos[0], pos[0], pos[0]];
+                    var y2 = [pos[1], pos[1], pos[1] + size[1], pos[1] + size[1]];
+                    var z2 = [pos[2], pos[2] + size[2], pos[2] + size[2], pos[2]];
+
+                    var x3 = [pos[0], pos[0] + size[0], pos[0] + size[0]];
+                    var y3 = [pos[1] + size[1], pos[1] + size[1], pos[1] + size[1]];
+                    var z3 = [pos[2] + size[2], pos[2] + size[2], pos[2]];
+
+                    var x4 = [pos[0] + size[0], pos[0] + size[0], pos[0] + size[0]];
+                    var y4 = [pos[1] + size[1], pos[1], pos[1]];
+                    var z4 = [pos[2] + size[2], pos[2] + size[2], pos[2]];
+
+                    var x5 = [pos[0] + size[0], pos[0]];
+                    var y5 = [pos[1], pos[1]];
+                    var z5 = [pos[2] + size[2], pos[2] + size[2]];
+
+                    var x = x1.concat(x2, x3, x4, x5);
+                    var y = y1.concat(y2, y3, y4, y5);
+                    var z = z1.concat(z2, z3, z4, z5);
+                    return [x, y, z];
+                }
+
+                function getEdgesImg(pos, size, color) {
+                    var [boxX, boxY, boxZ] = getCubeEdges(pos, size);
+                    var box_img = {
+                        type: 'scatter3d',
+                        mode: 'lines',
+                        x: boxX,
+                        y: boxY,
+                        z: boxZ,
+                        line: {
+                            width: 6,
+                            color: color,
+                            reversescale: false
+                        }
+                    };
+                    return box_img;
+                }
+
+                function getCubeMesh(pos, size) {
+                    var meshX = [pos[0], pos[0], pos[0] + size[0], pos[0] + size[0], pos[0], pos[0], pos[0] + size[0], pos[0] + size[0]];
+                    var meshY = [pos[1], pos[1] + size[1], pos[1] + size[1], pos[1], pos[1], pos[1] + size[1], pos[1] + size[1], pos[1],];
+                    var meshZ = [pos[2], pos[2], pos[2], pos[2], pos[2] + size[2], pos[2] + size[2], pos[2] + size[2], pos[2] + size[2]];
+                    return [meshX, meshY, meshZ];
+                }
+
+                function getMeshImg(pos, size, color) {
+                    var [meshX, meshY, meshZ] = getCubeMesh(pos, size);
+                    img = {
+                        type: "mesh3d",
+                        x: meshX,
+                        y: meshY,
+                        z: meshZ,
+                        i: [7, 0, 0, 0, 4, 4, 6, 6, 4, 0, 3, 2],
+                        j: [3, 4, 1, 2, 5, 6, 5, 2, 0, 1, 6, 3],
+                        k: [0, 7, 2, 3, 6, 7, 1, 1, 5, 5, 7, 6],
+                        color: color
+                    };
+                    return img;
+                }
+
+                function drawBox(boxPos, boxSize, itemPosList, itemSizeList,
+                    divName, doorPos, doorSize, racksPosList, rackSizeList,
+                    palletPosList, palletSizeList, itemSpdType, newItemPosList,
+                    newItemSizeList, newItemSpdType) {
+                    const edgeColor = 'black';
+                    var plotlyData = [];
+
+                    var box_img = getEdgesImg(boxPos, boxSize, 'red');
+                    plotlyData.push(box_img);
+                    var lastItemIndex = 0;
+
+
+                    function updatePlot() {
+                        function addNewItemImages(posList, sizeList, itemSpdType, lastItemIdX) {
+                            for (let i = 0; i < lastItemIdX; i++) {
+                                var newColor;
+                                if (itemSpdType[i] === 1) {
+                                    newColor = 'green';
+                                } else {
+                                    console.log("hey");
+                                    newColor = 'yellow';
+                                }
+                                var item_img = getMeshImg(posList[i], sizeList[i], newColor);
+                                var item_edge_img = getEdgesImg(posList[i], sizeList[i], edgeColor);
+                                plotlyData.push(item_img, item_edge_img);
+                            }
+                            Plotly.newPlot(divName, plotlyData, {});
+                        }
+                        addNewItemImages(newItemPosList, newItemSizeList, newItemSpdType, lastItemIndex);
                     }
-                };
-                return box_img;
-            }
-        
-            function getCubeMesh(pos, size){
-                var meshX= [pos[0],         pos[0],         pos[0]+size[0], pos[0]+size[0], pos[0],         pos[0],         pos[0]+size[0], pos[0]+size[0]];    
-                var meshY= [pos[1], pos[1]+size[1], pos[1]+size[1], pos[1],         pos[1],         pos[1]+size[1], pos[1]+size[1], pos[1],       ];   
-                var meshZ= [pos[2],         pos[2],         pos[2],         pos[2],         pos[2]+size[2], pos[2]+size[2], pos[2]+size[2], pos[2]+size[2]];        
-                return [meshX, meshY, meshZ];
-            }
-        
-            function getMeshImg(pos, size, color){
-                var [meshX, meshY, meshZ] = getCubeMesh(pos, size);
-                img = {
-                    type: "mesh3d",
-                    x: meshX,
-                    y: meshY,
-                    z: meshZ,
-                    i: [7, 0, 0, 0, 4, 4, 6, 6, 4, 0, 3, 2],
-                    j: [3, 4, 1, 2, 5, 6, 5, 2, 0, 1, 6, 3],
-                    k: [0, 7, 2, 3, 6, 7, 1, 1, 5, 5, 7, 6],
-                    color:color
-                };
-                return img;
-            }
-        
-            function drawBox(boxPos, boxSize, itemPosList, itemSizeList, divName, doorPos, doorSize, racksPosList, rackSizeList, palletPosList, palletSizeList, itemNewType, itemSpdType){
-                const edgeColor = 'black';
-                var plotlyData = [];
-                
-                var box_img = getEdgesImg(boxPos, boxSize, 'red');
-                plotlyData.push(box_img);
-            
-                function addItemImages(posList, sizeList, color, itemNewType, itemSpdType) {
-                    console.log(posList);
-                    console.log(sizeList);
-                    if(itemNewType === 0){
+
+                    // CREATE BUTTON CONTAINER
+                    const buttonContainer = document.createElement('div');
+                    buttonContainer.classList.add('button-container');
+
+                    // CREATE PREV NEXT BUTTON
+                    const leftButton = document.createElement('button');
+                    leftButton.textContent = '<';
+                    leftButton.classList.add('btn', 'btn-primary', 'mr-2');
+
+
+                    const rightButton = document.createElement('button');
+                    rightButton.textContent = '>';
+                    rightButton.classList.add('btn', 'btn-primary', 'mr-2');
+
+                    // CREATE FIRST INDEX BUTTON AND LAST INDEX BUTTON
+                    const firstButton = document.createElement('button');
+                    firstButton.textContent = '<<';
+                    firstButton.classList.add('btn', 'btn-primary', 'mr-2');
+
+
+                    const lastButton = document.createElement('button');
+                    lastButton.textContent = '>>';
+                    lastButton.classList.add('btn', 'btn-primary', 'mr-2');
+
+                    const form = document.createElement('form');
+                    
+                    const inputNumber = document.createElement('input');
+                    inputNumber.type = 'number';
+                    inputNumber.min = 0;
+                    inputNumber.step = 1;
+                    inputNumber.value = lastItemIndex;
+                    inputNumber.classList.add('form-control', 'mr-2');
+
+
+                    form.appendChild(inputNumber);
+
+                    buttonContainer.appendChild(firstButton);
+                    buttonContainer.appendChild(leftButton);
+                    buttonContainer.appendChild(form);
+                    buttonContainer.appendChild(rightButton);
+                    buttonContainer.appendChild(lastButton);
+                    containerElem.appendChild(buttonContainer);
+                    // EVENT HANDLER FOR BUTTONS
+                   
+
+                    function updateInputValue(){
+                        inputNumber.value = lastItemIndex;
+                    }
+
+                    leftButton.addEventListener('click', () => {
+                        if (lastItemIndex > 0) {
+                            lastItemIndex--;
+                            updateInputValue();
+                            updatePlot();
+                        }
+                    });
+                    
+                    rightButton.addEventListener('click', () => {
+                        if (lastItemIndex < newItemPosList.length - 1) {
+                            lastItemIndex++;
+                            updateInputValue();
+                            updatePlot();
+                        }
+                    });
+
+                    firstButton.addEventListener('click', () => {
+                        lastItemIndex = 0;
+                        updateInputValue();
+                        updatePlot();
+                    });
+
+                    lastButton.addEventListener('click', () => {
+                        lastItemIndex = newItemPosList.length - 1;
+                        updateInputValue();
+                        updatePlot();
+                    });
+
+                    form.addEventListener('submit', (event) => {
+                        event.preventDefault(); 
+                        let inputValue = parseInt(inputNumber.value);
+                        console.log(inputValue);
+                        console.log(inputNumber.value);
+                        if (!isNaN(inputValue)) {
+                            if(inputValue < 0) inputValue = 0;
+                            else if(inputValue > newItemPosList.length - 1) inputValue = newItemPosList.length - 1;
+                            lastItemIndex = inputValue;
+                            updateInputValue();
+                            updatePlot();
+                        }
+                    });
+
+                    inputNumber.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter') {
+                            event.preventDefault(); 
+                            form.dispatchEvent(new Event('submit'));
+                        }
+                    });
+
+                    function addItemImages(posList, sizeList, color) {
                         for (let i = 0; i < posList.length; i++) {
-                            //console.log(i, itemPosList[i]);
                             var item_img = getMeshImg(posList[i], sizeList[i], color);
                             var item_edge_img = getEdgesImg(posList[i], sizeList[i], edgeColor);
                             plotlyData.push(item_img, item_edge_img);
                         }
-                    }else{
-                        for (let i = 0; i < posList.length; i++) {
-                            var newColor;
-                            if(itemNewType[i] === false){
-                                newColor = 'gray';
-                            }else{
-                                if(itemSpdType[i] === 1){
-                                    newColor = 'green';
-                                }else{
-                                    console.log("hey");
-                                    newColor = 'yellow';
-                                }
-                            }
-                            var item_img = getMeshImg(posList[i], sizeList[i], newColor);
-                            var item_edge_img = getEdgesImg(posList[i], sizeList[i], edgeColor);
-                            plotlyData.push(item_img, item_edge_img);
-                        }
+
                     }
                     
+
+                    const noColor = 'rgba(0,0,0,0)';
+                    var ntahPos = [[0, 0, 0]];
+                    var ntahSize = [[boxSize[0], boxSize[1], 0.1]];
+
+                    var wall1Pos = [[boxPos[0], boxPos[1], 0]];
+                    var wall1Size = [[boxSize[0], 0, boxSize[2]]];
+
+                    var wall2Pos = [[boxPos[0] + boxSize[0], boxPos[1], 0]];
+                    var wall2Size = [[0, boxSize[1], boxSize[2]]];
+
+                    var wall3Pos = [[boxPos[0], boxPos[1] + boxSize[1], 0]];
+                    var wall3Size = [[boxSize[0], 0, boxSize[2]]];
+
+                    var wall4Pos = [[boxPos[0], boxPos[1], 0]];
+                    var wall4Size = [[0, boxSize[1], boxSize[2]]];
+
+                    var transparentGray = 'rgba(128, 128, 128, 0.3)';
+                    addItemImages(wall1Pos, wall1Size, transparentGray);
+                    addItemImages(wall2Pos, wall2Size, transparentGray);
+                    addItemImages(wall3Pos, wall3Size, transparentGray);
+                    addItemImages(wall4Pos, wall4Size, transparentGray);
+                    addItemImages(ntahPos, ntahSize, 'gray');
+                    addItemImages(doorPos, doorSize, 'green');
+                    addItemImages(racksPosList, rackSizeList, noColor);
+                    addItemImages(palletPosList, palletSizeList, 'blue');
+                    addItemImages(itemPosList, itemSizeList, 'gray');
+                    updatePlot();
+                    Plotly.newPlot(divName, plotlyData, {});
                 }
-                const noColor = 'rgba(0,0,0,0)';
-                var ntahPos = [[0,0,0]];
-                var ntahSize = [[boxSize[0],boxSize[1],0.1]];
-                
-                var wall1Pos = [[boxPos[0], boxPos[1], 0]];
-                var wall1Size = [[boxSize[0], 0, boxSize[2]]];
 
-                var wall2Pos = [[boxPos[0] + boxSize[0], boxPos[1], 0]];
-                var wall2Size = [[0, boxSize[1], boxSize[2]]];
+                console.log(data);
+                console.log(data["racks"]);
 
-                var wall3Pos = [[boxPos[0], boxPos[1] + boxSize[1], 0]];
-                var wall3Size = [[boxSize[0], 0, boxSize[2]]];
+                var boxPos = [0, 0, 0];
+                var boxSize = data["size"];
 
-                var wall4Pos = [[boxPos[0], boxPos[1], 0]];
-                var wall4Size = [[0, boxSize[1], boxSize[2]]];
+                var doorPos = [];
+                var doorSize = []
 
-                var transparentGray = 'rgba(128, 128, 128, 0.3)';
-                addItemImages(wall1Pos, wall1Size, transparentGray, 0, 0);
-                addItemImages(wall2Pos, wall2Size, transparentGray, 0, 0);
-                addItemImages(wall3Pos, wall3Size, transparentGray, 0, 0);
-                addItemImages(wall4Pos, wall4Size, transparentGray, 0, 0);
-                addItemImages(ntahPos, ntahSize, 'gray', 0, 0);
-                addItemImages(doorPos, doorSize, 'green', 0, 0);
-                addItemImages(racksPosList, rackSizeList, noColor, 0, 0);
-                addItemImages(palletPosList, palletSizeList, 'blue', 0, 0);
-                addItemImages(itemPosList, itemSizeList, 'green', itemNewType, itemSpdType);
-            
-                Plotly.newPlot(divName, plotlyData, {});
-            }
+                var racksPosList = [];
+                var rackSizeList = [];
 
-            console.log(data);
-            console.log(data["racks"]);
+                var palletPosList = [];
+                var palletSizeList = [];
 
-            var boxPos = [0,0,0];
-            var boxSize = data["size"];
-            
-            var doorPos = [];
-            var doorSize = []
-            
-            var racksPosList = [];
-            var rackSizeList = [];
+                var itemPosList = [];
+                var itemSizeList = []
+                var itemSpdType = [];
 
-            var palletPosList = [];
-            var palletSizeList = [];
+                var newItemPosList = [];
+                var newItemSizeList = [];
+                var newItemSpdType = [];
+                doorPos.push(data["door_position"]);
+                doorSize.push(data["door_size"]);
 
-            var itemPosList = [];
-            var itemSizeList  =[]
-            var itemNewType = [];
-            var itemSpdType = [];
-
-            doorPos.push(data["door_position"]);
-            doorSize.push(data["door_size"]);
-
-            data["racks"].forEach((rack) => {
-                racksPosList.push(rack["position"]);
-                rackSizeList.push(rack["size"]);
-                rack["pallets"].forEach((pallet) => {
-                    palletPosList.push(pallet["projected_position"]);
-                    palletSizeList.push(pallet["size"]);
-                    pallet["items"].forEach((item) => {
-                        itemPosList.push(item["projected_position"]);
-                        itemSizeList.push(item["size"]);
-                        itemNewType.push(item["is_new"]);
-                        itemSpdType.push(item["is_fast_moving"]);
+                data["racks"].forEach((rack) => {
+                    racksPosList.push(rack["position"]);
+                    rackSizeList.push(rack["size"]);
+                    rack["pallets"].forEach((pallet) => {
+                        palletPosList.push(pallet["projected_position"]);
+                        palletSizeList.push(pallet["size"]);
+                        pallet["items"].forEach((item) => {
+                            if (item["is_new"] === true) {
+                                newItemPosList.push(item["projected_position"]);
+                                newItemSizeList.push(item["size"]);
+                                newItemSpdType.push(item["is_fast_moving"]);
+                            } else {
+                                itemPosList.push(item["projected_position"]);
+                                itemSizeList.push(item["size"]);
+                                itemSpdType.push(item["is_fast_moving"]);
+                            }
+                        })
                     })
-                })
+                });
+
+
+
+                palletSizeList = palletSizeList.map(size => [size[0], size[1], 1]);
+
+
+
+                drawBox(boxPos, boxSize, itemPosList, itemSizeList,
+                    'myDiv', doorPos, doorSize, racksPosList, rackSizeList,
+                    palletPosList, palletSizeList, itemSpdType, newItemPosList, newItemSizeList,
+                    newItemSpdType);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
             });
-
-
-            //console.log(racksPosList);
-            //console.log(rackSizeList);
-            //console.log(palletPosList);
-            //console.log(palletSizeList);
-            palletSizeList = palletSizeList.map(size => [size[0], size[1], 1]);
-            //console.log(palletSizeList);
-            //console.log(itemPosList);
-            //console.log(itemSizeList);
-
-            console.log(itemNewType);
-            console.log(itemSpdType);
-            console.log(typeof itemNewType[0]);
-            console.log(typeof itemSpdType[0]);
-            
-            drawBox(boxPos, boxSize, itemPosList, itemSizeList, 'myDiv', doorPos, doorSize, racksPosList, rackSizeList, palletPosList, palletSizeList, itemNewType, itemSpdType );
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-        });
     </script>
 </body>
+
 </html>
