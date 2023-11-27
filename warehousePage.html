@@ -167,8 +167,35 @@
                     plotlyData.push(box_img);
                     var lastItemIndex = 0;
 
+                    const noColor = 'rgba(0,0,0,0)';
+                    var ntahPos = [[0, 0, 0]];
+                    var ntahSize = [[boxSize[0], boxSize[1], 0.1]];
+
+                    var wall1Pos = [[boxPos[0], boxPos[1], 0]];
+                    var wall1Size = [[boxSize[0], 0, boxSize[2]]];
+
+                    var wall2Pos = [[boxPos[0] + boxSize[0], boxPos[1], 0]];
+                    var wall2Size = [[0, boxSize[1], boxSize[2]]];
+
+                    var wall3Pos = [[boxPos[0], boxPos[1] + boxSize[1], 0]];
+                    var wall3Size = [[boxSize[0], 0, boxSize[2]]];
+
+                    var wall4Pos = [[boxPos[0], boxPos[1], 0]];
+                    var wall4Size = [[0, boxSize[1], boxSize[2]]];
+
+                    var transparentGray = 'rgba(128, 128, 128, 0.3)';
 
                     function updatePlot() {
+                        plotlyData = [box_img];
+                        addItemImages(wall1Pos, wall1Size, transparentGray);
+                        addItemImages(wall2Pos, wall2Size, transparentGray);
+                        addItemImages(wall3Pos, wall3Size, transparentGray);
+                        addItemImages(wall4Pos, wall4Size, transparentGray);
+                        addItemImages(ntahPos, ntahSize, 'gray');
+                        addItemImages(doorPos, doorSize, 'green');
+                        addItemImages(racksPosList, rackSizeList, noColor);
+                        addItemImages(palletPosList, palletSizeList, 'blue');
+                        addItemImages(itemPosList, itemSizeList, 'gray');
                         function addNewItemImages(posList, sizeList, itemSpdType, lastItemIdX) {
                             for (let i = 0; i < lastItemIdX; i++) {
                                 var newColor;
@@ -186,6 +213,21 @@
                         }
                         addNewItemImages(newItemPosList, newItemSizeList, newItemSpdType, lastItemIndex);
                     }
+
+                    function addItemImages(posList, sizeList, color) {
+                        for (let i = 0; i < posList.length; i++) {
+                            var item_img = getMeshImg(posList[i], sizeList[i], color);
+                            var item_edge_img = getEdgesImg(posList[i], sizeList[i], edgeColor);
+                            plotlyData.push(item_img, item_edge_img);
+                        }
+
+                    }
+                    
+
+
+  
+                    updatePlot();
+                    
 
                     // CREATE BUTTON CONTAINER
                     const buttonContainer = document.createElement('div');
@@ -285,43 +327,7 @@
                         }
                     });
 
-                    function addItemImages(posList, sizeList, color) {
-                        for (let i = 0; i < posList.length; i++) {
-                            var item_img = getMeshImg(posList[i], sizeList[i], color);
-                            var item_edge_img = getEdgesImg(posList[i], sizeList[i], edgeColor);
-                            plotlyData.push(item_img, item_edge_img);
-                        }
-
-                    }
                     
-
-                    const noColor = 'rgba(0,0,0,0)';
-                    var ntahPos = [[0, 0, 0]];
-                    var ntahSize = [[boxSize[0], boxSize[1], 0.1]];
-
-                    var wall1Pos = [[boxPos[0], boxPos[1], 0]];
-                    var wall1Size = [[boxSize[0], 0, boxSize[2]]];
-
-                    var wall2Pos = [[boxPos[0] + boxSize[0], boxPos[1], 0]];
-                    var wall2Size = [[0, boxSize[1], boxSize[2]]];
-
-                    var wall3Pos = [[boxPos[0], boxPos[1] + boxSize[1], 0]];
-                    var wall3Size = [[boxSize[0], 0, boxSize[2]]];
-
-                    var wall4Pos = [[boxPos[0], boxPos[1], 0]];
-                    var wall4Size = [[0, boxSize[1], boxSize[2]]];
-
-                    var transparentGray = 'rgba(128, 128, 128, 0.3)';
-                    addItemImages(wall1Pos, wall1Size, transparentGray);
-                    addItemImages(wall2Pos, wall2Size, transparentGray);
-                    addItemImages(wall3Pos, wall3Size, transparentGray);
-                    addItemImages(wall4Pos, wall4Size, transparentGray);
-                    addItemImages(ntahPos, ntahSize, 'gray');
-                    addItemImages(doorPos, doorSize, 'green');
-                    addItemImages(racksPosList, rackSizeList, noColor);
-                    addItemImages(palletPosList, palletSizeList, 'blue');
-                    addItemImages(itemPosList, itemSizeList, 'gray');
-                    updatePlot();
                     Plotly.newPlot(divName, plotlyData, {});
                 }
 
