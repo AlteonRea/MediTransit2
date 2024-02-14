@@ -20,31 +20,35 @@
     </a>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
-      <li>
-        <a href="#" class="nav-link active text-white">
-          <svg class="bi me-2" width="16" height="16">
-            <use xlink:href="#speedometer2" />
+      <li class="nav-item">
+        <a href="#" class="nav-link active text-white d-flex align-items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-house-door-fill me-2" viewBox="0 0 16 16">
+            <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5"/>
           </svg>
           Dashboard
         </a>
       </li>
-      <li>
-        <a href="daftarpengiriman.html" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16">
-            <use xlink:href="#speedometer2" />
+      <li class="nav-item">
+        <a href="daftarpengiriman.html" class="nav-link text-white d-flex align-items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-truck me-2" viewBox="0 0 16 16">
+            <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5zm1.294 7.456A2 2 0 0 1 4.732 11h5.536a2 2 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456M12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2"/>
           </svg>
           Delivery List
         </a>
       </li>
-      <li>
-        <a href="deliverytrouble.html" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16">
-            <use xlink:href="#speedometer2" />
+      <li class="nav-item">
+        <a href="deliverytrouble.html" class="nav-link text-white d-flex align-items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-exclamation-triangle-fill me-2" viewBox="0 0 16 16">
+            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
           </svg>
           Delivery Trouble
         </a>
       </li>
     </ul>
+    <hr>
+    <div class="dropdown">
+      <h4 id="name">Admin</h4>
+    </div>
   </div>
   <div class="d-flex main-container">
     <div class="content">
@@ -102,13 +106,13 @@
         <div id="cito-header" class="cito-header d-none">
           <h2>CITO ALERT!!!</h2>
         </div>
-
+      </div>
+      
         <div id="cito-card" class="cito-card d-none">
           <h3>CITO Counts</h3>
           <p id="cito-detail"></p>
           <button class="btn btn-danger" onclick="showPopupCito()">Take Action</button>
         </div>
-
         <div id="accident-header" class="cito-header d-none">
           <h2>ACCIDENT ALERT!!!</h2>
         </div>
@@ -118,214 +122,75 @@
           <p id="accident-detail"></p>
           <button class="btn btn-danger" onclick="takeActionAccident()">Take Action</button>
         </div>
-        <div class="deliveryCardContainer">
-          <div class="delivery-card">
-            <div class="deliver-header">
-              <h2>Distributed</h2>
+        <div class="chartCardContainer">
+          <div class="chartCard">
+            <div class="chartBox">
+              <div class="chartLeft">
+                <h4>Delivery</h4>
+                <canvas id="deliveryChart" width="250" height = "250"></canvas>
+              </div>
+              <div class="chartDetail">
+                <ul class="chartData">
+                  <li>Distributed</li>
+                  <li>On Distribution</li>
+                  <li>To-be Distributed</li>
+                  <li>Delayed</li>
+                </ul>
+                <ul class = "chartData" style="list-style-type: none;" id = "deliveryData">
+                  <li>0</li>
+                  <li>0</li>
+                  <li>0</li>
+                  <li>0</li>
+                </ul>
+              </div>
             </div>
-            <div id="distributed" class="delivery-count">
-
+            <div class="chartBox">
+              <div class="chartLeft">
+                <h4>Vehicle</h4>
+                <canvas id="vehicleChart" width="250" height = "250"></canvas>
+              </div>
+              <div class="chartDetail">
+                <ul class="chartData">
+                  <li>Available</li>
+                  <li>On Delivery</li>
+                  <li>On Maintenance</li>
+                  <li>Not Available</li>
+                </ul>
+                <ul class = "chartData" style="list-style-type: none;" id = "vehicleData">
+                  <li>0</li>
+                  <li>0</li>
+                  <li>0</li>
+                  <li>0</li>
+                </ul>
+              </div>
             </div>
-          </div>
-
-          <div class="delivery-card">
-            <div class="deliver-header">
-              <h2>On-Distribution</h2>
-            </div>
-            <div id="on-distribution" class="delivery-count">
-            </div>
-          </div>
-
-          <div class="delivery-card">
-            <div class="deliver-header">
-              <h2>To-be Distributed</h2>
-            </div>
-            <div id="to-be-distributed" class="delivery-count">
-
-            </div>
-          </div>
-
-          <div class="delivery-card">
-            <div class="deliver-header">
-              <h2>Delayed</h2>
-            </div>
-            <div id="delayed" class="delivery-count">
-
-            </div>
-            <button class="btn btn-primary" onclick="showPopupDelayed()">Deliver All</button>
-          </div>
-        </div>
-
-        <div class="deliveryCardContainer">
-          <div class="delivery-card">
-            <div class="deliver-header">
-              <h2>Available</h2>
-            </div>
-            <div id="available-vehicle" class="delivery-count">
-
-            </div>
-          </div>
-
-          <div class="delivery-card">
-            <div class="deliver-header">
-              <h2>On-Delivery</h2>
-            </div>
-            <div id="on-delivery-vehicle" class="delivery-count">
-            </div>
-          </div>
-
-          <div class="delivery-card">
-            <div class="deliver-header">
-              <h2>On-Maintenance</h2>
-            </div>
-            <div id="on-maintenance-vehicle" class="delivery-count">
-
-            </div>
-          </div>
-
-          <div class="delivery-card">
-            <div class="deliver-header">
-              <h2>Not Available</h2>
-            </div>
-            <div id="not-available-vehicle" class="delivery-count">
-
+            <div class="shipmentDetail">
+              <h4>Shipment Detail</h4>
+              <ul class="shipmentData">
+                <li>Orders/Shipment: </li>
+                <li>Distance Cost/Shipment: </li>
+                <li>Weight Cost/Shipment: </li>
+                <li>Total Shipment: </li>
+              </ul>
             </div>
           </div>
         </div>
-
-
-        <div class="deliveryCardContainer">
-          <div class="delivery-card">
-            <div class="deliver-header">
-              <h2>Orders / Shipment</h2>
-            </div>
-            <div id="orders-shipment" class="delivery-count">
-
-            </div>
-          </div>
-
-          <div class="delivery-card">
-            <div class="deliver-header">
-              <h2>Distance Cost / Shipment</h2>
-            </div>
-            <div id="distance-shipment" class="delivery-count">
-            </div>
-          </div>
-
-          <div class="delivery-card">
-            <div class="deliver-header">
-              <h2>Weight Cost / Shipment</h2>
-            </div>
-            <div id="weight-shipment" class="delivery-count">
-
-            </div>
-          </div>
-
-          <div class="delivery-card">
-            <div class="deliver-header">
-              <h2>Total Shipment</h2>
-            </div>
-            <div id="total-shipment" class="delivery-count">
-
-            </div>
-          </div>
-        </div>
-
-        <!-- <hr>
-          <h2>Order list</h2>
-          <table class="table table-striped">
-              <thead>
-                  <tr>
-                      <th>Branch Code</th>
-                      <th>Delivery Category</th>
-                      <th>Order ID</th>
-                      <th>Product Code</th>
-                      <th>Product ID</th>
-                      <th>Qty</th>
-                      <th>Relation ID</th>
-                      <th>Status</th>
-                  </tr>
-              </thead>
-              <tbody id="orderListTableBody">
-              </tbody>
-          </table>
-          
-          <hr> 
-          <h2>Available Vehicles</h2>
-          <table class="table table-striped">
-              <thead>
-                  <tr>
-                      <th>ID</th>
-                      <th>Vehicle ID</th>
-                      <th>Available Date</th>
-                  </tr>
-              </thead>
-              <tbody id="avalVehicleBody">
-              </tbody>
-          </table> -->
       </div>
-      <div class="weather-container">
+      <!-- <div class="weather-container">
         <img src="assets/weather.jpg" alt="">
-      </div>
+      </div> -->
     </div>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", async function () {
-        try {/*
-            const response = await fetch('/avalVehicleList');
-            const data = await response.json();
-            console.log('Aval Vehicle: ', data);
-            if (data) {
-              const deliveryTableBody = document.getElementById('avalVehicleBody');
-
-              deliveryTableBody.innerHTML = '';
-
-              data.forEach((item) => {
-                  const row = document.createElement('tr');
-                  row.innerHTML = `
-                      <td>${item.id}</td>
-                      <td>${item.type}</td>
-                      <td>${item.name}</td>
-                      <td>${item.code}</td>
-                  `;
-                  deliveryTableBody.appendChild(row);
-              });
-            }
-            const response2 = await fetch('/orderList');
-            const data2 = await response2.json();
-            console.log('Order List data: ', data2);
-            if(data2){
-              const orderListTableBody = document.getElementById('orderListTableBody');
-              orderListTableBody.innerHTML = '';
-
-              data2.forEach((item) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                  <td>${item.branch_code}</td>
-                  <td>${item.delivery_category}</td>
-                  <td>${item.order_id}</td>
-                  <td>${item.product_code}</td>
-                  <td>${item.product_id}</td>
-                  <td>${item.quantity}</td>
-                  <td>${item.relation_id}</td>
-                  <td>${item.status}</td>
-                `
-                orderListTableBody.appendChild(row);
-              });
-            }*/
-
-          // TO BE DISTRIBUTED COUNT
+        try {
           const response3 = await fetch('/tbDistributedCount');
           const data3 = await response3.json();
-
-          if (data3) {
-            const tbDistributed = document.getElementById('to-be-distributed');
-            tbDistributed.innerHTML = `<h1>${data3[0]['count(*)']}</h1>`;
-          }
+          const tobeDistributedCount = data3[0]['count(*)'];
 
           // CITO COUNT
           const response4 = await fetch('/citocount');
           const data4 = await response4.json();
-          //console.log(typeof data4[0]['count(*)']);
 
           if (data4[0]['count(*)'] > 0) {
             const citoHeader = document.getElementById('cito-header');
@@ -340,30 +205,21 @@
           // DISTRIBUTED COUNT
           const response5 = await fetch('/distributedCount');
           const data5 = await response5.json();
-
-          if (data5) {
-            console.log(data5);
-            const distributed = document.getElementById('distributed');
-            distributed.innerHTML = `<h1>${data5[0]['count(*)']}</h1>`;
-          }
+          const distributedCount = data5[0]['count(*)'];
 
           // ON DISTRIBUTION COUNT
           const response6 = await fetch('/onDistributionCount');
           const data6 = await response6.json();
-
-          if (data6) {
-            const onDistribution = document.getElementById('on-distribution');
-            onDistribution.innerHTML = `<h1>${data6[0]['count(*)']}</h1>`;
-          }
+          const onDistributionCount = data6[0]['count(*)'];
 
           // DELAYED COUNT
           const response8 = await fetch('/delayedCount');
           const data8 = await response8.json();
+          const delayedCount = data8[0]['count(*)'];
 
-          if (data8) {
-            const delayed = document.getElementById('delayed');
-            delayed.innerHTML = `<h1>${data8[0]['count(*)']}</h1>`;
-          }
+          console.log("Distributed Count: ", distributedCount);
+          console.log("ON DISTRIBUTION COUNT: ", onDistributionCount );
+          console.log("To be distributed count: ", tobeDistributedCount);
 
           const response7 = await fetch('accidentCount');
           const data7 = await response7.json();
@@ -386,7 +242,7 @@
             const citoorders = document.getElementById('cito-orders');
             citoorders.innerHTML = ``
             for (let i = 0; i < data9.length; i++) {
-              citoorders.innerHTML += `<h1>Order ID ${data9[i]['order_id']} on Branch ${data9[i]['branch_code']}</h1>`;
+              citoorders.innerHTML += `<h3>Order ID ${data9[i]['order_id']} on Branch ${data9[i]['branch_code']}</h3>`;
             }
           }
 
@@ -402,78 +258,182 @@
             }
           }
 
-
-
-
           const response11 = await fetch('/availableVehicleCount');
           const data11 = await response11.json();
-
-          if (data11) {
-            const availablev = document.getElementById('available-vehicle');
-            availablev.innerHTML = `<h1>${data11[0]['count(*)']}</h1>`;
-          }
+          const avalVehicleCount = data11[0]['count(*)'];
+          
 
           const response12 = await fetch('/onDeliveryVehicleCount');
           const data12 = await response12.json();
-
-          if (data12) {
-            const deliveryv = document.getElementById('on-delivery-vehicle');
-            deliveryv.innerHTML = `<h1>${data12[0]['count(*)']}</h1>`;
-          }
+          const onDeliverVehicleCount = data12[0]['count(*)'];
 
           const response13 = await fetch('/onMaintenanceVehicleCount');
           const data13 = await response13.json();
-
-          if (data13) {
-            const maintv = document.getElementById('on-maintenance-vehicle');
-            maintv.innerHTML = `<h1>${data13[0]['count(*)']}</h1>`;
-          }
+          const onMaintenanceVehicleCount = data13[0]['count(*)'];
 
           const response14 = await fetch('/notAvailableVehicleCount');
           const data14 = await response14.json();
+          const notAvalVehicleCount = data14[0]['count(*)'];
 
-          if (data14) {
-            const notavailv = document.getElementById('not-available-vehicle');
-            notavailv.innerHTML = `<h1>${data14[0]['count(*)']}</h1>`;
-          }
           const response15 = await fetch('/ordersPerShipment');
           const data15 = await response15.json();
-          
-          if (data15) {
-            const ordpsh = document.getElementById('orders-shipment');
-            let formattedData = data15[0]['temp'];
-            formattedData = parseFloat(formattedData);
-            ordpsh.innerHTML = `<h1>${formattedData.toFixed(2)}</h1>`;
-          }
+          const orderPerShipment = parseFloat(data15[0]['temp']).toFixed(2);
 
           const response16 = await fetch('/distanceCostPerShipment');
           const data16 = await response16.json();
-
-          if (data16) {
-            const distpsh = document.getElementById('distance-shipment');
-            let formattedData = data16[0]['temp'];
-            formattedData = parseFloat(formattedData);
-            distpsh.innerHTML = `<h1>${formattedData.toFixed(2)}</h1>`;
-          }
+          const distanceCostPerShipment = parseFloat(data16[0]['temp']).toFixed(2);
 
           const response17 = await fetch('/weightCostPerShipment');
           const data17 = await response17.json();
-
-          if (data17) {
-            const weipsh = document.getElementById('weight-shipment');
-            let formattedData = data17[0]['temp'];
-            formattedData = parseFloat(formattedData)
-            weipsh.innerHTML = `<h1>${formattedData.toFixed(2)}</h1>`;
-          }
+          const weightCostPerShipment = parseFloat(data17[0]['temp']).toFixed(2);
 
           const response18 = await fetch('/shipmentCount');
           const data18 = await response18.json();
+          const shipmentCount = data18[0]['temp'];
+          
+          const shipmentList = document.querySelector('.shipmentData');
 
-          if (data18) {
-            const tosh = document.getElementById('total-shipment');
-            tosh.innerHTML = `<h1>${data18[0]['temp']}</h1>`;
+          shipmentList.children[0].textContent += ` ${orderPerShipment}`;
+          shipmentList.children[1].textContent += ` ${distanceCostPerShipment}`;
+          shipmentList.children[2].textContent += ` ${weightCostPerShipment}`;
+          shipmentList.children[3].textContent += ` ${shipmentCount}`;
+
+          const deliveryData = document.getElementById('deliveryData');
+          deliveryData.children[0].textContent = `${distributedCount}`;
+          deliveryData.children[1].textContent = `${onDistributionCount}`;
+          deliveryData.children[2].textContent = `${tobeDistributedCount}`;
+          deliveryData.children[3].textContent = `${delayedCount}`;
+          // CHART
+
+          const vehicleData = document.getElementById('vehicleData');
+          vehicleData.children[0].textContent = `${avalVehicleCount}`;
+          vehicleData.children[1].textContent = `${onDeliverVehicleCount}`;
+          vehicleData.children[2].textContent = `${onMaintenanceVehicleCount}`;
+          vehicleData.children[3].textContent = `${notAvalVehicleCount}`;
+
+          const deliveryChartData = {
+            labels: ['Distributed', 'On-Distribution', 'To-be Distributed', 'Delayed'],
+            datasets: [{
+              label: 'Amount',
+              data: [distributedCount, onDistributionCount, tobeDistributedCount, delayedCount],
+              backgroundColor: [
+                'rgba(255, 26, 104, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+              ],
+              borderColor: [
+                'rgba(255, 26, 104, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+              ],
+              borderWidth: 1,
+              cutout: '70%'
+            }]
+          };
+          
+          const deliveryDoughnutLabel = {
+            id: 'deliveryDoughnutLabel',
+            beforeDatasetsDraw(chart, args, pluginOptions) {
+              const { ctx, data } = chart;
+              ctx.save();
+              const xCoor = chart.getDatasetMeta(0).data[0].x;
+              const yCoor = chart.getDatasetMeta(0).data[0].y;
+              const totalDelivery = distributedCount + onDistributionCount + tobeDistributedCount + delayedCount;
+          
+              ctx.save();
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              ctx.font = 'bold 24px sans-serif';
+              ctx.fillText(`Total: ${totalDelivery}`, xCoor, yCoor);
+              ctx.restore();
+            }
           }
           
+          const deliveryChartConfig = {
+            type: 'doughnut',
+            data: deliveryChartData,
+            options: {
+              plugins: {
+                tooltip: {
+                  enabled: true,
+                  displayColors: false,
+                },
+                legend: {
+                  display:false,
+                }
+              }
+            },
+            plugins: [deliveryDoughnutLabel]
+          };
+          
+          const deliveryChart = new Chart(
+            document.getElementById('deliveryChart'),
+            deliveryChartConfig
+          );
+
+          const vehicleChartData = {
+            labels: ['Available', 'On-Delivery', 'On-Maintenance', 'Not Available'],
+            datasets: [{
+              label: 'Amount',
+              data: [avalVehicleCount, onDeliverVehicleCount, onMaintenanceVehicleCount, notAvalVehicleCount],
+              backgroundColor: [
+                'rgba(255, 26, 104, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+              ],
+              borderColor: [
+                'rgba(255, 26, 104, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+              ],
+              borderWidth: 1,
+              cutout: '70%'
+            }]
+          };
+
+          const vehicleDoughtnutLabel = {
+            id: 'vehicleDoughnutLabel',
+            beforeDatasetsDraw(chart, args, pluginOptions) {
+              const { ctx, data } = chart;
+              ctx.save();
+              const xCoor = chart.getDatasetMeta(0).data[0].x;
+              const yCoor = chart.getDatasetMeta(0).data[0].y;
+              const totalVehicle = avalVehicleCount + onDeliverVehicleCount + onMaintenanceVehicleCount + notAvalVehicleCount;
+          
+              ctx.save();
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              ctx.font = 'bold 24px sans-serif';
+              ctx.fillText(`Total: ${totalVehicle}`, xCoor, yCoor);
+              ctx.restore();
+            }
+          }
+
+          const vehicleChartConfig = {
+            type: 'doughnut',
+            data: vehicleChartData,
+            options: {
+              plugins: {
+                tooltip: {
+                  enabled: true,
+                  displayColors: false,
+                },
+                legend: {
+                  display:false,
+                }
+              }
+            },
+            plugins: [vehicleDoughtnutLabel ]
+          };
+          
+          const vehicleChart = new Chart(
+            document.getElementById('vehicleChart'),
+            vehicleChartConfig
+          );
 
         } catch (err) {
           console.error(err);

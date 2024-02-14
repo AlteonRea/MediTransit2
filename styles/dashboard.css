@@ -1,8 +1,6 @@
 body {
     margin: 0;
-}
-
-.main-container {
+    overflow-x: hidden;
 }
 
 .sidebar {
@@ -21,7 +19,6 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
 }
 
 .cito-header h2 {
@@ -33,7 +30,6 @@ body {
     background-color: #8b0000; /* Darker red */
     color: white;
     padding: 20px;
-    border-radius: 8px;
     box-shadow: 0 0 10px rgba(255, 0, 0, 0.2); /* Lighter box shadow */
 }
 .cito-card p{
@@ -111,15 +107,8 @@ body {
     margin-top: 30px !important;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.delivery-count h1 {
-    font-size: 72px;
-    font-weight: bold;
-    margin-top: 10px;
-    color: #007bff;
+    text-align: left;
+    margin-left: 30px;
 }
 
 .navbar {
@@ -138,7 +127,10 @@ body {
 
 .navbar-nav .nav-item {
     margin-right: 10px;
+    display: flex;
+    align-items: center;
 }
+
 .container2{
     padding: 20px;
 }
@@ -146,4 +138,94 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.chartMenu {
+    width: 100vw;
+    height: 40px;
+    background: #1A1A1A;
+    color: rgba(54, 162, 235, 1);
+}
+.chartMenu p {
+    padding: 10px;
+    font-size: 20px;
+}
+
+.chartCardContainer{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+}
+
+.chartCard {
+    background: #fdf2ec;
+    display: flex;
+    border-radius: 20px;
+}
+
+.chartBox {
+    padding: 20px;
+    padding-right: 40px;
+    position: relative; 
+    display: flex;
+}
+
+.chartBox .chartLeft{
+    margin-right: 30px;
+}
+
+.chartDetail{
+    display: flex;
+    align-items: center;
+}
+
+.chartData li{
+    color:#403e4d;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.chartData li:nth-child(1)::marker{
+    color: rgba(255, 26, 104, 1);
+}
+
+.chartData li:nth-child(2)::marker{
+    color: rgba(51,162,235,1);
+}
+.chartData li:nth-child(3)::marker{
+    color: rgba(255,206,86,1);
+}
+.chartData li:nth-child(4)::marker{
+    color: rgba(75,192,192,1);
+}
+
+
+.chartBox::after {
+    content: ''; 
+    position: absolute; 
+    top: 5%; 
+    bottom: 5%; 
+    right: 0; 
+    width: 1px;
+    background-color: #e0d8d6;
+}
+
+.shipmentDetail {
+    padding: 20px;
+}
+
+.shipmentData {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    margin-top: 20px;
+}
+
+.shipmentData li {
+    margin-bottom: 10px;
+    color:#403e4d;
+    font-size: 18px;
+    font-weight: 650;
 }
