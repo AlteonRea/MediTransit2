@@ -1,0 +1,167 @@
+.cart-popup {
+  color: #dadee0;
+  position: fixed;
+  top: 20px;
+  right: 0;
+  width: 400px;
+  height: 90vh;
+  background-color: #364055;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.cartHeader {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  font-style: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cart-popup hr {
+  margin: 0px;
+}
+.cartHeader div {
+  width: 50%;
+  text-align: center;
+}
+
+.cartHeader div:hover {
+  color: #da4f61;
+}
+
+.cartHeader .active {
+  color: #da4f61;
+}
+
+#containersList.active::after,
+#goodsList.active::after {
+  content: "";
+  position: absolute;
+  bottom: -15px;
+  width: 20px;
+  height: 10px;
+  background-color: #da4f61;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  transform: translateX(-50%);
+}
+
+#containersList.active::after {
+  left: 25%;
+}
+
+#goodsList.active::after {
+  left: 75%;
+}
+
+.cart-popup.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.cartItemGroup {
+  overflow-y: scroll;
+  height: calc(90vh - 70px);
+}
+
+.cartItemGroup {
+  overflow-y: auto;
+  height: calc(90vh - 70px);
+  scroll-behavior: smooth;
+}
+
+.cartItemGroup::-webkit-scrollbar {
+  width: 12px;
+}
+
+.cartItemGroup::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.cartItemGroup::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+.cartItemGroup::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.cartItem {
+  height: 10%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 0px 20px;
+  color: #fff;
+}
+
+.itemSize {
+  display: flex;
+  flex-direction: row;
+}
+
+.itemName {
+  width: 60%;
+}
+
+.itemSize {
+  width: 40%;
+}
+.itemSize div {
+  flex: 1;
+  text-align: center;
+}
+
+#itemForm {
+  width: 70%;
+  background-color: #364055;
+  color: #dadee0;
+  padding: 20px;
+  border-radius: 10px;
+  margin-left: 12px;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+label {
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"],
+.form-select {
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: #dadee0;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.btn {
+  margin-top: 1rem;
+  margin-right: 0.5rem;
+}
+
+ul {
+  list-style-type: disc;
+}

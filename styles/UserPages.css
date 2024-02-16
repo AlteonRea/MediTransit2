@@ -1,0 +1,32 @@
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+.container {
+  color: #fff;
+  margin-left: 280px;
+  background-image: linear-gradient(
+    to bottom,
+    #2c3446,
+    #293142,
+    #272e3e,
+    #242c3b,
+    #222937
+  );
+  height: 100vh;
+  max-width: calc(100% - 280px);
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0px;
+}
+
+.container .containerHeader {
+  background-color: #333b50;
+  height: 10%;
+  border-bottom: 2px solid #2a3243;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

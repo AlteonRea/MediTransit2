@@ -7,6 +7,54 @@
   padding-top: 20px;
 }
 
-svg{
+svg {
   margin-right: 10px;
+  height: 24px;
+  width: 24px;
+}
+
+#sidebar {
+  background-color: #0f1318;
+}
+
+#sidebar img {
+  width: 40px;
+  height: 40px;
+  margin-right: 15px;
+  margin-left: 15px;
+}
+
+#sidebar .sidebar-title {
+  color: #0a8ff6;
+  font-size: 26px;
+}
+
+#sidebar hr {
+  color: #99a0af;
+}
+
+#sidebar #name {
+  color: #fff;
+}
+#sidebar ul li {
+  height: 50px;
+}
+.nav-item .nav-link {
+  height: 100%;
+}
+
+.nav-item .nav-link:hover {
+  background-color: #1e232d;
+}
+
+.nav-item .nav-link.active {
+  background-color: #1e232d;
+}
+
+.nav-item span {
+  font-size: 18px;
+}
+
+.nav-item-icon {
+  margin-right: 15px;
 }
