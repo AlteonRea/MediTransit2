@@ -21,11 +21,12 @@ function addItem() {
     sizeY: sizeY,
     sizeZ: sizeZ,
     type: itemType,
+    quantity: 1,
   };
 
-  var cart = JSON.parse(localStorage.getItem("cart")) || [];
+  var cart = JSON.parse(localStorage.getItem("items")) || [];
   cart.push(newItem);
-  localStorage.setItem("cart", JSON.stringify(cart));
+  localStorage.setItem("items", JSON.stringify(cart));
 
   document.getElementById("itemForm").reset();
   alert("Item added to cart successfully!");
@@ -34,7 +35,7 @@ function addItem() {
 }
 
 function clearCart() {
-  localStorage.removeItem("cart");
+  localStorage.removeItem("items");
   updateCartPopup();
   alert("Cart cleared!");
 }
@@ -62,44 +63,100 @@ function activateGoodsGroup() {
 }
 
 function updateCartPopup() {
-  var cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-
-  // Separate items into containers and goods
-  var containers = cartItems.filter((item) => item.type === "container");
-  var goods = cartItems.filter((item) => item.type === "goods");
+  var cartItems = JSON.parse(localStorage.getItem("items")) || [];
 
   containersList.classList.contains("active")
-    ? renderItems(containers)
-    : renderItems(goods);
+    ? renderItems(cartItems, true)
+    : renderItems(cartItems, false);
 }
 
-function renderItems(items) {
-  var cartItemGroup = document.getElementById("cartItemGroup");
+function createDivWithClass(className, textContent = null) {
+  const element = document.createElement("div");
+  element.className = className;
+  if (textContent !== null) {
+    element.textContent = textContent;
+  }
+  return element;
+}
 
+function createDivWithId(id) {
+  const div = document.createElement("div");
+  div.id = id;
+  return div;
+}
+
+function updateLocalStorage(key, data) {
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+function renderItems(items, containerActive) {
+  const cartItemGroup = document.getElementById("cartItemGroup");
   cartItemGroup.innerHTML = "";
 
-  items.forEach((item) => {
-    var cartItem = document.createElement("div");
-    cartItem.className = "cartItem";
-    var itemName = document.createElement("div");
-    itemName.className = "itemName";
-    itemName.textContent = item.name;
+  items.forEach((item, index) => {
+    if (
+      (containerActive === true && item.type === "goods") ||
+      (containerActive === false && item.type === "container")
+    ) {
+      return;
+    }
 
-    var itemSize = document.createElement("div");
-    itemSize.className = "itemSize";
+    const cartItem = createDivWithClass("cartItem");
+    const itemDetail = createDivWithClass("item-detail");
+    const itemName = createDivWithClass("itemName", item.name);
+
+    const itemSize = createDivWithClass("itemSize");
     itemSize.innerHTML = `
       <div>X: ${item.sizeX}</div>
       <div>Y: ${item.sizeY}</div>
       <div>Z: ${item.sizeZ}</div>
     `;
 
-    cartItem.appendChild(itemName);
-    cartItem.appendChild(itemSize);
+    itemDetail.append(itemName, itemSize);
+    const itemQty = createDivWithClass("item-qty");
+    const qtyText = createDivWithClass("qty-text", "Quantity");
 
+    const changeQty = createDivWithClass("change-qty");
+    const subQty = createDivWithId("subQty");
+    subQty.innerHTML = `<i class="fa-solid fa-minus"></i>`;
+
+    const quantity = document.createElement("p");
+    quantity.textContent = item.quantity;
+
+    const addQty = createDivWithId("addQty");
+    addQty.innerHTML = `<i class="fa-solid fa-plus"></i>`;
+
+    changeQty.append(subQty, quantity, addQty);
+
+    const removeItem = createDivWithId("removeItem");
+    removeItem.innerHTML = `<i class="fa-solid fa-trash"></i>`;
+
+    itemQty.append(qtyText, changeQty, removeItem);
+    cartItem.append(itemDetail, itemQty);
     cartItemGroup.appendChild(cartItem);
 
-    var hr = document.createElement("hr");
+    const hr = document.createElement("hr");
     cartItemGroup.appendChild(hr);
+
+    subQty.addEventListener("click", () => {
+      if (item.quantity > 1) {
+        item.quantity--;
+        quantity.textContent = item.quantity;
+        updateLocalStorage("items", items);
+      }
+    });
+
+    addQty.addEventListener("click", () => {
+      item.quantity++;
+      quantity.textContent = item.quantity;
+      updateLocalStorage("items", items);
+    });
+
+    removeItem.addEventListener("click", () => {
+      items.splice(index, 1);
+      updateLocalStorage("items", items);
+      renderItems(items);
+    });
   });
 }
 

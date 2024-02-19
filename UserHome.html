@@ -113,10 +113,12 @@
         </div>
 
         <button type="button" class="btn btn-primary" onclick="addItem()">
-          Add to Cart
+          Add Item
         </button>
 
-        <button class="btn btn-danger" onclick="clearCart()">Clear Cart</button>
+        <button class="btn btn-danger" onclick="clearCart()">
+          Clear Items
+        </button>
       </form>
     </div>
 
@@ -133,7 +135,30 @@
       </div>
       <hr />
 
-      <div class="cartItemGroup" id="cartItemGroup"></div>
+      <div class="cartItemGroup" id="cartItemGroup">
+        <!-- <div class="cartItem">
+          <div class="item-detail">
+            <div class="itemName">Container B</div>
+            <div class="itemSize">
+              <div>X: 12</div>
+              <div>Y: 12</div>
+              <div>Z: 12</div>
+            </div>
+          </div>
+          <div class="item-qty">
+            <div class="qty-text">Quantity</div>
+            <div class="change-qty">
+              <div id="subQty"><i class="fa-solid fa-minus"></i></div>
+              <p>1</p>
+              <div id="addQty"><i class="fa-solid fa-plus"></i></div>
+            </div>
+            <div id="removeItem">
+              <i class="fa-solid fa-trash"></i>
+            </div>
+          </div>
+        </div>
+        <hr /> -->
+      </div>
     </div>
 
     <button
